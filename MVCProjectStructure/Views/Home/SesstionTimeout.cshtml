@@ -1,0 +1,14 @@
+﻿
+@{
+    ViewBag.Title = "Vui lòng đăng nhập lại!";
+    Layout = "~/Views/Shared/_LayoutBaoCao.cshtml";
+}
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            window.location.replace(DuongDan.DangNhap);
+        });
+    </script>
+}

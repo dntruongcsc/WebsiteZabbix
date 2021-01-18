@@ -1,0 +1,59 @@
+﻿@using Common.Enum;
+@{
+    ViewBag.Title = "Quản lý chuyên đề";
+    Layout = ChucNang.GiaoDien.SBAdmin;
+    ViewBag.active = ChucNang.Ma.NhomTin;
+}
+
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="#"><i class="fas fa-home">&nbsp;</i>Bảng điều khiển</a></li>
+    <li class="breadcrumb-item active"><a>Quản lý chuyên đề</a></li>
+</ol>
+<div class="container-fluid p-0">
+    <div class="panel-body">
+        <div class="row px-3">
+            <div class="col-lg-8 kc-0 mb-3">
+                <div class="row pl-3">
+                    <div class="col-lg-5 plrb-022">
+                        <select class="form-control" id="DanhSachPhongBan" name="DanhSachPhongBan">
+                            @*<option value="" data-img="">--Chọn phòng ban--</option>*@
+                            @if (ViewBag.DanhSachPhongBan != null)
+                            {
+                                
+                                foreach (var item in ViewBag.DanhSachPhongBan.Items)
+                                {
+                                    if (true)
+                                    {
+
+                                    }
+                                    <option value="@item.Id" data-img="">@item.Ten</option>
+                                }
+                            }
+                        </select>
+
+                    </div>
+                    <div class="col-lg-4 plrb-022">
+                        <input type="text" class="form-control" placeholder="Nhập nội dung tìm" aria-label="Nhập nội dung tìm" id="NoiDungTim" name="NoiDungTim">
+                    </div>
+                    <div class="plrb-022">
+                        <button type="button" id="btnTimKiem" onclick="XuLyTimKiem()" class="btn btn-info"><i class="fa fa-search">&nbsp;</i>Tìm kiếm</button>
+                        <button type="button" id="btnLamLai" onclick="XuLyLamLai()" class="btn btn-secondary" title="Tải lại dữ liệu mặc định"><i class="fa fa-refresh"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 kc-0 mb-3 canh-le-p">
+                <button class="btn btn-mac-dinh" onclick="Them()"><i class="fa fa-plus"></i> Thêm mới</button>
+                <button type="button" id="btnXoa" onclick="XuLyXoa()" class="btn btn-danger" disabled><i class="fa fa-trash">&nbsp;</i>Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="clear:both;margin-bottom:10px;"></div>
+<div id="ThongBao_Index"></div>
+<div id="DanhSach_CapNhat">
+    @*@{Html.RenderPartial("_DanhSachNhomTinPartial");}*@
+</div>
+@section Scripts {
+    <script src="~/Areas/TinTuc/Contents/NhomTinIndex.js"></script>
+}

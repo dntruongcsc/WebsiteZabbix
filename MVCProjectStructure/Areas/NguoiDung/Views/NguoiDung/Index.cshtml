@@ -1,0 +1,86 @@
+﻿@using Common.Enum;
+@{
+    ViewBag.Title = "Quản lý người dùng";
+    Layout = ChucNang.GiaoDien.SBAdmin;
+    ViewBag.Active = "QuanLyTaiKhoan";
+}
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="@Url.Action("Index","Home",new { area = "Admin" })"><i class="fa fa-tachometer"></i> Bảng điều khiển</a>
+    </li>
+    <li class="breadcrumb-item active">Quản lý người dùng</li>
+</ol>
+<div class="container-fluid p-0">
+    <div class="">
+        <div class="panel-body">
+            <div class="row px-3">
+                <div class="col-md-10 kc-0 mb-3 form-inline">
+                    <div class="col-md-2 plrb-022">
+                        <select id="DonViTimKiem" class="form-control w-100">
+                            <option value="">-- Đơn vị --</option>
+                            @if (ViewBag.DanhSachDonVi != null)
+                            {
+                                foreach (var item in ViewBag.DanhSachDonVi)
+                                {
+                                    <option value="@item.Ma">@item.Ten</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2 plrb-022">
+                        <select id="VaiTroTimKiem" class="form-control w-100">
+                            <option value="">-- Vai trò --</option>
+                            @if (ViewBag.DanhSachVaiTro != null)
+                            {
+                                foreach (var item in ViewBag.DanhSachVaiTro)
+                                {
+                                    <option value="@item.Ma">@item.Ten</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2 plrb-022">
+                        <select id="TrangThaiTimKiem" class="form-control w-100">
+                            <option value="-1">-- Trạng thái --</option>
+                            @if (ViewBag.DanhSachTrangThai != null)
+                            {
+                                foreach (var item in ViewBag.DanhSachTrangThai)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-3 plrb-022">
+                        <input type="text" name="tuKhoa" id="TuKhoa" class="form-control w-100" placeholder="Tìm kiếm theo tên/tài khoản">
+                    </div>
+                    <div class="col-md-3 plrb-022">
+                        <button type="button" id="btnTimKiem" onclick="XuLyTimKiem()" class="btn btn-info"><i class="fa fa-search">&nbsp;</i>Tìm kiếm</button>
+                        <button type="button" id="btnLamLai" onclick="XuLyLamLai()" class="btn btn-secondary" title="Tải lại dữ liệu mặc định"><i class="fa fa-refresh"></i></button>
+                    </div>
+                </div>
+                <div class="col-md-2 kc-0 mb-3 canh-le-p">
+                    <button id="btnThem" class="btn btn-mac-dinh" onclick="Them()">
+                        <i class="fa fa-plus"></i> Thêm mới
+                    </button>
+                    <button type="button" id="btnXoa" onclick="XuLyXoa()" class="btn btn-danger" disabled><i class="fa fa-trash">&nbsp;</i>Xóa</button>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div id="ThongBao_Index"></div>
+            <div id="DanhSach_CapNhat">
+                @{Html.RenderPartial("_DanhSachPartial");}
+            </div>
+        </div>
+    </div>
+</div>
+@section styles{
+    <style>
+        .them-cap-nhat div > label {
+            font-weight: bold;
+        }
+    </style>
+}
+@section Scripts {
+    <script src="~/Areas/NguoiDung/Contents/NguoiDung.js"></script>
+}

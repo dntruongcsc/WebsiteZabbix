@@ -1,0 +1,87 @@
+﻿.panel-default > .panel-heading {
+        background-color: #e9e8e8;
+}
+
+.khoang-cach-0 {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.khoang-cach-5 {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+.btn {
+    padding: 6px;
+}
+.o-tim{
+    width:300px !important;
+    border-radius:0px;
+    float:left;
+    margin-right:5px;
+}
+.khung-phan-trang{
+    text-align:right;
+}
+.canh-le {
+    text-align: right;
+}
+
+.tieu-de {
+    font-size: 18px;
+    color: #49491A;
+    margin: 15px 0 5px 0;
+    font-weight: bold;
+}
+
+.panel-title {
+    font-size: 22px;
+    color: #686969;
+    padding-top:5px;
+}
+.canh-nhan{
+    text-align:right;
+}
+.bieu-tuong-lich{
+    position:absolute; 
+    top:7px; 
+    right:20px; 
+    width:20px;
+}
+.panel-default{
+    min-height: calc(100vh - 237px);
+}
+.modal-dialog{
+    margin-top:110px;
+}
+
+@media screen and (max-width: 760px) {
+    .tieu-de {
+        font-size: 18px;
+        color: #49491A;
+        margin: 15px 0 5px 0;
+    }
+
+    .panel-title {
+        font-size: 18px;
+        color: #686969;
+    }
+
+    .khung-noi-dung {
+        margin-left: -10px;
+        margin-right: -10px;
+    }
+    .canh-nhan{
+        display:block;
+        text-align:left;
+    }
+    .o-tim{
+        width: calc(100vw - 96px) !important;
+        border-radius:0px;
+        font-style:italic;
+        float:left;
+        margin-right:5px;
+    }
+    .khung-phan-trang{
+        text-align:center;
+    }
+}

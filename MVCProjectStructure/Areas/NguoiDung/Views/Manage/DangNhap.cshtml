@@ -1,0 +1,74 @@
+﻿@{
+    ViewBag.Title = "DangNhap";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>@ViewBag.Title - Login</title>
+    <!-- Bootstrap core CSS-->
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <!-- Custom fonts for this template-->
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    <!-- Custom styles for this template-->
+    <link href="~/Template/sb-admin/css/sb-admin.css" rel="stylesheet" />
+</head>
+<body class="bg-dark">
+    <div class="container">
+        <div class="card card-login mx-auto mt-5">
+            <div class="card-header">Đăng nhập</div>
+            <div class="card-body">
+                @using (Ajax.BeginForm("Load", "Manage", new AjaxOptions
+                {
+                    UpdateTargetId = "containerUpdate",
+                    InsertionMode = InsertionMode.Replace,
+                    LoadingElementId = "ajaxLoader",
+                    HttpMethod = "POST"
+                }, new { @id = "frm" }))
+                {
+                    <div class="form-group">
+                        <div class="form-label-group">
+                            <input type="text" id="TaiKhoan" name="TaiKhoan" class="form-control" placeholder="Tài khoản" required="required" autofocus="autofocus">
+                            <label for="inputTaiKhoan">Tài khoản</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-label-group">
+                            <input type="password" id="MatKhau" name="MatKhau" class="form-control" placeholder="Mật khẩu" required="required">
+                            <label for="inputMatKhau">Mật khẩu</label>
+                        </div>
+                    </div>
+                    @*<div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" value="remember-me">
+                                    Nhớ đăng nhập
+                                </label>
+                            </div>
+                        </div>*@
+                    <button class="btn btn-primary btn-block" type="submit">Đăng nhập</button>
+                }
+                @*<div class="text-center">
+                        <a class="d-block small mt-3" href="register.html">Register an Account</a>
+                        <a class="d-block small" href="forgot-password.html">Forgot Password?</a>
+                    </div>*@
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap core JavaScript-->
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="~/Template/sb-admin/vendor/jquery-easing/jquery.easing.min.js"></script>
+</body>
+</html>
+
+
+
+

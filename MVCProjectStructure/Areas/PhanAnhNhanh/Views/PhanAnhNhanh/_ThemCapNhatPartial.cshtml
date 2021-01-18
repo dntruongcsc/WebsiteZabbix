@@ -1,0 +1,199 @@
+﻿@model MVCProjectStructure.Areas.PhanAnhNhanh.Models.PhanAnhNhanhModel.Output.ThongTin
+<input id="Id" value="@Model.Id" hidden />
+<div id="ThongBao"></div>
+@if (Model != null)
+{
+    <div class="container">
+        <input id="KetQuaOutput" data-ketqua="@ViewBag.KetQua" hidden />
+        <div class="row ml-0 form-small">
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label class="col-sm-4 required">Loại phản ánh</label>
+                    <div class="col-sm-8">
+                        <select id="LoaiPhanAnhThem" class="form-control form-control-sm">
+                            @if (ViewBag.DanhSachLoaiPhanAnh != null)
+                            {
+                                foreach (var item in ViewBag.DanhSachLoaiPhanAnh)
+                                {
+                                    <option value="@item.Id" @(item.Id == Model.LoaiPhanAnhNguoiDan.Id ? "selected" : "")>@item.Ten</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 required">Tên người phản ánh</label>
+                    <div class="col-sm-8">
+                        <input id="TenNguoiPhanAnh" type="text" class="form-control form-control-sm" value="@Model.TenNguoiPhanAnh">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4">Số điện thoại</label>
+                    <div class="col-sm-8">
+                        <input id="Sdt" type="number" class="form-control form-control-sm" value="@Model.Sdt">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label class="col-sm-4 required">Nội dung phản ánh</label>
+                    <div class="col-sm-8">
+                        <textarea id="NoiDungPhanAnh" rows="4" class="form-control">@Model.NoiDung</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row ml-0 form-small">
+            <div class="col-md-12">
+                <div class="form-group row">
+                    <label class="col-sm-2">Hình ảnh</label>
+                    <div class="col-sm-10">
+                        <div class="input-group input-group-sm">
+                            <input id="linkFile" type="text" class="form-control form-control-sm" style="border-top-left-radius: 5px; border-bottom-left-radius: 5px;" />
+                            <div class="input-group-prepend">
+                                <button id="btnChonFile" class="btn btn-primary" style="border-top-right-radius: 5px; border-bottom-right-radius: 5px;"><i class="fa fa-file-image-o"></i> Chọn</button>
+                                <button id="btnLuuFile" class="btn btn-success" style="display: none; border-top-right-radius: 5px; border-bottom-right-radius: 5px;"><i class="fa fa-plus"></i> Thêm</button>
+                            </div>
+                        </div>
+                        <a id="thong_bao_sai_dinh_dang" style="font-size: 12px; margin-left: 5px; display: none; color: red;">Tập tin không đúng định dạng (png, jpeg... )</a>
+                        <a id="clear_text" style="cursor: pointer; font-size: 10px; margin-left: 5px; display: none">Xóa dữ liệu</a>
+
+                        <div id="DsHinhAnh">
+                            @if (Model.DanhSachTapTin != null)
+                            {
+                                foreach (var item in Model.DanhSachTapTin)
+                                {
+                                    <div class="danh-sach-hinh" style="display: flex; justify-content: space-between" data-url="@item.Ten">
+                                        <div><i class="fa fa-file-image-o"></i><a href="javascript:void(0)" onclick="XemTruocHinh('@item.Ten')"> @item.Ten.Split('/')[item.Ten.Split('/').Length - 1]</a></div>
+                                        <i class="fa fa-close" style="color: red; cursor:pointer;" onclick="XoaFile(this)"></i>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row ml-0 form-small">
+            <div class="col-sm-12 p-0">
+                <h5>Thông tin xử lý</h5>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label class="col-sm-4">Cập nhật tình trạng</label>
+                    <div class="col-sm-8">
+                        <select id="TrangThai" class="form-control form-control-sm cach-duoi">
+                            <option value=0 @(Model.TrangThai == 0 ? "selected" : "")>Đã tiếp nhận</option>
+                            <option value=1 @(Model.TrangThai == 1 ? "selected" : "")>Đang xử lý</option>
+                            <option value=2 @(Model.TrangThai == 2 ? "selected" : "")>Đã xử lý</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row ml-0 form-small">
+            <div class="col-sm-12">
+                <div class="form-group row">
+                    <label class="col-sm-2">Đính kèm văn bản (nếu có)</label>
+                    <div class="col-sm-10">
+                        <div class="input-group input-group-sm">
+                            <input id="DinhKemVanBanPhanHoi" type="text" class="float-left form-control form-control-sm mb-1" placeholder="" value="@(Model.ThongTinPhanHoi != null ? Model.ThongTinPhanHoi.DanhSachTapTin != null & Model.ThongTinPhanHoi.DanhSachTapTin.Count > 0 ? Model.ThongTinPhanHoi.DanhSachTapTin.FirstOrDefault() !=null ? Model.ThongTinPhanHoi.DanhSachTapTin.FirstOrDefault().Ten : "" : "" : "")">
+                            <div class="input-group-append">
+                                <div id="ChonTapTinDinhKem" class="input-group-text btn">Chọn</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row ml-0 form-small">
+            <div class="col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-4">Xuất bản</label>
+                    <div class="col-sm-8">
+                        <input id="XuatBan" type="checkbox" @(Model.XuatBan ? "checked" : "") />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row ml-0 form-small">
+            <div class="col-sm-12">
+                <div class="form-group row">
+                    <label class="col-sm-2">Nội dung phản hồi</label>
+                    <div class="col-sm-10">
+                        <textarea id="NoiDungPhanHoi" class="form-control">@(Model.ThongTinPhanHoi != null ? Model.ThongTinPhanHoi.NoiDung : "")</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}
+    
+<script src="~/Content/ckeditor/ckeditor.js"></script>
+<script src="~/Content/ckfinder/ckfinder.js"></script>
+<script>
+    $(document).ready(function () {
+        CKEDITOR.replace('NoiDungPhanHoi', {});
+    });
+    $('#btnChonFile').on('click', function () {
+        var ckfider = new CKFinder();
+        ckfider.selectActionFunction = function (fileUrl) {
+            //$('#linkFile').val(fileUrl.split('/')[fileUrl.split('/').length - 1]);
+            $('#linkFile').val(fileUrl);
+            //$('#linkSave').val(fileUrl);
+            if (fileUrl != null && fileUrl != "") {
+                $("#btnChonFile").css("display", "none");
+                $("#btnLuuFile").css("display", "block");
+                $("#clear_text").css("display", "block");
+            }
+        };
+        ckfider.popup();
+    });
+
+    $('#ChonTapTinDinhKem').on('click', function () {
+        var ckfider = new CKFinder();
+        ckfider.selectActionFunction = function (fileUrl) {
+            $('#DinhKemVanBanPhanHoi').val(fileUrl);
+        };
+        ckfider.popup();
+    });
+
+    $('#clear_text').on('click', function () {
+        $('#linkFile').val("");
+        $("#btnChonFile").css("display", "block");
+        $("#btnLuuFile").css("display", "none");
+        $("#clear_text").css("display", "none");
+    });
+
+    $("#btnLuuFile").on("click", function () {
+        let url = $('#linkFile').val();
+        //alert(url);
+        let mangUrl = url.split("/");
+        let tenBaiTapHienThi = mangUrl[mangUrl.length - 1];
+        let mangTen = tenBaiTapHienThi.split(".");
+
+        let html = `<div class="danh-sach-hinh" style="display: flex; justify-content: space-between" data-url="` + url + `">
+                        <div><i class="fa fa-file-image-o"></i><a href="javascript:void(0)" onclick="XemTruocHinh('` + url + `')"> ` + tenBaiTapHienThi + `</a></div>
+                        <i class="fa fa-close" style="color: red; cursor:pointer;" onclick="XoaFile(this)"></i>
+                    </div>`;
+        $("#DsHinhAnh").append(html);
+
+        $("#btnChonFile").css("display", "block");
+        $("#btnLuuFile").css("display", "none");
+        $("#clear_text").css("display", "none");
+        $("#linkFile").val("");
+    });
+
+    function XoaFile(ths) {
+        $(ths).parent().remove();
+    }
+
+    function XemTruocHinh(url) {
+        $("#HinhXemTruoc").attr("src", url);
+        $("#ModalXemHinh").modal("show");
+    }
+
+</script>

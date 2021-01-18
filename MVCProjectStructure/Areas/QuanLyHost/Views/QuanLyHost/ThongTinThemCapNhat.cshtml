@@ -1,0 +1,431 @@
+﻿@model MVCProjectStructure.Areas.QuanLyHost.Models.HostModel.Input.Them
+@{
+    ViewBag.Title = "ThongTinThemCapNhat";
+    Layout = "~/Views/Shared/_SBAdmin.cshtml";
+}
+
+<div class="col-md-10 col-md-offset-1">
+    <div id="parentHorizontalTab">
+        <div class="canh-giua" onclick="scrollWin(this)">
+
+            <ul class="resp-tabs-list hor_1">
+                <li>Host</li>
+                @*<li>Templates</li>*@
+                @*<li>IPMI</li>
+                    <li>Tags</li>
+                    <li>Macros</li>
+                    <li>Inventory</li>
+                    <li>Encryption</li>*@
+            </ul>
+
+            <div style="clear:both"></div>
+
+        </div>
+        <div class="resp-tabs-container hor_1">
+            <div>
+                <div id="ThongBao_Index"></div>
+                <p class="statusMsg"></p>
+                @*<input id="Id" name="Id" value="@Model." hidden />*@
+                <div class="form-group row">
+                    <label for="TieuDe" class="col-sm-3 control-label al-r">Host:</label>
+                    <div class="col-sm-8">
+                        <input type="text" id="HostName" name="TieuDe" class="form-control form-white" value="@Model.host" required="required" placeholder="Host" title="Host">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group row">
+                    <label for="TieuDe" class="col-sm-3 control-label al-r">Groups:</label>
+                    <div class="col-sm-8">
+                        @*@ViewBag.Groups*@
+
+                        <select id="DanhSachGroup" class="form-control form-control-sm" size="10" multiple>
+                            @*<option value="">--Tất cả--</option>*@
+                            @if (ViewBag.Groups != null)
+                            {
+                                var loai = ViewBag.Groups;
+
+                                foreach (var item in loai)
+                                {
+                                    <option value="@item.groupid">@item.name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group row">
+                    <label for="TieuDe" class="col-sm-3 control-label al-r">
+                        Agent interfaces:
+                    </label>
+                    <div class="col-sm-9">
+                        <div class="table-forms-separator ui-droppable" data-type="agent" style="width: 750px;">
+                            <table id="agentInterfaces">
+                                <thead>
+                                    <tr>
+                                        <th>Interfaces</th>
+                                        <th class="al-l">IP address</th>
+                                        <th class="al-l">DNS name</th>
+                                        <th class="al-l">Connect to</th>
+                                        <th class="al-l">Port</th>
+                                        <th class="al-l" colspan="2">Default</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <tr class="interfaceRow ui-draggable InterfacesValue" name="InterfacesValue" data-interfaceid="1" style="">
+                                        <td class="interface-drag-control td-drag-icon">
+                                            <select class="DanhSachInterface form-control form-control-sm">
+                                                <option value="1">Agent</option>
+                                                <option value="2">SNMP</option>
+                                                <option value="3">JMX</option>
+                                                <option value="4">IPMI</option>
+                                            </select>
+                                        </td>
+                                        <td class="interface-ip">
+                                            <input name="interfaces[1][ip]" type="text" class="form-control form-white form-control-sm interfaces-ip" style="width: 225px" maxlength="64" value="127.0.0.1" aria-required="true">
+
+                                        </td>
+                                        <td class="interface-dns">
+                                            <input type="text" name="interfaces[1][dns]" class="form-control form-white form-control-sm" value="" maxlength="255" style="width: 175px;">
+                                        </td>
+                                        <td>
+                                            <label class="checkbox-inline">
+                                                <input type="checkbox" class="CheckIPDNS" onchange="XuLyChonIp(this)" checked value="1">IP
+                                            </label>
+                                            <label class="checkbox-inline">
+                                                <input type="checkbox" class="CheckIPDNS" onchange="XuLyChonIp(this)" value="0">DNS
+                                            </label>
+                                        </td>
+                                        <td class="interface-port">
+                                            <input type="text" class="form-control form-white form-control-sm interfaces-port" name="interfaces[1][port]" value="10050" maxlength="64" style="width: 100px;" aria-required="true">
+                                        </td>
+                                        <td class="interface-default">
+                                            <input class="mainInterface checkbox-radio" type="radio" name="mainInterfaces[1]" value="1">
+                                            <label class="checkboxLikeLabel" for="interface_main_1" style="height: 16px; width: 16px;">
+                                                <span></span>
+                                            </label>
+                                        </td>
+                                        <td class="nowrap interface-control">
+                                            <button class="btn btn-link remove" type="button" disabled onclick="XuLyXoaDong(this)" data-interfaceid="1">Remove</button>
+                                        </td>
+                                    </tr>
+                                    <tr id="agentInterfacesFooter">
+                                        <td colspan="7">
+                                            <button type="button" id="addAgentInterface" onclick="ThemDong('agentInterfacesFooter')" name="addAgentInterface" class="btn btn-link">Add</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                @*<div class="form-group row">
+            <label for="TieuDe" class="col-sm-3 control-label al-r">
+                SNMP interfaces:
+            </label>
+            <div class="col-sm-8">
+                <div class="table-forms-separator ui-droppable" data-type="SNMP" style="width: 750px;">
+                    <table id="SNMPInterfaces">
+                        <tbody>
+
+
+                            <tr id="SNMPInterfacesFooter"><td colspan="7"><button type="button" id="addAgentInterface" name="addAgentInterface" onclick="ThemDong('SNMPInterfacesFooter')" class="btn btn-link">Add</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="form-group row">
+            <label for="TieuDe" class="col-sm-3 control-label al-r">
+                JMX interfaces:
+            </label>
+            <div class="col-sm-8">
+                <div class="table-forms-separator ui-droppable" data-type="JMX" style="width: 750px;">
+                    <table id="JMXInterfaces">
+                        <tbody>
+
+
+                            <tr id="JMXInterfacesFooter"><td colspan="7"><button type="button" onclick="ThemDong('JMXInterfacesFooter')" id="addAgentInterface" name="addAgentInterface" class=" btn btn-link">Add</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="form-group row">
+            <label for="TieuDe" class="col-sm-3 control-label al-r">
+                IPMI interfaces:
+            </label>
+            <div class="col-sm-8">
+                <div class="table-forms-separator ui-droppable" data-type="IPMI" style="width: 750px;">
+                    <table id="IPMIInterfaces">
+                        <tbody>
+                            <tr id="IPMIInterfacesFooter"><td colspan="7"><button type="button" id="addAgentInterface" name="addAgentInterface" onclick="ThemDong('IPMIInterfacesFooter')" class="btn btn-link">Add</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>*@
+                <div class="form-group row">
+                    <label for="TieuDe" class="col-sm-3 control-label al-r">Templates:</label>
+                    <div class="col-sm-8">
+                        @*@ViewBag.DanhSachTemplates*@
+
+                        <select id="DanhSachTemplates" class="form-control form-control-sm" size="20" onchange="XuLyChonQuan(this)" multiple>
+                            <option value="">--Tất cả--</option>
+                            @if (ViewBag.DanhSachTemplates != null)
+                            {
+                                var loai = ViewBag.DanhSachTemplates;
+
+                                foreach (var item in loai)
+                                {
+                                    <option value="@item.10001">@item.name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group row">
+                    <label for="TieuDe" class="col-sm-3 control-label al-r">Mô tả:</label>
+                    <div class="col-sm-8">
+                        <textarea name="message" class="form-control" rows="5">Mô tả.</textarea>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group row">
+                    <label for="TieuDe" class="col-sm-3 control-label al-r"></label>
+                    <div class="form-check form-check-inline">
+                        <input id="KichHoat" class="form-check-input" type="checkbox">
+                        <label class="form-check-label" for="KichHoat">Kích hoạt</label>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="col-md-3 plrb-022">
+                    @*<button type="button" id="btnTimKiem" onclick="XuLyTimKiem()" class="btn btn-info"><i class="fa fa-search">&nbsp;</i>Tìm kiếm</button>*@
+                    <button type="button" id="btnLuu" onclick="XuLyLuuHost()" class="btn btn-primary" title="Tải lại dữ liệu mặc định"><i class="fa fa-save"></i>Lưu</button>
+                </div>
+            </div>
+        
+            <div>
+                <div class="form-group row">
+                    <label for="TieuDe" class="col-sm-3 control-label al-r">
+                        Thuật toán xác thực:
+                    </label>
+                    <div class="col-sm-8">
+                        @*@ViewBag.DanhSachTemplates*@
+
+                        <select id="DanhSachXacThuc" class="form-control form-control-sm" size="20" onchange="XuLyChonQuan(this)" multiple>
+                            <option value="">--Tất cả--</option>
+                            @if (ViewBag.DanhSachTemplates != null)
+                            {
+                                var loai = ViewBag.DanhSachTemplates;
+
+                                foreach (var item in loai)
+                                {
+                                    <option value="@item.10001">@item.name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group row">
+                    <label for="TieuDe" class="col-sm-3 control-label al-r">
+                        Cấp đặc quyền:
+                    </label>
+                    <div class="col-sm-8">
+                        @*@ViewBag.DanhSachTemplates*@
+
+                        <select id="DanhSachDacQuyen" class="form-control form-control-sm" size="20" multiple>
+                            <option value="">--Tất cả--</option>
+                            @if (ViewBag.DanhSachTemplates != null)
+                            {
+                                var loai = ViewBag.DanhSachTemplates;
+
+                                foreach (var item in loai)
+                                {
+                                    <option value="@item.10001">@item.name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group row">
+                        <label for="TieuDe" class="col-sm-3 control-label al-r">Tài khoản:</label>
+                        <div class="col-sm-8">
+                            <input type="text" id="taikhoan" name="TieuDe" class="form-control form-white" value="" required="required" placeholder="Host" title="Host">
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="TieuDe" class="col-sm-3 control-label al-r">Mật khẩu:</label>
+                        <div class="col-sm-8">
+                            <input type="text" id="matkhau" name="TieuDe" class="form-control form-white" value="" required="required" placeholder="Host" title="Host">
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+                <div style="clear:both"></div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+@section ContentHead{
+
+    <link href="~/Content/easy-responsive-tabs.css" rel="stylesheet" />
+    <script src="~/Scripts/easyResponsiveTabs.js"></script>
+    <style>
+
+        .table-forms-separator {
+            display: inline-block;
+            padding: 5px;
+            position: relative;
+            border: 1px solid #ebeef0;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            width: 870px !important
+        }
+    </style>
+}
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //Horizontal Tab
+            $('#parentHorizontalTab').easyResponsiveTabs({
+                type: 'default', //Types: default, vertical, accordion
+                width: 'auto', //auto or any width like 600px
+                fit: true, // 100% fit in a container
+                tabidentify: 'hor_1', // The tab groups identifier
+                activate: function (event) { // Callback function if tab is switched
+                    var $tab = $(this);
+                    var $info = $('#nested-tabInfo');
+                    var $name = $('span', $info);
+                    $name.text($tab.text());
+                    $info.show();
+                }
+            });
+
+        });
+        function XuLyChonIp(obj) {
+            var td = $(obj).parent().parent();
+            td.find('.CheckIPDNS').prop('checked', false);
+            $(obj).prop('checked', true);
+
+        }
+        function ThemDong(idtable) {
+            var tbody = $('#' + idtable)
+            var str = '  <tr class="interfaceRow ui-draggable InterfacesValue"  name="InterfacesValue" data-interfaceid="1" style="">'
+                + '<td class="interface-drag-control td-drag-icon" >'
+                + ' <select  class="DanhSachInterface form-control form-control-sm" >'
+                + '     <option value="1">Agent</option>'
+                + '     <option value="2">SNMP</option>'
+                + '     <option value="3">JMX</option>'
+                + '     <option value="4">IPMI</option>'
+                + ' </select>'
+                + '</td>'
+                + ' <td class="interface-ip">'
+                + '                  <input name="interfaces[1][ip]" type="text" style="width: 225px" class="form-control form-white form-control-sm interfaces-ip" maxlength="64" value="127.0.0.1" aria-required="true">'
+
+                + '                       </td>'
+                + '                   <td class="interface-dns">'
+                + '                        <input type="text"  class="form-control form-white form-control-sm" name="interfaces[1][dns]" value="" maxlength="255" style="width: 175px;">'
+                + '                       </td>'
+                + '                       <td>'
+                + '<label class="checkbox-inline" >'
+                + ' <input type="checkbox" class="CheckIPDNS" onchange="XuLyChonIp(this)"  checked value="1">IP'
+                + '</label>'
+                + '<label class="checkbox-inline" >'
+                + ' <input type="checkbox" class="CheckIPDNS" onchange="XuLyChonIp(this)" value="0">DNS'
+                + '</label>'
+                + '</td>'
+                + '                            <td class="interface-port">'
+                + '                               <input type="text"  class="form-control form-white form-control-sm interfaces-port" name="interfaces[1][port]" value="10050" maxlength="64" style="width: 100px;" aria-required="true">'
+                + '                       </td>'
+                + '                               <td class="interface-default">'
+                + '                                   <input class="mainInterface checkbox-radio" type="radio"  name="mainInterfaces[1]" value="1">'
+
+                + '                       </td>'
+                + '                                   <td class="nowrap interface-control">'
+                + '                                       <button class="btn btn-link remove" onclick="XuLyXoaDong(this)" type="button"  data-interfaceid="1">Remove</button>'
+                + '                                   </td>'
+                + '</tr>'
+            
+            tbody.before(str)
+            var tr = $('#agentInterfaces').find('tbody tr');
+            if (tr.length > 2) {
+                $(".remove").attr("disabled", true);
+            } else {
+                $("#btnSubmit").attr("disabled", false);
+            }
+        }
+        function XuLyLuuHost() {
+            var dsGroup = $('#DanhSachGroup').val();
+            //ar ds = $('.interfaceRow')
+            var table = $('#agentInterfaces')
+            var ds = table.find('tbody tr.interfaceRow')
+            var dsInterface = []
+            var len = ds.length
+            var dsg=[]
+            for (var i = 0; i < dsGroup.length; i++) {
+                var gr = {
+                    groupid: dsGroup[i]
+                }
+                dsg.push(gr)
+            }
+            for (var i = 0; i < len; i++) {
+                //  ds[i].find('.DanhSachInterface')
+                var ip = $(ds[i]).find('input[class="CheckIPDNS"]:checked').val()
+
+                var interface = {
+
+                    "type": $(ds[i]).find('.DanhSachInterface').val(),
+                    "main": 1,
+                    "useip": ip,
+                    "ip": ip==1? $(ds[i]).find('.interfaces-ip').val():"",
+                    "dns": ip == 0 ?$(ds[i]).find('.interfaces-ip').val():"",
+                    "port": $(ds[i]).find('.interfaces-port').val()
+                }
+                dsInterface.push(interface)
+            }
+            var input = {
+                host: $('#HostName').val(),
+                groups: dsg,
+                interfaces: dsInterface
+
+            }
+            XuLyAPI('QuanLyHost/QuanLyHost/XuLyLuu', input, 'html', 'POST', XuLyKetQuaLuu);
+            var a = 1;
+        }
+        function XuLyKetQuaLuu(data) {
+            if (data) {
+                if (data.KetQua === 1) {
+                    dulieu = data.dulieu;
+                    if (dulieu.KetQua === 1) {
+                        dulieu = data.DuLieu;
+                        addAlertHtml("ThongBao_Index", MessageType.success, "Thêm mới thành công")
+                    } else {
+                        addAlertHtml("ThongBao_Index", MessageType.danger, dulieu.DuLieu)
+                    }
+                    //addAlertHtml("ThongBao_Index", MessageType.success,"Thêm mới thành công")
+                } else {
+                    addAlertHtml("ThongBao_Index", MessageType.danger, dulieu.dulieu)
+                }
+            }
+        }
+        
+        function XuLyXoaDong(obj) {
+            var row = $(obj).parent().parent();
+            var tr = $('#agentInterfaces').find('tbody tr');
+            if (tr.length>2)
+            row.remove();
+        }
+    </script>
+}

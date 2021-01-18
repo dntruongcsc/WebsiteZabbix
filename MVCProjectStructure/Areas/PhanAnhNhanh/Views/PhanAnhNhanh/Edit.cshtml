@@ -1,0 +1,615 @@
+﻿@using Common.Enum;
+@model MVCProjectStructure.Areas.PhanAnhNhanh.Models.PhanAnhNhanhModel
+
+@{
+    ViewBag.Title = "Chi tiết thông tin phản ánh";
+    Layout = ChucNang.GiaoDien.SBAdmin;
+    ViewBag.Active = ChucNang.Ma.PhanAnhNhanh;
+}
+<style>
+    .form-group {
+        width: 100%;
+    }
+</style>
+<!-- Breadcrumbs-->
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="@Url.Action("Index","Home",new { area = "Admin" })"><i class="fa fa-tachometer"></i> Bảng điều khiển</a>
+    </li>
+    <li class="breadcrumb-item active">Phản ánh nhanh</li>
+</ol>
+<!-- Icon Cards-->
+<div class="khung-noi-dung">
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            @*<div class="col-md-12 khoang-cach-0 canh-le" style="margin-bottom:20px;">
+                    <button type="button" onclick="xuLyCapNhat();" class="btn btn-primary">
+                        <i class="fa fa-save">&nbsp;</i>Lưu thông tin
+                    </button>
+                    <a class="btn btn-warning" href="@Url.Action("Index","PhanAnhNhanh")">
+                        <i class="fa fa-reply">&nbsp;</i>Trở về
+                    </a>
+                </div>*@
+            <input type="hidden" value="@Model.PhanAnhHienTai.DuongDanHinhAnh" id="duongDanHinhAnh" />
+            <input type="hidden" value="@Model.PhanAnhHienTai.Id" id="idPhanAnh" />
+            <div class="col-md-12">
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label canh-nhan">Họ tên: </label>
+                                <div class="col-sm-8">
+                                    @Model.PhanAnhHienTai.TenNguoiPhanAnh
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label canh-nhan">Điện thoại: </label>
+                                <div class="col-sm-8">
+                                    @Model.PhanAnhHienTai.Sdt
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label canh-nhan">Ngày phản ánh: </label>
+                                <div class="col-sm-8 margin-bot">
+                                    @Model.PhanAnhHienTai.ThoiGian
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label canh-nhan">Vấn đề phản ánh: </label>
+                                <div class="col-sm-8">
+                                    <span class="badge badge-primary">@Model.PhanAnhHienTai.LoaiPhanAnhNguoiDan.Ten</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="slider"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label canh-nhan">Địa chỉ: </label>
+                        <div class="col-sm-9 cach-duoi">
+                            @Model.PhanAnhHienTai.DiaChi
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label canh-nhan">Nội dung: </label>
+                        <div class="col-sm-9" style="text-align:justify">
+                            @Model.PhanAnhHienTai.NoiDung
+                        </div>
+                    </div>
+                </div>
+                <div class="page-header">
+                    <h3>Thông tin xử lý</h3>
+                </div>
+                <div class="row">
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label canh-nhan">Cập nhật tình trạng: </label>
+                        <div class="col-sm-3">
+                            <select class="form-control cach-duoi" id="tinhTrang">
+                                <option value="0" @(Model.PhanAnhHienTai.TrangThai == 0 ? "selected" : "")>Đã tiếp nhận</option>
+                                <option value="1" @(Model.PhanAnhHienTai.TrangThai == 1 ? "selected" : "")>Đang xử lý</option>
+                                <option value="2" @(Model.PhanAnhHienTai.TrangThai == 2 ? "selected" : "")>Đã xử lý</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label canh-nhan">Đính kèm văn bản: <br /><i style="font-weight:normal">(nếu có)</i></label>
+                        <div class="col-md-6 input-group" style="padding:0 15px;">
+                            <input type="text" class="form-control" value="@((Model.ThongTinPhanHoi.DanhSachTapTin != null && Model.ThongTinPhanHoi.DanhSachTapTin.Any()) ? Model.ThongTinPhanHoi.DanhSachTapTin[0].Ten ?? "" : "")" id="tapTin" placeholder='Chọn tập tin...' />
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary btn-choose" id="Browser" type="button">Chọn tập tin...</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group row">
+                        <div class="offset-2 col-md-9" style="text-align:left;">
+                            <label for="checkboxes_2" style="font-weight:normal;">
+                                <label><input name="checkboxes" id="xuatBan" value="1" type="checkbox" @(Model.PhanAnhHienTai.XuatBan ? "checked" : "")> Xuất bản (tất cả mọi người có thể thấy phản ánh này)</label>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label canh-nhan">Nội dung phản hồi: </label>
+                        <div class="col-sm-9">
+                            <textarea id="noiDungPhanHoi" name="noiDungPhanHoi" class="form-control cach-duoi">@Model.ThongTinPhanHoi.NoiDung</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-md-12 khoang-cach-0 canh-le" style="margin-top:20px;">
+                <button type="button" onclick="xuLyCapNhat();" class="btn btn-primary">
+                    <i class="fa fa-save">&nbsp;</i>Lưu lại
+                </button>
+                <a class="btn btn-warning" href="@Url.Action("Index","PhanAnhNhanh")">
+                    @*<i class="fa fa-reply">&nbsp;</i>Trở về*@
+                    <i class="fa fa-close">&nbsp;</i>Đóng
+                </a>
+            </div>
+            <div class="col-md-12">
+                @if (TempData["Error"] != null)
+                {
+                    Html.RenderPartial("_AlertPartial");
+                }
+            </div>
+        </div>
+        <!-- /.panel-body-->
+    </div>
+    <!-- /.panel-default-->
+</div>
+<!-- /.khung-noi-dung-->
+<!-- The Modal -->
+<div id="myModal_Hinh" class="modalhinh">
+    <span class="closehinh">&times;</span>
+    <img class="modal-contenthinh" id="img01">
+</div>
+@if (TempData["Success"] != null)
+{
+    @Html.Partial("_DialogSuccessPartial")
+}
+@section ContentHead{
+    <link href="~/Content/datetimepicker/bootstrap-datetimepicker.css" rel="stylesheet" />
+    <script src="~/Scripts/datetimepicker/moment.min.js"></script>
+    <script src="~/Scripts/datetimepicker/bootstrap-datetimepicker.min.js"></script>
+}
+@section Styles {
+    <link href="~/Content/css/ams-thong-tin.css" rel="stylesheet" />
+    @Styles.Render("~/Content/ui")
+    <style>
+        #menubar {
+            z-index: 0;
+        }
+
+        .canh-nhan {
+            margin-top: 7px;
+        }
+
+        .cach-duoi {
+            margin-bottom: 15px;
+        }
+
+        .zoom {
+            -webkit-transition: all 1s ease-in-out;
+            -moz-transition: all 1s ease-in-out;
+            -o-transition: all 1s ease-in-out;
+            transition: transform 1s ease-in-out;
+            margin: 0 auto;
+            opacity: .5;
+            border-radius: 2px;
+            height: 35px;
+            vertical-align: top;
+            margin-left: 15px;
+            z-index: 100;
+            position: relative;
+        }
+
+            .zoom:hover {
+                opacity: 1;
+                -webkit-transform: scale(5.5);
+                -moz-transform: scale(5.5);
+                -ms-transform: scale(5.5);
+                transform: scale(5.5);
+            }
+    </style>
+    <style>
+        /*Style slider*/
+        html {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        *, *:before, *:after {
+            -webkit-box-sizing: inherit;
+            box-sizing: inherit;
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            padding: 5px;
+        }
+
+        h2 {
+            text-align: center;
+            padding-bottom: 1em;
+        }
+
+        .slick-dots {
+            text-align: center;
+            margin: 0 0 10px 0;
+            padding: 0;
+        }
+
+            .slick-dots li {
+                display: inline-block;
+                margin-left: 4px;
+                margin-right: 4px;
+            }
+
+                .slick-dots li.slick-active button {
+                    background-color: black;
+                }
+
+                .slick-dots li button {
+                    font: 0/0 a;
+                    text-shadow: none;
+                    color: transparent;
+                    background-color: #999;
+                    border: none;
+                    width: 15px;
+                    height: 15px;
+                    border-radius: 50%;
+                }
+
+                .slick-dots li :hover {
+                    background-color: black;
+                }
+        /*.slick-slide {
+            min-height: 150px!important;
+        }*/
+        /* Custom Arrow */
+        .prev {
+            color: #999;
+            position: absolute;
+            top: 38%;
+            left: 1em;
+            font-size: 1.5em;
+        }
+
+            .prev :hover {
+                cursor: pointer;
+                color: black;
+            }
+
+        .next {
+            color: #999;
+            position: absolute;
+            top: 38%;
+            right: 1em;
+            font-size: 1.5em;
+        }
+
+            .next :hover {
+                cursor: pointer;
+                color: black;
+            }
+
+        .modalhinh {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 2; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+        }
+
+        .modal-contenthinh {
+            margin: auto;
+            display: block;
+            /*width: 80%;*/
+            /*max-width: 700px;*/
+            width: auto;
+            height: 100%;
+        }
+
+        .closehinh {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+            .closehinh:hover, .closehinh:focus {
+                color: #bbb;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+        @@media screen and (max-width: 800px) {
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="~/Scripts/cscpda-ams/jquery-ams-createlist.js"></script>
+    <script src="~/Content/ckfinder/ckfinder.js"></script>
+    <script src="~/Content/ckeditor/ckeditor.js"></script>
+
+    <script>
+        $('#Browser').on('click', function () {
+            var ckfider = new CKFinder();
+            ckfider.selectActionFunction = function (fileUrl) {
+                $('#tapTin').val(fileUrl);
+            };
+            ckfider.popup();
+        });
+
+    </script>@* CKFinder <script src="~/Content/ckfinder/ckfinder.js"></script>*@
+    //-------------------------------------------------------------------------------------
+    @*<script type="text/javascript" language="javascript">
+            function createEditor(languageCode, id) {
+                var editor = CKEDITOR.replace(id, { language: languageCode });
+            }
+            $(function () {
+                createEditor('vi', 'NoiDung');
+            });
+        </script>*@@* CKEditor <script src="~/Content/ckeditor/ckeditor.js"></script>*@
+        //-------------------------------------------------------------------------------------
+        <script type="text/javascript" language="javascript">
+            function bs_input_file() {
+                $(".input-file").before(
+                    function () {
+                        if (!$(this).prev().hasClass('input-ghost')) {
+                            var element = $("<input type='file' class='input-ghost' style='visibility:hidden; height:0'>");
+                            element.attr("name", $(this).attr("name"));
+                            element.change(function () {
+                                element.next(element).find('input').val((element.val()).split('\\').pop());
+                            });
+                            $(this).find("button.btn-choose").click(function () {
+                                element.click();
+                            });
+                            $(this).find("button.btn-reset").click(function () {
+                                element.val(null);
+                                $(this).parents(".input-file").find('input').val('');
+                            });
+                            $(this).find('input').css("cursor", "pointer");
+                            $(this).find('input').mousedown(function () {
+                                $(this).parents('.input-file').prev().click();
+                                return false;
+                            });
+                            return element;
+                        }
+                    }
+                );
+            }
+            function createEditor(languageCode, id) {
+                var editor = CKEDITOR.replace(id, { language: languageCode });
+            }
+            $(function () {
+                bs_input_file();
+                createEditor('vi', 'noiDungPhanHoi');
+            });
+        </script>@* Input file *@
+        //-------------------------------------------------------------------------------------
+        <script>
+            $(document).ready(function () {
+                $('#date1').datetimepicker({
+                    format: 'DD/MM/YYYY',
+                    locale: 'vi'
+                });
+            });
+            function xuLyCapNhat() {
+                //alert("haha");
+                id = $("#idPhanAnh").val();
+                trangThai = $("#tinhTrang :selected").val();
+                taptin = $('#tapTin').val();
+                xuatBan = false;
+                if ($("#xuatBan").is(":checked")) {
+                    xuatBan = true;
+                }
+                noiDungPhanHoi = CKEDITOR.instances['noiDungPhanHoi'].getData();
+                var model = {
+                    id: id,
+                    trangThai: trangThai,
+                    taptin: taptin,
+                    noiDungPhanHoi: noiDungPhanHoi,
+                    xuatBan: xuatBan
+                }
+                //$.post("/phananhnhanh/CapNhatPhanHoi", model)
+                //    .success(function (data) {
+                //        if (data == 1) {
+                //            MessageModal(message.LuuThanhCong);
+                //        }
+                //        else {
+                //            MessageModal(message.LuuThatBai);
+                //        }
+                //    });
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/PhanAnhNhanh/PhanAnhNhanh/CapNhatPhanHoi',
+                    data: model,
+                    dataType: "json",
+                    success: function(data) {
+                        if (data == 1) {
+                            Modal.Message("Thành công");
+                        }
+                        else {
+                            Modal.Message("Thất bại");
+                        }
+                    },
+                    error: function () {
+                        Modal.Message("Thất bại");
+                    }
+                });
+            }
+        </script>
+        @* -------------------------slider------------------------------- *@
+        @*<link href="~/Content/slider_slick/normalize.min.css" rel="stylesheet" />*@
+        <link href="~/Content/slider_slick/slick.min.css" rel="stylesheet" />
+        <script src="~/Content/slider_slick/slick.min.js"></script>
+
+        <script>
+            jQuery.ajaxSetup({ async: false });
+            var slider = slider();
+            function slider() {
+                var s = '';
+                s += '<div class="overlay"></div>'
+                    + '<div class="slider responsive">';
+
+                idPhanAnh = $("#idPhanAnh").val();
+                duongDanHinhAnh = $("#duongDanHinhAnh").val();
+                //$.get("/phananhnhanh/XuatDanhSachHinhAnh", { id: idPhanAnh })
+                //    .success(function (data) {
+                //        var json = JSON.parse(data);
+                //        console.log(json);
+                //        $.each(json, function (index, item) {
+                //            s += '<div>'
+                //                + '<img src="' + duongDanHinhAnh + item.TenThumbnail + '" alt="" onclick="Show(this.name);" name="' + duongDanHinhAnh + item.Ten + '"/>'
+                //                + '</div>';
+                //        });
+                //    });
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/PhanAnhNhanh/PhanAnhNhanh/XuatDanhSachHinhAnh',
+                    data: { id: idPhanAnh },
+                    dataType: "json",
+                    success: function (data) {
+                        //var json = JSON.parse(data);
+                        //console.log(json);
+                        //$.each(json, function (index, item) {
+                        //    s += '<div>'
+                        //        + '<img src="' + duongDanHinhAnh + item.TenThumbnail + '" alt="" onclick="Show(this.name);" name="' + duongDanHinhAnh + item.Ten + '"/>'
+                        //        + '</div>';
+                        //});
+                        for (var i = 0; i < data.length; i++) {
+                            s += '<div>'
+                                + '<img src="' + duongDanHinhAnh + data[i].TenThumbnail + '" alt="" onclick="Show(this.name);" name="' + duongDanHinhAnh + data[i].Ten + '"/>'
+                                + '</div>';
+                        }
+                    },
+                    error: function () {
+                        //alert("Lỗi dịch vụ");
+                        //Modal.Message("Lỗi dịch vụ!");
+                    }
+                });
+
+                s += '<div class="prev">'
+                    + '<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>'
+                    + '</div>'
+                    + '<div class="next">'
+                    + '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>'
+                    + '</div>';
+                //'<div class="overlay"></div>'
+                //        + '<div class="slider responsive">'
+                //            + '<div>'
+                //                + '<a href="/SBAdmin/images/1.1.jpg"><img src="/SBAdmin/images/1.jpg" alt="" /></a>'
+                //            + '</div>'
+                //            + '<div>'
+                //                + '<a href="/SBAdmin/images/2.1.jpg"><img src="/SBAdmin/images/2.jpg" alt="" /></a>'
+                //            + '</div>'
+                //            + '<div>'
+                //                + '<a href="/SBAdmin/images/3.1.jpg"><img src="/SBAdmin/images/3.jpg" alt="" /></a>'
+                //            + '</div>'
+                //            + '<div>'
+                //                + '<a href="http://placehold.it/200x150"><img src="http://placehold.it/200x150" alt="" /></a>'
+                //            + '</div>'
+                //            + '<div>'
+                //                + '<a href="http://placehold.it/200x150"><img src="http://placehold.it/200x150" alt="" /></a>'
+                //            + '</div>'
+                //            + '<div>'
+                //                + '<a href="http://placehold.it/200x150"><img src="http://placehold.it/200x150" alt="" /></a>'
+                //            + '</div>'
+                //            + '<div>'
+                //                + '<a href="http://placehold.it/200x150"><img src="http://placehold.it/200x150" alt="" /></a>'
+                //            + '</div>'
+                //            + '<div>'
+                //                + '<a href="http://placehold.it/200x150"><img src="http://placehold.it/200x150" alt="" /></a>'
+                //            + '</div>'
+                //        + '</div>'
+                //        +
+                $('#slider').children().remove();
+                $('#slider').append(s);
+                $('.responsive').slick({
+                    dots: true,
+                    prevArrow: $('.prev'),
+                    nextArrow: $('.next'),
+                    infinite: false,
+                    speed: 300,
+                    slidesToShow: 5,
+                    slidesToScroll: 1,
+                    responsive: [
+                        {
+                            breakpoint: 1024,
+                            settings: {
+                                slidesToShow: 3,
+                                slidesToScroll: 3,
+                                infinite: true,
+                                dots: true
+                            }
+                        },
+                        {
+                            breakpoint: 600,
+                            settings: {
+                                slidesToShow: 2,
+                                slidesToScroll: 2
+                            }
+                        },
+                        {
+                            breakpoint: 480,
+                            settings: {
+                                slidesToShow: 1,
+                                slidesToScroll: 1
+                            }
+                        }
+                    ]
+                });
+            }
+
+        </script>
+        <script>
+            // Get the modal
+            var modal = document.getElementById('myModal_Hinh');
+
+            // Get the image and insert it inside the modal - use its "alt" text as a caption
+            //var img = document.getElementsByClassName('myImg');
+            var modalImg = document.getElementById("img01");
+
+            function Show(obj) {
+                modal.style.display = "block";
+                modalImg.src = obj;
+            }
+
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("closehinh")[0];
+
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function () {
+                modal.style.display = "none";
+            }
+        </script>
+        @* popkup slider *@
+        <link rel="stylesheet" type="text/css" href="https://mreq.github.io/slick-lightbox/dist/slick-lightbox.css">
+        <script src="https://mreq.github.io/slick-lightbox/dist/slick-lightbox.js" type="text/javascript" charset="utf-8"></script>
+        <script>
+            $('.slider').slickLightbox({
+                slick: {
+                    itemSelector: 'a',
+                    navigateByKeyboard: true,
+                    dots: true,
+                    infinite: true,
+                    centerMode: true,
+                    slidesToShow: 1,
+                    slidesToScroll: 1,
+                    mobileFirst: true
+                }
+            });
+        </script>@* end popkup slider *@
+        @* -------------------------end slider------------------------------- *@
+}
+

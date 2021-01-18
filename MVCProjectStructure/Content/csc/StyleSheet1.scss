@@ -1,0 +1,10 @@
+﻿
+//$variableName: value;
+$themeColor: #003399;
+$maxWidth: 800px;
+
+.article {
+    Width: $maxWidth - 200px;
+    Background-color: $themeColor;
+    Border-color: darken($themeColor, 10%);
+}

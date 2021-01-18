@@ -1,0 +1,264 @@
+﻿@using Common.Enum;
+@{
+    ViewBag.Title = "Danh mục huyện";
+    Layout = ChucNang.GiaoDien.SBAdmin;
+    ViewBag.active = "DanhMucHuyen";
+}
+<style>
+    .col-md-2.plrb-022 .input-group {
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+    }
+</style>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="/Admin/Home"><i class="fa fa-tachometer"></i> Bảng điều khiển</a>
+    </li>
+    <li class="breadcrumb-item active">Danh mục Xã</li>
+</ol>
+<div class="row px-3">
+    <div class="col-md-3 plrb-022">
+        <select id="danhSachTinhsearch" class="form-control" onchange="DanhSachTinhChange()">
+            <option value="">-- Chọn tỉnh --</option>
+            @foreach (var item in ViewBag.DanhSachTinh.DanhSach)
+            {
+                <option value="@item.Id">@item.Ten</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3 plrb-022">
+        <select class="form-control" id="DanhSachHuyen" name="DanhSachHuyen">
+            <option value="">-- Chọn huyện --</option>
+        </select>
+    </div>
+    <div class="col-md-2 plrb-022">
+        <input type="text" class="form-control" placeholder="Tìm tên xã" value="" id="TuKhoa">
+    </div>
+    <div class="col-md-2 plrb-022">
+        <button type="button" id="btnTimKiem" class="btn btn-info" onclick="XuLyTimKiem()"><i class="fa fa-search">&nbsp;</i>Tìm kiếm</button>
+        <button type="button" id="btnLamLai" onclick="XuLyLamLai()" class="btn btn-secondary" title="Tải lại dữ liệu mặc định"><i class="fa fa-refresh"></i></button>
+    </div>
+    <div class="col-md-2 canh-le-p p-0">
+        <button type="button" id="btnThem" class="btn btn-mac-dinh mb-3" onclick="Them()"> <i class="fa fa-plus"></i>Thêm mới</button>
+        <button type="button" id="btnXoa" class="btn btn-danger mb-3" disabled="" onclick="XuLyXoa()"><i class="fa fa-trash">&nbsp;</i>Xóa</button>
+    </div>
+</div>
+<div id="DanhSach_CapNhat" class="col-md-12 kc-0">
+    @{Html.RenderPartial("_DanhSachPartial");}
+</div>
+@section styles{
+    <style>
+        #ModalThemCapNhat .modal-lg {
+            max-width: 70% !important;
+            padding-top: 10px
+        }
+
+        .giay-chung-nhan {
+            height: 60px !important;
+        }
+
+        .modal-header {
+            padding: 10px;
+            border-bottom: 1px solid #e5e5e5;
+            background-color: #428bca;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            color: #fff;
+        }
+
+        .modal-header .close {
+            color: #fff;
+            text-shadow: 0 1px 0 #000;
+            opacity: 1;
+        }
+
+        .modal {
+            background: rgba(204,204,204,0.5);
+        }
+
+        .modal-lg {
+            margin-top: 0;
+        }
+
+        /**/
+        .tieu-de-danh-sach {
+            text-align: left;
+            line-height: 36px;
+            margin-top: 10px;
+            margin-bottom: 2px;
+        }
+
+        .khung-chon {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 2px;
+            height: calc(100vh - 320px);
+            overflow-y: auto;
+        }
+
+        .table {
+            margin-bottom: 0px;
+            width: 100%;
+            min-width: 780px;
+        }
+
+            .table th {
+                font-weight: normal;
+            }
+
+        .cach-duoi {
+            margin-bottom: 15px;
+        }
+
+        .khung-noi-dung label {
+            font-weight: normal;
+        }
+
+        .khung-table::-webkit-scrollbar {
+            width: 0.3em;
+            height: 0.3em;
+            border-radius: 10px;
+        }
+
+        .khung-table::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        }
+
+        .khung-table::-webkit-scrollbar-thumb {
+            background-color: darkgrey;
+            outline: 1px solid slategrey;
+        }
+
+        .zoom {
+            -webkit-transition: all 1s ease-in-out;
+            -moz-transition: all 1s ease-in-out;
+            -o-transition: all 1s ease-in-out;
+            transition: transform 1s ease-in-out;
+            margin: 0 auto;
+            opacity: .5;
+            border-radius: 2px;
+            height: 35px;
+            vertical-align: top;
+            margin-left: 15px;
+            z-index: 100;
+            position: relative;
+        }
+
+            .zoom:hover {
+                opacity: 1;
+                -webkit-transform: scale(5.5);
+                -moz-transform: scale(5.5);
+                -ms-transform: scale(5.5);
+                transform: scale(5.5);
+            }
+
+        .input-group {
+            padding-left: 15px !important;
+            padding-right: 15px !important;
+        }
+
+        .date:hover {
+            cursor: pointer
+        }
+
+        .btnChiTietTV {
+            border-radius: 6px
+        }
+
+            .btnChiTietTV:hover {
+                cursor: pointer
+            }
+
+        .LengthCombobox {
+            margin-left: 15px;
+            max-width: 299px !important;
+        }
+
+        @@media screen and (max-width: 760px) {
+        }
+    </style>
+    <style>
+        /*Dùng khi có datetimepicker trong table*/
+        .table-style td {
+            position: relative;
+        }
+
+        .bootstrap-datetimepicker-widget table th,
+        .bootstrap-datetimepicker-widget table td {
+            border: unset;
+            border-radius: unset;
+        }
+
+        .bootstrap-datetimepicker-widget tbody tr:nth-of-type(odd) {
+            background-color: unset;
+        }
+    </style>
+}
+@section ContentHead{
+    <link href="~/Content/datetimepicker/bootstrap-datetimepicker.css" rel="stylesheet" />
+    <script src="~/Scripts/datetimepicker/moment.min.js"></script>
+    <script src="~/Scripts/datetimepicker/bootstrap-datetimepicker.min.js"></script>
+}
+
+@section Scripts {
+    <script src="~/Content/ckfinder/ckfinder.js"></script>
+    <script src="~/Content/ckeditor/ckeditor.js"></script>
+    <script src="~/Areas/DiaChi/Contents/Xa.js"></script>
+    <script>
+        function DanhSachTinhChange() {
+            var Id = '';
+            $('#DanhSachHuyen').children().remove();
+            $('#DanhSachHuyen').append('<option value="">-- Chọn huyện --</option>');
+            if ($("#danhSachTinhsearch option:selected").index() > 0 && $("#danhSachTinhsearch option:selected").text() != "---Toàn tỉnh---") {
+                if ($('#danhSachTinhsearch').val() != "")
+                    Id = $('#danhSachTinhsearch').val();
+                getDanhSachHuyenXaAp("DanhSachHuyen", "Huyen", Id);
+            }
+            $('#DanhSachHuyen').change();
+        }
+        function DanhSachTinhChangeThem() {
+            var Id = '';
+            $('#DanhSachHuyenThem').children().remove();
+            $('#DanhSachHuyenThem').append('<option value="">-- Chọn huyện --</option>');
+            if ($("#danhSachTinh option:selected").index() > 0 && $("#danhSachTinh option:selected").text() != "---Toàn tỉnh---") {
+                if ($('#danhSachTinh').val() != "")
+                    Id = $('#danhSachTinh').val();
+                getDanhSachHuyenXaAp("DanhSachHuyenThem", "Huyen", Id);
+            }
+            $('#DanhSachHuyenThem').change();
+        }
+         function getDanhSachHuyenXaAp(IdDropDown, Loai, Id) {
+            try {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("DocDanhSachHuyenXaAp")',
+                    data: { "Loai": Loai, "Id": Id },
+                    dataType: "json",
+                    async: false,
+                    success: function (msg) {
+                        if (msg.KetQua == -1) {
+                            //Modal.ThongBao("Phiên làm việc!", "Phiên làm việc của bạn đã kết thúc. Vui lòng đăng nhập lại.","/tai-khoan/dang-nhap");
+                        }
+                        else if (msg.KetQua != null || msg.KetQua != -1) {
+                            var data = msg.DuLieu
+                            if (data != null) {
+                                for (var i = 0; i < data.length; i++) {
+                                    $('#' + IdDropDown).append('<option value=' + data[i].Id + '>' + data[i].Ten + '</option>');
+                                }
+                            }
+                        } else {
+                            //Modal.ThongBao("Lỗi xử lý!", "Lỗi: " + msg);
+                        }
+                    },
+                    error: function () {
+                        //Modal.ThongBao("Lỗi truy cập!", "Không thể truy cập dữ liệu. Vui lòng thử lại.");
+                    }
+                });
+            } catch (e) {
+                //Modal.ThongBao("Lỗi xử lý!", "Lỗi: " + e);
+            }
+        }
+    </script>
+}

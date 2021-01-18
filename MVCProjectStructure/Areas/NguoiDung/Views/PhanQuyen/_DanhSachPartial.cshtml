@@ -1,0 +1,45 @@
+﻿@model IEnumerable<MVCProjectStructure.Models.CommonModel.CommonPhanQuyen.PhanQuyenOutput.ThongTin_ThuGon>
+<div class="col-md-12 kc-0">
+    <div id="no-more-tables">
+        <table id="BangDuLieu" class="table table-bordered table-condensed table-hover table-style">
+            <thead>
+                <tr>
+                    <th class="w-5">STT</th>
+                    <th class="w-35">Tên quyền</th>
+                    <th class="w-30">Vai trò</th>
+                    <th class="w-30">Đơn vị</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @if (Model != null)
+                {
+                    int stt = 1;
+                    var danhSach = Model;
+                    if (danhSach != null && danhSach.Count() > 0)
+                    {
+                        foreach (var item in danhSach)
+                        {
+                            <tr>
+                                <td data-title="STT" class="text-center">@(stt++)</td>
+                                <td data-title="Tên quyền"><a class="CapNhat" href="#" onclick="ChinhSua('@item.Id')" data-id="@item.Id">@item.TenQuyen</a></td>
+                                <td data-title="Vai trò">@item.TenVaiTro</td>
+                                <td data-title="Đơn vị">@item.TenDonVi</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="4" class="text-center">Không tìm thấy dữ liệu</td></tr>
+                    }
+                }
+                else
+                {
+                        <tr><td colspan="4" class="text-center">Không tìm thấy dữ liệu</td></tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+

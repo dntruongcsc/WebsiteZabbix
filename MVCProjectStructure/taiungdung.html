@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+<span>Đang tải...<span>
+<script>
+var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+<!-- if (/windows phone/i.test(userAgent)) { -->
+	<!-- alert("Windows Phone"); -->
+<!-- }  -->
+<!-- else  -->
+if (/android/i.test(userAgent)) {
+	window.location.href="https://play.app.goo.gl/?link=https://play.google.com/store/apps/details?id=com.nongnghiepcamau&ddl=1&pcampaignid=web_ddl_1";
+}
+else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+	window.location.href="https://apps.apple.com/vn/app/n%C3%B4ng-nghi%E1%BB%87p-c%C3%A0-mau/id1495470234?l=vi";
+}
+else
+{
+	alert("Chỉ hỗ trợ android và iOS");
+}
+</script>
+</body>
+</html>

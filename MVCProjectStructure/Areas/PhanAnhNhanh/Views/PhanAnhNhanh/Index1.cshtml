@@ -1,0 +1,1315 @@
+﻿@model MVCProjectStructure.Areas.PhanAnhNhanh.Models.PhanAnhNhanhModel
+@using Common.Utilities;
+@using System.Configuration;
+@using System.Web.Configuration;
+@using Common.Enum;
+@{
+    /**/
+
+    ViewBag.Title = "Quản lý phản ánh nhanh";
+    Layout = ChucNang.GiaoDien.SBAdmin;
+    ViewBag.Active = "PANQuanLyThongTin";
+}
+<!-- Breadcrumbs-->
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="@Url.Action("Index","Home",new { area = "Admin" })"><i class="fa fa-tachometer"></i> Bảng điều khiển</a>
+    </li>
+    <li class="breadcrumb-item active">Phản ánh nhanh</li>
+</ol>
+<!-- Icon Cards-->
+<div class="khung-noi-dung">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                <input type="hidden" id="idTinh" value="@Model.idTinh" />
+                <input type="hidden" id="idHuyenChon" value="@Model.IdHuyen" />
+                <input type="hidden" id="idXaChon" value="@Model.IdXa" />
+                <input type="hidden" id="idApChon" value="@Model.IdAp" />
+                <input type="hidden" id="idHuyenChonThem" value="@Model.IdHuyen" />
+                <input type="hidden" id="idXaChonThem" value="@Model.IdXa" />
+                <input type="hidden" id="idApChonThem" value="@Model.IdAp" />
+
+                @*duan them*@
+                <div class="col-md-12">
+                    <div class="row px-3">
+
+                        <div class="col-md-3 plrb-022">
+                            <select id="chonHuyen" onchange="chonHuyen(this.value);" class="form-control">
+                                <option value="">--Chọn huyện--</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 plrb-022">
+                            <select id="chonXa" onchange="chonXa(this.value);" class="form-control">
+                                <option value="">--Chọn xã--</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 plrb-022">
+                            <select id="chonAp" class="form-control">
+                                <option value="">--Chọn ấp--</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 plrb-022">
+                            <select class="form-control" id="loaiPhanAnh">
+                                <option selected value="">-- Tất cả loại phản ánh --</option>
+                                @if (Model.DanhSachLoaiPhanAnh != null && Model.DanhSachLoaiPhanAnh.Count > 0)
+                                {
+                                    foreach (var item in Model.DanhSachLoaiPhanAnh)
+                                    {
+                                        <option value="@item.Id" @(!string.IsNullOrEmpty(Model.IdLoaiPhanAnhNguoiDan) && Model.IdLoaiPhanAnhNguoiDan.Equals(item.Id) ? "selected" : "")>@item.Ten</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3 plrb-022">
+                            <select class="form-control" id="tinhTrang">
+                                <option selected value="-1">-- Tất cả tình trạng --</option>
+                                <option value="0" @(Model.TrangThai == 0 ? "selected" : "")>Đã tiếp nhận</option>
+                                <option value="1" @(Model.TrangThai == 1 ? "selected" : "")>Đang xử lý</option>
+                                <option value="2" @(Model.TrangThai == 2 ? "selected" : "")>Đã xử lý</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 plrb-022">
+                            <input id="tuKhoa" type="text" class="form-control" placeholder="Tìm theo tên, số điện thoại" />
+                        </div>
+
+                        <div class="col-md-1 plrb-022">
+                            <button type="button" class="btn btn-info" onclick="xuLyTimKiem()"><i class="fa fa-search">&nbsp;</i>Tìm kiếm</button>
+                        </div>
+                        <div class="col-md-5 p-0 canh-le-p">
+                            @*<button type="button" id="btnThem" form="formThem" class="btn btn-success" data-toggle="modal" data-target="#myForm"><i class="fa fa-plus">&nbsp;</i>Thêm mới</button>
+                                <button type="button" id="btnXoa" form="formDel" class="btn btn-danger"><i class="fa fa-trash">&nbsp;</i>Xóa</button>*@
+                            @*<button id="btnNhapTuExcel" class="btn btn-warning">
+                                    <i class="fas fa-upload"></i> Nhập từ excel
+                                </button>*@
+                            <button id="btnThem" class="btn btn-mac-dinh" data-toggle="modal" data-target="#myForm">
+                                <i class="fa fa-plus"></i> Thêm mới
+                            </button>
+                            <button type="button" id="btnXoa" class="btn btn-danger" form="formDel"><i class="fa fa-trash">&nbsp;</i>Xóa</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-12 khoang-cach-0 canh-le">
+                <div id="bang-bieu" class="bang-bieu" style="color:#2B2B2B; margin:5px 0px 15px 0px;">
+                    <div class="scrollbar scrollbar-custom">
+                        <table class="col-sm-12 table-bordered table-condensed" style="padding:0px; width:100%; font-size:14px;">
+                            <thead>
+                                <tr class="chieu-cao" style="background-color:#ffffff; color:#49491A; font-size:14px; font-weight:bold;">
+                                    <th class="al-c"><input type='checkbox' id="chonXoaTatCa" title="Chọn xóa tất cả" /></th>
+                                    <th class="al-c">STT</th>
+                                    <th class="al-c">Hình</th>
+                                    <th class="al-c" style="">Tiêu đề</th>
+                                    <th class="al-c" style="min-width: 100px">Vấn đề</th>
+                                    @*<th class="al-c">Địa chỉ</th>*@
+                                    <th class="al-c" style="">Nội dung</th>
+                                    @*<th class="al-c w-10">Thông tin người phản ánh</th>*@
+                                    <th class="al-c">Người duyệt</th>
+                                    @*<th class="al-c w-7">Ngày phản ánh</th>*@
+                                    <th class="al-c">Tình trạng</th>
+                                    <th class="al-c">Xuất bản</th>
+                                    <th>&nbsp;</th>
+                                    <th>&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody id="danhSachPhanAnhNhanh">
+                                @{
+                                    int soThuTu = 0;
+                                    foreach (var item in Model.DanhSachPhanAnh)
+                                    {
+                                        soThuTu++;
+                                        <tr>
+                                            <td style="text-align:center"><input type='checkbox' class="checkbox_xoa" value="@item.Id" title="Chọn xóa" id="@item.Id" name="IDs" /></td>
+                                            <td data-title="STT" style="text-align:center">@soThuTu</td>
+                                            <td data-title="Hình ảnh" style="text-align:center">
+                                                <a href="Edit?id=@item.Id"><img style="width:100%; max-width: 200px" src='/@((item.DanhSachTapTin!=null && item.DanhSachTapTin.Count>0)?item.DanhSachTapTin[0].TenThumbnail??"":"")' /></a>
+                                            </td>
+                                            <td data-title="Tiêu đề" style="text-align:left">
+                                                <a href="Edit?id=@item.Id">@item.TieuDe</a><br /><i class="text-info small">(@item.TenNguoiPhanAnh - @item.ThoiGian)</i>
+                                            </td>
+                                            <td data-title="Vấn đề" style="text-align: left">@item.LoaiPhanAnhNguoiDan.Ten</td>
+                                            @*<td data-title="Mô tả" style="text-align:justify">
+                                                    @item.DiaChi
+                                                </td>*@
+                                            <td data-title="Mô tả" style="text-align:justify">
+                                                @Utility.CatChuoi(item.NoiDung, 200)
+                                            </td>
+                                            @*<td data-title="Thông tin người phản ánh" style="text-align:left">@item.TenNguoiPhanAnh</td>*@
+                                            <td data-title="Người duyệt" style="text-align:center">@(!string.IsNullOrEmpty(item.TenNguoiPheDuyet) ? item.TenNguoiPheDuyet : "-")</td>
+                                            @*<td data-title="Ngày phản ánh" style="text-align:center">@item.ThoiGian</td>*@
+                                            @{
+                                                if (item.TrangThai == 0)
+                                                {
+                                                    <td data-title="Tình trạng" style="text-align:center">Đã tiếp nhận</td>
+                                                }
+                                                else if (item.TrangThai == 1)
+                                                {
+                                                    <td data-title="Tình trạng" style="text-align:center">Đang xử lý</td>
+                                                }
+                                                else
+                                                {
+                                                    <td data-title="Tình trạng" style="text-align:center"><span class="badge label-success">Đã xử lý</span></td>
+                                                }
+                                            }
+                                            <td data-title="Xuất bản" style="text-align:center"><i class="@(item.XuatBan==true?"fa fa-check text-info":"fa")" aria-hidden="true"></i></td>
+                                            <td data-title="&nbsp;" class="al-c">
+                                                <a href="/PhanAnhNhanh/PhanAnhNhanh/Edit?id=@item.Id" class="btn btn-success btn-sm" title="Xem chi tiết">
+                                                    <i class="fa fa-search">&nbsp;</i>
+                                                </a>
+                                            </td>
+                                            @if (item.XuatBan == false)
+                                            {
+                                                <td class="text-center">
+                                                    <button id="@item.Id" name="@item.Id" onclick="editForm(this);" class="btn btn-sm btn-info edit" title="Hiệu chỉnh thông tin" data-toggle="modal" data-target="#myForm">
+                                                        <i class="fa fa-pencil"></i>
+                                                    </button>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td class="text-center"></td>
+                                            }
+                                            @*<td data-title="&nbsp;" class="al-l">
+                                                    <button class="btn btn-info btn-sm sua-phan-anh" title="Sửa phản ánh" id="@item.Id" onclick="SuaForm(this.id);" data-toggle="modal" data-target="#myForm">
+                                                        <i class="fa fa-pencil">&nbsp;</i>
+                                                    </button>
+                                                </td>*@
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    @if (Model.TotalPage > 1)
+                    {
+                        <div class="paging-wp" style="padding: 0 10px; width: 100%">
+                            @*@Html.Hidden("NoiDungTim", (string)ViewBag.NoiDungTim)*@
+                            <ul id="pagination" class="pagination">
+                                <li class="first @(Model.CurrentPage == 1 ? "disabled" : "")"><a href="@Url.Action("Index", "PhanAnhNhanh", new { page = 1, tukhoa = Model.tuKhoaTimKiem, IdLoaiPhanAnhNguoiDan = Model.IdLoaiPhanAnhNguoiDan, IdAp =  Model.IdAp, IdXa = Model.IdXa, IdHuyen = Model.IdHuyen,trangThai = Model.TrangThai})"> Trang đầu</a></li>
+                                <li class="prev @(Model.CurrentPage == 1 ? "disabled" : "")"><a href="@Url.Action("Index", "PhanAnhNhanh", new {page = Model.CurrentPage - 1, tukhoa = Model.tuKhoaTimKiem, IdLoaiPhanAnhNguoiDan = Model.IdLoaiPhanAnhNguoiDan, IdAp =  Model.IdAp, IdXa = Model.IdXa, IdHuyen = Model.IdHuyen,trangThai = Model.TrangThai})">&lt;</a></li>
+                                @for (int i = 0; i < Model.TotalPage; i++)
+                                {
+                                    <li class="page @(Model.CurrentPage == i+1 ? "active" : "")"><a href="@Url.Action("Index", "PhanAnhNhanh", new {page = i+1, tukhoa = Model.tuKhoaTimKiem, IdLoaiPhanAnhNguoiDan = Model.IdLoaiPhanAnhNguoiDan, IdAp =  Model.IdAp, IdXa = Model.IdXa, IdHuyen = Model.IdHuyen,trangThai = Model.TrangThai})">@(i + 1)</a></li>
+                                }
+                                <li class="next @(Model.CurrentPage == Model.TotalPage ? "disabled" : "")"><a href="@Url.Action("Index", "PhanAnhNhanh", new {page = Model.CurrentPage + 1, tukhoa = Model.tuKhoaTimKiem, IdLoaiPhanAnhNguoiDan = Model.IdLoaiPhanAnhNguoiDan, IdAp =  Model.IdAp, IdXa = Model.IdXa, IdHuyen = Model.IdHuyen,trangThai = Model.TrangThai})">&gt;</a></li>
+                                <li class="last" @(Model.CurrentPage == Model.TotalPage ? "disabled" : "")><a href="@Url.Action("Index", "PhanAnhNhanh", new {page = Model.TotalPage, tukhoa = Model.tuKhoaTimKiem, IdLoaiPhanAnhNguoiDan = Model.IdLoaiPhanAnhNguoiDan, IdAp =  Model.IdAp, IdXa = Model.IdXa, IdHuyen = Model.IdHuyen,trangThai = Model.TrangThai})">Trang cuối</a></li>
+                            </ul>
+                        </div>
+                    }
+                    <div style="clear:both"></div>
+                </div>
+                @if (TempData["Success"] != null)
+                {
+                    @Html.Partial("_DialogSuccessPartial", (string)TempData["Success"])
+                }
+            </div>
+        </div>
+        <!-- /.panel-body -->
+    </div>
+    <!-- /.panel-default -->
+</div>
+<!-- /.khung-noi-dung-->
+<div class="modal fade" id="myForm" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+
+                <h4 class="modal-title" id="ModalLabel">Thông tin phản ánh người dân</h4>
+            </div>
+            @using (Html.BeginForm("Create", "PhanAnhNhanh", FormMethod.Post, htmlAttributes: new { @id = "createForm", @class = "form-horizontal", @spellcheck = "false" }))
+            {
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <p class="statusMsg"></p>
+                    <input id="Id" hidden />
+                    <div class="form-group row">
+                        <label for="ChonHuyenThem" class="col-sm-3 control-label">Chọn huyện:</label>
+                        <div class="col-sm-8">
+                            <select class="form-control cach-duoi" id="chonHuyenThem" @*onchange="chonHuyenThem();"*@></select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="ChonXaThem" class="col-sm-3 control-label">Chọn xã:</label>
+                        <div class="col-sm-8">
+                            <select class="form-control cach-duoi" id="chonXaThem" @*onchange="chonXaThem(this.value);"*@>
+                                <option value="">-- Chọn xã --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="ChonApThem" class="col-sm-3 control-label">Chọn ấp:</label>
+                        <div class="col-sm-8">
+                            <select class="form-control cach-duoi" id="chonApThem">
+                                <option value="">-- Chọn ấp --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="DiaChi" class="col-sm-3 control-label">Địa chỉ:</label>
+                        <div class="col-sm-8">
+                            <input type="text" id="DiaChi" name="DiaChi" class="form-control form-white" value="" required="required" placeholder="Địa chỉ" title="Địa chỉ">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="ToaDo" class="col-sm-3 control-label">Tọa độ:</label>
+                        <div class="col-sm-8">
+                            <input type="text" id="ToaDo" name="ToaDo" class="form-control form-white" value="" required="required" placeholder="10.76357,106.67354" title="Tọa độ">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="TenNguoiPhanAnh" class="col-sm-3 control-label">Tên người phản ánh:</label>
+                        <div class="col-sm-8">
+                            <input type="text" id="TenNguoiPhanAnh" name="TenNguoiPhanAnh" class="form-control form-white" value="" required="required" placeholder="Tên người phản ánh" title="Tên người phản ánh">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="SDT" class="col-sm-3 control-label">Số điện thoại:</label>
+                        <div class="col-sm-8">
+                            <input type="text" id="SDT" name="SDT" class="form-control form-white" value="" required="required" placeholder="Số điện thoại" title="Số điện thoại">
+                        </div>
+                    </div>
+                    <div class="form-grou row">
+                        <label for="LoaiPhanAnh" class="col-sm-3 control-label">Chọn loại phản ánh:</label>
+                        <div class="col-sm-8">
+                            <select class="form-control cach-duoi" id="loaiPhanAnhThem">
+                                @*<option selected value="">-- Tất cả loại phản ánh --</option>*@
+                                @{
+                                    if (Model.DanhSachLoaiPhanAnh != null && Model.DanhSachLoaiPhanAnh.Count > 0)
+                                    {
+                                        foreach (var item in Model.DanhSachLoaiPhanAnh)
+                                        {
+
+                                            <option value="@item.Id" @(!string.IsNullOrEmpty(Model.IdLoaiPhanAnhNguoiDan) && Model.IdLoaiPhanAnhNguoiDan.Equals(item.Id) ? "selected" : "")>@item.Ten</option>
+                                        }
+
+                                    }
+
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="TieuDe" class="col-sm-3 control-label">Tiêu đề:</label>
+                        <div class="col-sm-8">
+                            <input type="text" id="TieuDe" name="TieuDe" class="form-control form-white" value="" required="required" placeholder="Tiêu đề" title="Tiêu đề">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="HinhPhanAnh1" class="col-sm-3 control-label">Hình phản ánh:</label>
+                        <div class="col-sm-8 input-group">
+                            @Html.Editor("HinhPhanAnh1", new { htmlAttributes = new { @class = "form-control" } })
+                            <span class="input-group-btn">
+                                <a id="Browser1" class="btn btn-primary" style="border-top-right-radius: 5px; border-bottom-right-radius: 5px;">Chọn</a>
+                                <img id="imgHienThi1" class="zoom" />
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="HinhPhanAnh2" class="col-sm-3 control-label">Hình phản ánh:</label>
+                        <div class="col-sm-8 input-group">
+                            @Html.Editor("HinhPhanAnh2", new { htmlAttributes = new { @class = "form-control" } })
+                            <span class="input-group-btn">
+                                <a id="Browser2" class="btn btn-primary" style="border-top-right-radius: 5px; border-bottom-right-radius: 5px;">Chọn</a>
+                                <img id="imgHienThi2" class="zoom" />
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="HinhPhanAnh3" class="col-sm-3 control-label">Hình phản ánh:</label>
+                        <div class="col-sm-8 input-group">
+                            @Html.Editor("HinhPhanAnh3", new { htmlAttributes = new { @class = "form-control" } })
+                            <span class="input-group-btn">
+                                <a id="Browser3" class="btn btn-primary" style="border-top-right-radius: 5px; border-bottom-right-radius: 5px;">Chọn</a>
+                                <img id="imgHienThi3" class="zoom" />
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="HinhPhanAnh4" class="col-sm-3 control-label">Hình phản ánh:</label>
+                        <div class="col-sm-8 input-group">
+                            @Html.Editor("HinhPhanAnh4", new { htmlAttributes = new { @class = "form-control" } })
+                            <span class="input-group-btn">
+                                <a id="Browser4" class="btn btn-primary" style="border-top-right-radius: 5px; border-bottom-right-radius: 5px;">Chọn</a>
+                                <img id="imgHienThi4" class="zoom" />
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="HinhPhanAnh5" class="col-sm-3 control-label">Hình phản ánh:</label>
+                        <div class="col-sm-8 input-group">
+                            @Html.Editor("HinhPhanAnh5", new { htmlAttributes = new { @class = "form-control" } })
+                            <span class="input-group-btn">
+                                <a id="Browser5" class="btn btn-primary" style="border-top-right-radius: 5px; border-bottom-right-radius: 5px;">Chọn</a>
+                                <img id="imgHienThi5" class="zoom" />
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="NoiDung" class="col-sm-3 control-label">Nội dung:</label>
+                        <div class="col-sm-8">
+                            @Html.TextArea("NoiDung", new { @class = "form-control", @rows = "5", @placeholder = "Nội dung" })
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" value="save" name="save" class="btn btn-primary" onclick="var a = submitForm();">
+                        <i class="fa fa-save"></i> Lưu
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="submitAndClose()">
+                        <i class="fa fa-save"></i> Lưu đóng
+                    </button>
+                    <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="resetMyForm()">
+                        <i class="fa fa-close"></i> Đóng
+                    </button>
+                </div>
+
+            }
+
+        </div>
+    </div>
+</div>
+@section Styles {
+    @Styles.Render("~/Content/ui")
+    <link href="~/Content/css/ams-thong-tin.css" rel="stylesheet" />
+    <link href="~/Content/PagedList.css" rel="stylesheet" />
+    <style>
+        .tieu-de-danh-sach {
+            text-align: left;
+            line-height: 36px;
+            margin-top: 10px;
+            margin-bottom: 2px;
+        }
+
+        .khung-chon {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 2px;
+            height: calc(100vh - 320px);
+            overflow-y: auto;
+        }
+
+        .table {
+            margin-bottom: 0px;
+            width: 100%;
+            min-width: 780px;
+        }
+
+            .table th {
+                font-weight: normal;
+            }
+
+        .cach-duoi {
+            margin-bottom: 15px;
+        }
+
+        .khung-noi-dung label {
+            font-weight: normal;
+        }
+
+        .khung-table::-webkit-scrollbar {
+            width: 0.3em;
+            height: 0.3em;
+            border-radius: 10px;
+        }
+
+        .khung-table::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        }
+
+        .khung-table::-webkit-scrollbar-thumb {
+            background-color: darkgrey;
+            outline: 1px solid slategrey;
+        }
+
+        .zoom {
+            -webkit-transition: all 1s ease-in-out;
+            -moz-transition: all 1s ease-in-out;
+            -o-transition: all 1s ease-in-out;
+            transition: transform 1s ease-in-out;
+            margin: 0 auto;
+            opacity: .5;
+            border-radius: 2px;
+            height: 35px;
+            vertical-align: top;
+            margin-left: 15px;
+            z-index: 100;
+            position: relative;
+        }
+
+            .zoom:hover {
+                opacity: 1;
+                -webkit-transform: scale(5.5);
+                -moz-transform: scale(5.5);
+                -ms-transform: scale(5.5);
+                transform: scale(5.5);
+            }
+
+        .input-group {
+            padding-left: 15px !important;
+            padding-right: 15px !important;
+        }
+
+
+        @@media screen and (max-width: 760px) {
+        }
+    </style>
+}
+@section Scripts {
+    <script src="~/Scripts/cscpda-ams/jquery-ams-createlist.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryajax")
+    <script src="~/Content/ckfinder/ckfinder.js"></script>
+    <script src="~/Content/ckeditor/ckeditor.js"></script>
+    <script>
+        $(document).ready(function () {
+            Xuly_checkbox_xoa();
+            idTinh = $("#idTinh").val();
+            chonTinh(idTinh);
+            chonTinhThem(idTinh);
+        });
+        $('#Browser1').on('click', function () {
+            var ckfider = new CKFinder();
+            ckfider.selectActionFunction = function (fileUrl) {
+                $('#HinhPhanAnh1').val(fileUrl);
+                $('#imgHienThi1').attr('src', fileUrl);
+                //getFile(fileUrl);
+            };
+            ckfider.popup();
+        });
+        $('#Browser2').on('click', function () {
+            var ckfider = new CKFinder();
+            ckfider.selectActionFunction = function (fileUrl) {
+                $('#HinhPhanAnh2').val(fileUrl);
+                $('#imgHienThi2').attr('src', fileUrl);
+                //getFile(fileUrl);
+            };
+            ckfider.popup();
+        });
+        $('#Browser3').on('click', function () {
+            var ckfider = new CKFinder();
+            ckfider.selectActionFunction = function (fileUrl) {
+                $('#HinhPhanAnh3').val(fileUrl);
+                $('#imgHienThi3').attr('src', fileUrl);
+                //getFile(fileUrl);
+            };
+            ckfider.popup();
+        });
+        $('#Browser4').on('click', function () {
+            var ckfider = new CKFinder();
+            ckfider.selectActionFunction = function (fileUrl) {
+                $('#HinhPhanAnh4').val(fileUrl);
+                $('#imgHienThi4').attr('src', fileUrl);
+                //getFile(fileUrl);
+            };
+            ckfider.popup();
+        });
+        $('#Browser5').on('click', function () {
+            var ckfider = new CKFinder();
+            ckfider.selectActionFunction = function (fileUrl) {
+                $('#HinhPhanAnh5').val(fileUrl);
+                $('#imgHienThi5').attr('src', fileUrl);
+                //getFile(fileUrl);
+            };
+            ckfider.popup();
+        });
+
+        function getFile(url, callback) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", url);
+            xhr.responseType = "blob";
+            xhr.onload = function () {
+                var blob = xhr.response;
+                var myReader = new FileReader();
+                myReader.readAsArrayBuffer(blob)
+                myReader.addEventListener("loadend", function (e) {
+                    callback(arrayBufferToBase64(e.srcElement.result), e.total);
+                });
+            }
+            xhr.send();
+        }
+
+        function arrayBufferToBase64(buffer) {
+            var binary = '';
+            var bytes = new Uint8Array(buffer);
+            var len = bytes.byteLength;
+            for (var i = 0; i < len; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return window.btoa(binary);
+            /*let b64encoded = btoa([].reduce.call(new Uint8Array(buffer), function (p, c) { return p + String.fromCharCode(c) }, ''))
+            let mimetype = "image/png"
+            return "data:image/png;base64," + b64encoded*/
+        }
+
+
+        function chonTinh(val) {
+            selected = "";
+            idHuyenChon = $("#idHuyenChon").val();
+            $.ajax({
+                type: 'POST',
+                url: '/PhanAnhNhanh/PhanAnhNhanh/DocDanhSachHuyen',
+                data: { idTinh: val },
+                dataType: "json",
+                success: function(data) {
+                    //$("#chonHuyen").html("<option>-- Chọn huyện --</option>");
+                    if (data != null) {
+                        var json = JSON.stringify(data);
+                        //console.log(json);
+                        duLieu = "<option value=''>-- Chọn huyện --</option>";
+                        for (var i = 0; i < data.length; i++) {
+                            if (idHuyenChon != "" && data[i].Id == idHuyenChon) {
+                                selected = "selected";
+                            }
+                            duLieu += "<option value='" + data[i].Id + "' " + selected + ">" + data[i].Ten + "</option >";
+                            selected = "";
+                        }
+                        //$.each(json, function (index, item) {
+                        //    if (idHuyenChon != "" && item.Id == idHuyenChon) {
+                        //        selected = "selected";
+                        //        //chonHuyen(idHuyenChon);
+                        //    }
+                        //    //console.log(item);
+                        //    duLieu += "<option value='" + item.Id + "'" + selected + ">" + item.Ten + "</option >";
+                        //    selected = "";
+                        //});
+                        $("#chonHuyen").html(duLieu);
+                        chonHuyen(idHuyenChon);
+                        //chonHuyen(json[0].Id);
+                    }
+                },
+                error: function () {
+                    //alert("Lỗi dịch vụ");
+                    //Modal.Message("Lỗi dịch vụ!");
+                }
+            });
+        }
+        function chonHuyen(val) {
+            //alert(val);
+            idTinh = $("#idTinh").val();
+            idHuyen = val;
+            idXaChon = $("#idXaChon").val();
+            selected = "";
+            $.ajax({
+                type: 'POST',
+                url: '/PhanAnhNhanh/PhanAnhNhanh/DocDanhSachXa',
+                data: { idTinh: idTinh, idHuyen: idHuyen },
+                dataType: "json",
+                success: function(data) {
+                    $("#chonXa").html("<option value=''>-- Chọn xã --</option>");
+                    if (data != null) {
+                        var json = JSON.stringify(data);
+                        //console.log(json);
+                        duLieu = "<option value=''>-- Chọn xã --</option>";
+                        //$.each(json, function (index, item) {
+                        //    if (idXaChon != "" && item.Id == idXaChon) {
+                        //        selected = "selected";
+                        //        //chonXa(idXaChon);
+                        //    }
+                        //    duLieu += "<option value='" + item.Id + "' " + selected + ">" + item.Ten + "</option >";
+                        //    selected = "";
+                        //});
+                        for (var i = 0; i < data.length; i++) {
+                            if (idXaChon != "" && data[i].Id == idXaChon) {
+                                selected = "selected";
+                            }
+                            duLieu += "<option value='" + data[i].Id + "' " + selected + ">" + data[i].Ten + "</option >";
+                            selected = "";
+                        }
+                        $("#chonXa").html(duLieu);
+                        chonXa(idXaChon);
+                        //chonXa(json[0].Id)
+                    }
+                },
+                error: function () {
+                    //alert("Lỗi dịch vụ");
+                    //Modal.Message("Lỗi dịch vụ!");
+                }
+            });
+
+        }
+        function chonXa(val) {
+            idTinh = $("#idTinh").val();
+            idHuyen = $("#chonHuyen :checked").val();
+            idXa = val;
+            idApChon = $("#idApChon").val();
+            selected = "";
+            $.ajax({
+                type: 'POST',
+                url: '/PhanAnhNhanh/PhanAnhNhanh/DocDanhSachAp',
+                data: { idTinh: idTinh, idHuyen: idHuyen, idXa: idXa },
+                dataType: "json",
+                success: function(data) {
+                    $("#chonAp").html("<option value=''>-- Chọn ấp --</option>");
+                    if (data != null) {
+                        var json = JSON.stringify(data);
+                        //console.log(json);
+                        duLieu = "<option value=''>-- Chọn ấp --</option>";
+                        //$.each(json, function (index, item) {
+                        //    if (idApChon != "" && item.Id == idApChon) {
+                        //        selected = "selected";
+                        //    }
+                        //    duLieu += "<option value='" + item.Id + "' " + selected + ">" + item.Ten + "</option >";
+                        //    selected = "";
+                        //});
+                        for (var i = 0; i < data.length; i++) {
+                            if (idApChon != "" && data[i].Id == idApChon) {
+                                selected = "selected";
+                            }
+                            duLieu += "<option value='" + data[i].Id + "' " + selected + ">" + data[i].Ten + "</option >";
+                            selected = "";
+                        }
+                        $("#chonAp").html(duLieu);
+                    }
+                },
+                error: function () {
+                    //alert("Lỗi dịch vụ");
+                    //Modal.Message("Lỗi dịch vụ!");
+                }
+            });
+
+        }
+        function chonTinhThem(val) {
+            selected = "";
+            idHuyenChon = $("#idHuyenChonThem").val();
+
+            $.ajax({
+                type: 'POST',
+                url: '/PhanAnhNhanh/PhanAnhNhanh/DocDanhSachHuyen',
+                data: { idTinh: val },
+                dataType: "json",
+                success: function(data) {
+                    //$("#chonHuyen").html("<option>-- Chọn huyện --</option>");
+                    if (data != null) {
+                        var json = JSON.stringify(data);
+                        //console.log(json);
+                        duLieu = "<option value=''>-- Chọn huyện --</option>";
+                        //$.each(json, function (index, item) {
+                        //    if (idHuyenChon != "" && item.Id == idHuyenChon) {
+                        //        selected = "selected";
+                        //        //chonHuyen(idHuyenChon);
+                        //    }
+                        //    //console.log(item);
+                        //    duLieu += "<option value='" + item.Id + "'" + selected + ">" + item.Ten + "</option >";
+                        //    selected = "";
+                        //});
+                        for (var i = 0; i < data.length; i++) {
+                            if (idHuyenChon != "" && data[i].Id == idHuyenChon) {
+                                selected = "selected";
+                            }
+                            duLieu += "<option value='" + data[i].Id + "' " + selected + ">" + data[i].Ten + "</option >";
+                            selected = "";
+                        }
+                        $("#chonHuyenThem").html(duLieu);
+                        //chonHuyenThem(idHuyenChon);
+                        //chonHuyen(json[0].Id);
+                    }
+                },
+                error: function () {
+                    //alert("Lỗi dịch vụ");
+                    //Modal.Message("Lỗi dịch vụ!");
+                }
+            });
+
+        }
+        //function chonHuyenThem(val) {
+        //    //alert(val);
+        //    idTinh = $("#idTinh").val();
+        //    idHuyen = val;
+        //    idXaChon = $("#idXaChonThem").val();
+        //    selected = "";
+        //    //alert(idTinh);
+        //    $.post("/PhanAnhNhanh/DocDanhSachXa", { idTinh: idTinh, idHuyen: idHuyen })
+        //        .success(function (data) {
+        //            $("#chonXaThem").html("<option value=''>-- Chọn xã --</option>");
+        //            if (data != null) {
+        //                json = JSON.stringify(data);
+        //                //console.log(json);
+        //                duLieu = "<option value=''>-- Chọn xã --</option>";
+        //                $.each(json, function (index, item) {
+        //                    if (idXaChon != "" && item.Id == idXaChon) {
+        //                        selected = "selected";
+        //                        //chonXa(idXaChon);
+        //                    }
+        //                    duLieu += "<option value='" + item.Id + "' " + selected + ">" + item.Ten + "</option >";
+        //                    selected = "";
+        //                });
+        //                $("#chonXaThem").html(duLieu);
+        //                chonXaThem(idXaChon);
+        //                //chonXa(json[0].Id)
+        //            }
+        //        });
+        //}
+
+        $("#chonHuyenThem").change(function () {
+            idTinh = $("#idTinh").val();
+            idHuyen = $("#chonHuyenThem").val();
+            idXaChon = $("#idXaChonThem").val();
+            selected = "";
+            //alert(idTinh);
+            $.ajax({
+                type: 'POST',
+                url: '/PhanAnhNhanh/PhanAnhNhanh/DocDanhSachXa',
+                data: { idTinh: idTinh, idHuyen: idHuyen },
+                dataType: "json",
+                success: function(data) {
+                    $("#chonXaThem").html("<option value=''>-- Chọn xã --</option>");
+                    if (data != null) {
+                        var json = JSON.stringify(data);
+                        //console.log(json);
+                        duLieu = "<option value=''>-- Chọn xã --</option>";
+                        //$.each(json, function (index, item) {
+                        //    if (idXaChon != "" && item.Id == idXaChon) {
+                        //        selected = "selected";
+                        //        //chonXa(idXaChon);
+                        //    }
+                        //    duLieu += "<option value='" + item.Id + "' " + selected + ">" + item.Ten + "</option >";
+                        //    selected = "";
+                        //});
+                        for (var i = 0; i < data.length; i++) {
+                            if (idXaChon != "" && data[i].Id == idXaChon) {
+                                selected = "selected";
+                            }
+                            duLieu += "<option value='" + data[i].Id + "' " + selected + ">" + data[i].Ten + "</option >";
+                            selected = "";
+                        }
+                        $("#chonXaThem").html(duLieu);
+                        //chonXaThem(idXaChon);
+                        //chonXa(json[0].Id)
+                    }
+                },
+                error: function () {
+                    //alert("Lỗi dịch vụ");
+                    //Modal.Message("Lỗi dịch vụ!");
+                }
+            });
+
+        });
+        function ChonHuyenThem1(Xa, Ap) {
+            idTinh = $("#idTinh").val();
+            idHuyen = $("#chonHuyenThem").val();
+            idXaChon = $("#idXaChonThem").val();
+            selected = "";
+            //alert(idTinh);
+            $.ajax({
+                type: 'POST',
+                url: '/PhanAnhNhanh/PhanAnhNhanh/DocDanhSachXa',
+                data: { idTinh: idTinh, idHuyen: idHuyen },
+                dataType: "json",
+                success: function(data) {
+                    $("#chonXaThem").html("<option value=''>-- Chọn xã --</option>");
+                    if (data != null) {
+                        var json1 = JSON.stringify(data);
+                        //console.log(json);
+                        duLieu = "<option value=''>-- Chọn xã --</option>";
+                        //$.each(json1, function (index, item) {
+                        //    if (idXaChon != "" && item.Id == idXaChon) {
+                        //        selected = "selected";
+                        //        //chonXa(idXaChon);
+                        //    }
+                        //    duLieu += "<option value='" + item.Id + "' " + selected + ">" + item.Ten + "</option >";
+                        //    selected = "";
+                        //});
+                        for (var i = 0; i < data.length; i++) {
+                            if (idXaChon != "" && data[i].Id == idXaChon) {
+                                selected = "selected";
+                            }
+                            duLieu += "<option value='" + data[i].Id + "' " + selected + ">" + data[i].Ten + "</option >";
+                            selected = "";
+                        }
+                        $("#chonXaThem").html(duLieu);
+                        $("#chonXaThem").val(Xa);
+                        ChonXaThem1(Ap);
+                        //chonXaThem(idXaChon);
+                        //chonXa(json[0].Id)
+                    }
+                },
+                error: function () {
+                    //alert("Lỗi dịch vụ");
+                    //Modal.Message("Lỗi dịch vụ!");
+                }
+            });
+        }
+        //function chonXaThem(val) {
+        //    idTinh = $("#idTinh").val();
+        //    idHuyen = $("#chonHuyenThem :checked").val();
+        //    idXa = val;
+        //    idApChon = $("#idApChonThem").val();
+        //    selected = "";
+        //    $.post("/PhanAnhNhanh/DocDanhSachAp", { idTinh: idTinh, idHuyen: idHuyen, idXa: idXa })
+        //        .success(function (data) {
+        //            $("#chonApThem").html("<option value=''>-- Chọn ấp --</option>");
+        //            if (data != null) {
+        //                json = JSON.stringify(data);
+        //                //console.log(json);
+        //                duLieu = "<option value=''>-- Chọn ấp --</option>";
+        //                $.each(json, function (index, item) {
+        //                    if (idApChon != "" && item.Id == idApChon) {
+        //                        selected = "selected";
+        //                    }
+        //                    duLieu += "<option value='" + item.Id + "' " + selected + ">" + item.Ten + "</option >";
+        //                    selected = "";
+        //                });
+        //                $("#chonApThem").html(duLieu);
+        //            }
+        //        });
+        //}
+        $("#chonXaThem").change(function () {
+            dTinh = $("#idTinh").val();
+            idHuyen = $("#chonHuyenThem :checked").val();
+            idXa = $("#chonXaThem").val();
+            idApChon = $("#idApChonThem").val();
+            selected = "";
+
+            $.ajax({
+                type: 'POST',
+                url: '/PhanAnhNhanh/PhanAnhNhanh/DocDanhSachAp',
+                data: { idTinh: idTinh, idHuyen: idHuyen, idXa: idXa },
+                dataType: "json",
+                success: function (data) {
+                    $("#chonApThem").html("<option value=''>-- Chọn ấp --</option>");
+                    if (data != null) {
+                        var json1 = JSON.stringify(data);
+                        //console.log(json);
+                        duLieu = "<option value=''>-- Chọn ấp --</option>";
+                        for (var i = 0; i < data.length; i++) {
+                            if (idApChon != "" && data[i].Id == idApChon) {
+                                selected = "selected";
+                            }
+                            duLieu += "<option value='" + data[i].Id + "' " + selected + ">" + data[i].Ten + "</option >";
+                            selected = "";
+                        }
+                        //$.each(json1, function (index, item) {
+                        //    if (idApChon != "" && item.Id == idApChon) {
+                        //        selected = "selected";
+                        //    }
+                        //    duLieu += "<option value='" + item.Id + "' " + selected + ">" + item.Ten + "</option >";
+                        //    selected = "";
+                        //});
+                        $("#chonApThem").html(duLieu);
+                    }
+                },
+                error: function () {
+                    alert("Lỗi dịch vụ");
+                    //Modal.Message("Lỗi dịch vụ!");
+                }
+            });
+
+        });
+        function ChonXaThem1(Ap) {
+            dTinh = $("#idTinh").val();
+            idHuyen = $("#chonHuyenThem :checked").val();
+            idXa = $("#chonXaThem :checked").val();
+            idApChon = $("#idApChonThem").val();
+            selected = "";
+
+            $.ajax({
+                type: 'POST',
+                url: '/PhanAnhNhanh/PhanAnhNhanh/DocDanhSachAp',
+                data: { idTinh: idTinh, idHuyen: idHuyen, idXa: idXa },
+                dataType: "json",
+                success: function(data) {
+                    $("#chonApThem").html("<option value=''>-- Chọn ấp --</option>");
+                    if (data != null) {
+                        var json = JSON.stringify(data);
+                        //console.log(json);
+                        duLieu = "<option value=''>-- Chọn ấp --</option>";
+                        //$.each(json, function (index, item) {
+                        //    if (idApChon != "" && item.Id == idApChon) {
+                        //        selected = "selected";
+                        //    }
+                        //    duLieu += "<option value='" + item.Id + "' " + selected + ">" + item.Ten + "</option >";
+                        //    selected = "";
+                        //});
+                        for (var i = 0; i < data.length; i++) {
+                            if (idApChon != "" && data[i].Id == idApChon) {
+                                selected = "selected";
+                            }
+                            duLieu += "<option value='" + data[i].Id + "' " + selected + ">" + data[i].Ten + "</option >";
+                            selected = "";
+                        }
+                        $("#chonApThem").html(duLieu);
+                        $("#chonApThem").val(Ap);
+                    }
+                },
+                error: function () {
+                    //alert("Lỗi dịch vụ");
+                    //Modal.Message("Lỗi dịch vụ!");
+                }
+            });
+        }
+        function xuLyTimKiem() {
+            //alert("Haha");
+            IdLoaiPhanAnhNguoiDan = $("#loaiPhanAnh :selected").val();
+            IdAp = $("#chonAp :selected").val();
+            IdXa = $("#chonXa :selected").val();
+            IdHuyen = $("#chonHuyen :selected").val();
+            TuKhoa = $("#tuKhoa").val();
+            TrangThai = $("#tinhTrang :selected").val();
+            var model = {
+                IdLoaiPhanAnhNguoiDan: IdLoaiPhanAnhNguoiDan,
+                IdAp: IdAp,
+                IdXa: IdXa,
+                IdHuyen: IdHuyen,
+                tuKhoa: TuKhoa,
+                ViTriBatDau: 0,
+                ViTriKetThuc: 0
+            };
+            window.location.replace("/PhanAnhNhanh/PhanAnhNhanh/Index?IdLoaiPhanAnhNguoiDan=" + IdLoaiPhanAnhNguoiDan + "&IdAp=" + IdAp + "&IdHuyen=" + IdHuyen + "&IdXa=" + IdXa + "&tuKhoa=" + TuKhoa + "&trangthai=" + TrangThai + "&page=1");
+            //$.get("/PhanAnhNhanh/Index", model)
+            //.success(function (data) {
+            //});
+        }
+        $("#btnXoa").click(function () {
+            var result = confirm("Bạn chắc chắn muốn xóa?");
+            if (result) {
+                //Logic to delete the item
+                var danhSachId = [];
+                $("tbody#danhSachPhanAnhNhanh tr td").find("input[type=checkbox]").each(function () {
+                    if ($(this).is(":checked")) {
+                        danhSachId.push($(this).attr('id'));
+                    }
+                });
+                $.ajax({
+                    type: 'POST',
+                    url: '/PhanAnhNhanh/PhanAnhNhanh/Xoa',
+                    data: { Ids: danhSachId },
+                    dataType: "json",
+                    success: function(data) {
+                        if (data >= 1) {
+                            //alert("Đã xóa " + data + " phản ánh");
+                            //MessageModal("Đã xóa " + data + " phản ánh");
+                            Modal.Message("Đã xóa " + data + " phản ánh");
+                        }
+                        window.location.reload();
+                    },
+                    error: function () {
+                        //alert("Lỗi dịch vụ");
+                        //Modal.Message("Lỗi dịch vụ!");
+                    }
+                });
+
+            }
+        });
+        function resetMyForm() {
+            $('#createForm')[0].reset();
+            $('#imgHienThi1').attr('src', '#');
+            $('#imgHienThi2').attr('src', '#');
+            $('#imgHienThi3').attr('src', '#');
+            $('#imgHienThi4').attr('src', '#');
+            $('#imgHienThi5').attr('src', '#');
+            location.reload();
+            $('#page-wrapper').css("z-index", "0");
+        }
+        function submitAndClose() {
+            if (submitForm())
+            {
+                resetMyForm();
+                $('.close').click();
+                $('.statusMsg').html('<span style="color:green;"></p>');
+                location.reload();
+            }
+        }
+        function submitForm() {
+            try {
+                var Id = $('#Id').val();
+                var IdHuyen = $('#chonHuyenThem').val();
+                var IdXa = $('#chonXaThem').val();
+                var IdAp = $('#chonApThem').val();
+                var DiaChi = $('#DiaChi').val();
+                var ToaDo = $('#ToaDo').val();
+                var Sdt = $('#SDT').val();
+                var IdLoaiPhanAnhNguoiDan = $('#loaiPhanAnhThem').val();
+                var TenNguoiPhanAnh = $('#TenNguoiPhanAnh').val();
+                var TieuDe = $('#TieuDe').val();
+                //var HinhPhanAnh1 = $('#HinhPhanAnh1').val();
+                //var HinhPhanAnh2 = $('#HinhPhanAnh2').val();
+                //var HinhPhanAnh3 = $('#HinhPhanAnh3').val();
+                //var HinhPhanAnh4 = $('#HinhPhanAnh4').val();
+                //var HinhPhanAnh5 = $('#HinhPhanAnh5').val();
+
+                var HinhPhanAnh1 = $('#imgHienThi1').attr('src');
+                var HinhPhanAnh2 = $('#imgHienThi2').attr('src');
+                var HinhPhanAnh3 = $('#imgHienThi3').attr('src');
+                var HinhPhanAnh4 = $('#imgHienThi4').attr('src');
+                var HinhPhanAnh5 = $('#imgHienThi5').attr('src');
+
+                var NoiDung = $('#NoiDung').val();
+
+                //var LoaiTapTin1 = HinhPhanAnh1.split('.');
+                //var LoaiTapTin2 = HinhPhanAnh2.split('.');
+                //var LoaiTapTin3 = HinhPhanAnh3.split('.');
+                //var LoaiTapTin4 = HinhPhanAnh4.split('.');
+                //var LoaiTapTin5 = HinhPhanAnh5.split('.');
+
+                var LoaiTapTin1 = "";
+                var LoaiTapTin2 = "";
+                var LoaiTapTin3 = "";
+                var LoaiTapTin4 = "";
+                var LoaiTapTin5 = "";
+
+                if (TieuDe.trim() == '') {
+                    //alert('Vui lòng nhập tiêu đề.');
+                    Modal.Message("Vui lòng nhập tiêu đề!");
+                    $('#TieuDe').focus();
+                    return false;
+                } else if (NoiDung.trim() == '') {
+                    //alert('Vui lòng nhập nội dung');
+                    Modal.Message("Vui lòng nhập nội dung!");
+                    $('#NoiDung').focus();
+                    return false;
+                }
+                else
+                {
+                    var DanhSachTapTin = [];
+                    var dem = 0;
+                    if ($('#imgHienThi1').attr('src')) {
+                        dem++;
+                        var Loai1 = "";
+                        Loai1 = HinhPhanAnh1.replace("@WebConfigurationManager.AppSettings["PhanAnhNhanhImageUrl"]", "");
+                        LoaiTapTin1 = Loai1.split('.');
+                    }
+                    if ($('#imgHienThi2').attr('src')) {
+                        dem++;
+                        var Loai2 = "";
+                        Loai2 = HinhPhanAnh2.replace("@WebConfigurationManager.AppSettings["PhanAnhNhanhImageUrl"]", "");
+                        LoaiTapTin2 = Loai2.split('.');
+                    }
+                    if ($('#imgHienThi3').attr('src')) {
+                        dem++;
+                        var Loai3 = "";
+                        Loai3 = HinhPhanAnh3.replace("@WebConfigurationManager.AppSettings["PhanAnhNhanhImageUrl"]", "");
+                        LoaiTapTin3 = Loai3.split('.');
+                    }
+                    if ($('#imgHienThi4').attr('src')) {
+                        dem++;
+                        var Loai4 = "";
+                        Loai4 = HinhPhanAnh4.replace("@WebConfigurationManager.AppSettings["PhanAnhNhanhImageUrl"]", "");
+                        LoaiTapTin4 = Loai4.split('.');
+                    }
+                    if ($('#imgHienThi5').attr('src')) {
+                        dem++;
+                        var Loai5 = "";
+                        Loai5 = HinhPhanAnh5.replace("@WebConfigurationManager.AppSettings["PhanAnhNhanhImageUrl"]", "");
+                        LoaiTapTin5 = Loai5.split('.');
+                    }
+                    if ($('#imgHienThi1').attr('src')) {
+                        getFile($('#imgHienThi1').attr('src'), function (duLieu, dungLuong) {
+                            DanhSachTapTin.push({
+                                LoaiTapTin: "." + LoaiTapTin1[1],
+                                DuLieu: duLieu,
+                                DungLuong: dungLuong
+                            })
+                        });
+                    }
+                    if ($('#imgHienThi2').attr('src')) {
+                        getFile($('#imgHienThi2').attr('src'), function (duLieu, dungLuong) {
+                            DanhSachTapTin.push({
+                                LoaiTapTin: "." + LoaiTapTin2[1],
+                                DuLieu: duLieu,
+                                DungLuong: dungLuong
+                            })
+                        });
+                    }
+                    if ($('#imgHienThi3').attr('src')) {
+                        getFile($('#imgHienThi3').attr('src'), function (duLieu, dungLuong) {
+                            DanhSachTapTin.push({
+                                LoaiTapTin: "." + LoaiTapTin3[1],
+                                DuLieu: duLieu,
+                                DungLuong: dungLuong
+                            })
+                        });
+                    }
+                    if ($('#imgHienThi4').attr('src')) {
+                        getFile($('#imgHienThi4').attr('src'), function (duLieu, dungLuong) {
+                            DanhSachTapTin.push({
+                                LoaiTapTin: "." + LoaiTapTin4[1],
+                                DuLieu: duLieu,
+                                DungLuong: dungLuong
+                            })
+                        });
+                    }
+                    if ($('#imgHienThi5').attr('src')) {
+                        getFile($('#imgHienThi5').attr('src'), function (duLieu, dungLuong) {
+                            DanhSachTapTin.push({
+                                LoaiTapTin: "." + LoaiTapTin5[1],
+                                DuLieu: duLieu,
+                                DungLuong: dungLuong
+                            })
+                        });
+                    }
+                    var interval = setInterval(function () {
+                        if (DanhSachTapTin.length == dem) {
+                            clearInterval(interval);
+                            //alert(JSON.stringify(DanhSachTapTin));
+
+                            var model = {
+                                "Id": Id,
+                                "IdHuyen": IdHuyen,
+                                "IdXa": IdXa,
+                                "IdAp": IdAp,
+                                "DiaChi": DiaChi,
+                                "IdLoaiPhanAnhNguoiDan": IdLoaiPhanAnhNguoiDan,
+                                "TieuDe": TieuDe,
+                                "NoiDung": NoiDung,
+                                "Sdt": Sdt,
+                                "ToaDo": ToaDo,
+                                "MaMay": "0",
+                                "IdNguoiDung": "",
+                                "TenNguoiPhanAnh": TenNguoiPhanAnh,
+                                "DanhSachTapTin": DanhSachTapTin
+                            };
+                            //console.log(model);
+                            if (Id != "") {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '@Url.Action("CapNhat", "PhanAnhNhanh")',
+                                    data: { "model": model },
+                                    dataType: "json",
+                                    beforeSend: function () {
+                                        $('.submitBtn').attr("disabled", "disabled");
+                                        $('.modal-body').css('opacity', '.5');
+                                    },
+                                    success: function (msg) {
+                                        $('.submitBtn').removeAttr("disabled");
+                                        $('.modal-body').css('opacity', '');
+                                        if (msg == "1") {
+                                            //$('.statusMsg').html('<span style="color:green;">Thông tin phản ánh người dân đã được thêm thành công.</p>');
+                                            //alert("Thanh cong");
+                                            //Modal.Message("Thêm phản ánh thành công!");
+                                            Modal.Message("Thêm phản ánh thành công!");
+                                            resetMyForm();
+                                        } else {
+                                            //$('.statusMsg').html('<span style="color:red;">Lỗi ghi dữ liệu. ' + msg + '</span>');
+                                            //alert("That bai: " + JSON.stringify(msg));
+                                            Modal.Message("Thêm phản ánh thất bại: " + +JSON.stringify(msg));
+                                            //Modal.Message("Thêm phản ánh thất bại: " + +JSON.stringify(msg));
+                                        }
+                                    },
+                                    error: function () {
+                                        //alert("Lỗi dịch vụ");
+                                        //Modal.Message("Lỗi dịch vụ!");
+                                    }
+                                });
+                            }
+
+                            else {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '@Url.Action("Them", "PhanAnhNhanh")',
+                                    data: { "model": model },
+                                    dataType: "json",
+                                    beforeSend: function () {
+                                        $('.submitBtn').attr("disabled", "disabled");
+                                        $('.modal-body').css('opacity', '.5');
+                                    },
+                                    success: function (msg) {
+                                        $('.submitBtn').removeAttr("disabled");
+                                        $('.modal-body').css('opacity', '');
+                                        if (msg == "1") {
+                                            //$('.statusMsg').html('<span style="color:green;">Thông tin thời tiết nông vụ đã được ghi thành công.</p>');
+                                            Modal.Message("Thêm phản ánh thành công!");
+                                            resetMyForm();
+                                            $('.submitBtn').removeAttr("disabled");
+                                            $('.modal-body').css('opacity', '');
+                                        } else {
+                                            //$('.statusMsg').html('<span style="color:red;">Lỗi ghi dữ liệu. ' + msg + '</span>');
+                                            //Modal.Message("Thêm phản ánh thất bại: " + +JSON.stringify(msg));
+                                            Modal.Message("Thêm phản ánh thất bại: " + +JSON.stringify(msg));
+                                        }
+                                    },
+                                    error: function () {
+                                        //alert("Lỗi dịch vụ");
+                                        //Modal.Message("Lỗi dịch vụ!");
+                                    }
+                                });
+                            }
+                        }
+                    }, 10)
+                }
+                //}
+            } catch (e) {
+                //alert('Lỗi. ' + e);
+                //Modal.Message("Lỗi " + e);
+            }
+        }
+        function editForm(obj) {
+            var Id = obj.id;
+            try {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("DocChiTietPhanAnh", "PhanAnhNhanh")',
+                    data: { "Id": Id },
+                    dataType: "json",
+                    success: function (msg) {
+                        //console.log(msg);
+                        try {
+                            if (msg != null) {
+                                $('#Id').val(msg.Id);
+                                //$('#HinhDaiDien').val(msg.HinhDaiDien);
+                                //$('#imgHienThi').attr('src', msg.HinhDaiDien);
+                                $('#TieuDe').val(msg.TieuDe);
+                                $('#NoiDung').val(msg.NoiDung);
+                                $('#chonHuyenThem').val(msg.IdHuyen);
+                                ChonHuyenThem1(msg.IdXa, msg.IdAp);
+                                $('#chonXaThem').val(msg.IdXa);
+                                //ChonXaThem1();
+                                $('#chonApThem').val(msg.IdAp);
+                                $('#DiaChi').val(msg.DiaChi);
+                                $('#ToaDo').val(msg.ToaDo);
+                                $('#SDT').val(msg.Sdt);
+                                $('#TenNguoiPhanAnh').val(msg.TenNguoiPhanAnh);
+                                $('#loaiPhanAnhThem').val(msg.LoaiPhanAnhNguoiDan.Id);
+
+                                var hinh1 = "";
+                                var hinh2 = "";
+                                var hinh3 = "";
+                                var hinh4 = "";
+                                var hinh5 = "";
+                                var DanhSachTapTin = msg.DanhSachTapTin;
+                                for (i = 0; i <= DanhSachTapTin.length; i++) {
+                                    if (i == 0) {
+                                        hinh1 = DanhSachTapTin[i].Ten;
+                                        document.getElementById("imgHienThi1").src = hinh1;
+                                    }
+                                    if (i == 1) {
+                                        hinh2 = DanhSachTapTin[i].Ten;
+                                        document.getElementById("imgHienThi2").src = hinh2;
+                                    }
+                                    if (i == 2) {
+                                        hinh3 = DanhSachTapTin[i].Ten;
+                                        document.getElementById("imgHienThi3").src = hinh3;
+                                    }
+                                    if (i == 3) {
+                                        hinh4 = DanhSachTapTin[i].Ten;
+                                        document.getElementById("imgHienThi4").src = hinh4;
+                                    }
+                                    if (i == 4) {
+                                        hinh5 = DanhSachTapTin[i].Ten;
+                                        document.getElementById("imgHienThi5").src = hinh5;
+                                    }
+                                }
+                                $('#myForm').modal('show');
+                            }
+                        } catch (e) {
+
+                        }
+                    },
+                    error: function () {
+                        //alert("Lỗi dịch vụ");
+                        //Modal.Message("Lỗi dịch vụ!");
+                    }
+                });
+            } catch (e) {
+                //alert("Lỗi.");
+                Modal.Message("Lỗi " + e);
+            }
+
+        }
+
+    </script>
+}

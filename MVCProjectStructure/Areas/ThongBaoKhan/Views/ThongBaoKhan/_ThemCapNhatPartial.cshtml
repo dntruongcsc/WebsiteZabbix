@@ -1,0 +1,91 @@
+﻿
+@model MVCProjectStructure.Areas.ThongBaoKhan.Models.ThongBaoKhanModel.Input.ThongTin
+<input id="Id" name="Id" value="@Model.Id" hidden />
+<input id="KetQuaOutput" data-ketqua="@ViewBag.KetQua" hidden />
+<div class="modal-body">
+    <p class="statusMsg"></p>
+    <input id="Id" name="Id" value="@Model.Id" hidden />
+
+    <div class="form-group row">
+        <label for="TieuDe" class="col-sm-3 control-label">Tiêu đề:</label>
+        <div class="col-sm-8">
+            <input type="text" id="TieuDe" name="TieuDe" class="form-control form-white" value="@Model.TieuDe" required="required" placeholder="Tiêu đề" title="Tiêu đề">
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="form-group row">
+        <label for="DuongDanThanThien" class="col-sm-3 control-label">Đường dẫn:</label>
+        <div class="col-sm-8">
+            <input type="text" id="DuongDanThanThien" name="DuongDanThanThien" class="form-control form-white" value="@Model.DuongDanThanThien" required="required" placeholder="Đường dẫn thân thiện" title="Đường dẫn thân thiện">
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="form-group row">
+        <label for="HinhDaiDien" class="col-sm-3 control-label">Hình đại diện:</label>
+        <div class="col-sm-8 input-group">
+
+            @Html.EditorFor(m => m.HinhDaiDien, new { htmlAttributes = new { @class = "form-control" } })
+            <span class="input-group-btn">
+                <a id="Browser" class="btn btn-primary" style="border-top-right-radius: 5px; border-bottom-right-radius: 5px;">Chọn</a>
+            </span>
+
+            <div class="col-12" style="margin-top: 12px;">
+                <img id="imgHienThi" src="@(Model!=null? Model.HinhDaiDien:"")" width="200" class="zoom" />
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="form-group row">
+        <label for="NoiDungTomTat" class="col-sm-3 control-label">Nội dung tóm tắt:</label>
+        <div class="col-sm-8">
+            @Html.TextArea("NoiDungTomTat", new { @class = "form-control", @rows = "5", @placeholder = "Nội dung tóm tắt" })
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-md-9" style="text-align:left;">
+            <label for="TrangThai" style="font-weight:normal;">
+                @{ var ct = Model.DoUuTien ? "checked" : "";}
+                @*<input type="checkbox" id="TrangThai" @ct/>*@ Kích hoạt
+                @Html.EditorFor(m => m.TrangThai)
+            </label>
+            <label for="DoUuTien" style="font-weight:normal; margin-left:3em">
+                @{ var c = Model.DoUuTien ? "checked" : "";}
+                @*<input type="checkbox" id="DoUuTien" @c />*@ Thông báo cho thiết bị di động
+                @Html.EditorFor(m => m.DoUuTien)
+            </label>
+
+
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="NoiDung" class="col-sm-2 control-label">Nội dung:</label>
+        <span style="font-style:italic" class="text-danger">(Chiều rộng hình ảnh trên mobile tối đa là 320px)</span>
+        <div class="clearfix"></div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-12">
+            @Html.TextArea("NoiDung", new { htmlAttributes = new { @class = "form-control" } })
+            @*<textarea id="NoiDung"></textarea>*@
+        </div>
+    </div>
+</div>
+
+<!-- Modal Footer -->
+<script>
+    $(document).ready(function () {
+
+        CKEDITOR.replace('NoiDung', { language:'vi'})
+
+
+    });
+    $('#Browser').on('click', function () {
+        var ckfider = new CKFinder();
+        ckfider.selectActionFunction = function (fileUrl) {
+            $('#HinhDaiDien').val(fileUrl);
+            $('#imgHienThi').attr('src', fileUrl);
+        };
+        ckfider.popup();
+    });
+</script>

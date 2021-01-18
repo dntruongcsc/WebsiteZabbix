@@ -1,0 +1,80 @@
+﻿@model MVCProjectStructure.Areas.PhongBan.Models.PhongBanModel.PhongBanOutput.DocDanhSachPhongBan
+@using Common.Enum;
+@using MVCProjectStructure.Helpers;
+<div class="col-md-12 kc-0">
+    <div id="bang-bieu">
+        <div class="scrollbar mb-3">
+            <table class="col-sm-12 table-bordered table-hover table-condensed table-style">
+                <thead>
+                    <tr class="chieu-cao">
+                        <th class="w-5 al-c"><input type='checkbox' id="chonXoaTatCa" title="Chọn xóa tất cả" /></th>
+                        <th class="w-5 al-c">STT</th>
+                        <th class="w-10 al-c">Tiêu đề</th>
+                        <th class="w-20 al-c">Nội dung mô tả</th>                      
+                        <th class="w-8 al-c">Kích hoạt</th>
+                        <th class="w-4">&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody id="danhSachSanPham">
+                    @if (Model != null)
+                    {
+                        int stt = (Model.TrangHienTai - 1) * PageNumber.Default + 1;
+                        var danhSach = Model.DanhSach;
+                        if (danhSach != null && danhSach.Count > 0)
+                        {
+                            foreach (var item in danhSach)
+                            {
+                                <tr id="@item.Id">
+                                    <td class="al-c">
+                                        <input type='checkbox' class="checkbox_xoa" value="@item.Id" title="Chọn xóa" id="@item.Id" name="IDs" />
+                                    </td>
+                                    <td class="al-c" data-title="STT">@(stt++)</td>
+                                    <td class="al-l" data-title="Tiêu đề"><a class="CapNhat" href="#" onclick="ChinhSua('@item.Id')" data-id="@item.Id">@item.Ten</a></td>
+                                    <td class="al-l" data-title="Mô tả">@item.MoTa</td>
+                                    <td class="al-c" data-title="Kích hoạt">
+                                        @if (item.KichHoat)
+                                        {
+                                            <i class="fa fa-check text-info" aria-hidden="true">&nbsp;</i>
+                                        }
+                                        else
+                                        {
+                                            <i>&nbsp;</i>
+                                        }
+                                    </td>
+                                    <td data-title="Chức năng" style="text-align:center">
+                                        <button type="button" data-id="@item.Id" class="btn btn-sm btn-info CapNhat" onclick="ChinhSua('@item.Id')" title="Hiệu chỉnh thông tin">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="10"><div class="alert alert-secondary mb-0 text-center">Không tìm thấy dữ liệu</div></td></tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="10"><div class="alert alert-secondary mb-0 text-center">Không tìm thấy dữ liệu</div></td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @{
+            if (Model != null)
+            {
+                string duongDan = Url.Action("XemDanhSach", "PhongBan", new { area = "PhongBan" });
+                string kq = XuLyPhanTrang.TaoPhanTrang(Model.TongSoTrang, Model.TrangHienTai, duongDan, ViewBag.DanhSachThamSo);
+                @Html.Raw(kq);
+            }
+        }
+        <div style="clear:both"></div>
+    </div>
+
+</div>
+<script>
+    $(document).ready(function () {
+        XuLyChonTatCa();
+    })
+</script>

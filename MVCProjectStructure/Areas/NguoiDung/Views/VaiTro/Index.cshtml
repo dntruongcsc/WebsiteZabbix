@@ -1,0 +1,62 @@
+﻿
+@using Common.Enum;
+@{
+    ViewBag.Title = "Quản lý vai trò người dùng";
+    Layout = ChucNang.GiaoDien.SBAdmin;
+    ViewBag.active = ChucNang.Ma.VaiTro;
+}
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="@ChucNang.DuongDan.BangDieuKhien"><i class="fa fa-tachometer"></i> Bảng điều khiển</a>
+    </li>
+    <li class="breadcrumb-item active">Quản lý vai trò người dùng</li>
+</ol>
+<div class="container-fluid p-0">
+    <div class="">
+        <div class="panel-body">
+            <div class="row px-3">
+                <div class="col-md-9 kc-0 mb-3">
+                    <div class="row pl-3">
+                        <div class="col-md-3 plrb-022">
+                            <select id="DonViTimKiem" class="form-control w-100">
+                                <option value="">- Chọn - </option>
+                                @if (ViewBag.DanhSachDonViTimKiem != null)
+                                {
+                                    foreach (var item in ViewBag.DanhSachDonViTimKiem)
+                                    {
+                                        <option value="@item.Id">@item.Ten</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3 plrb-022">
+                            <input type="text" name="tuKhoa" id="TuKhoa" class="form-control w-100" placeholder="Tìm kiếm theo tên vai trò">
+                        </div>
+                        <div class="col-md-3 plrb-022">
+                            <button type="button" id="btnTimKiem" onclick="XuLyTimKiem()" class="btn btn-info"><i class="fa fa-search">&nbsp;</i>Tìm kiếm</button>
+                            <button type="button" id="btnLamLai" onclick="XuLyLamLai()" class="btn btn-secondary" title="Tải lại dữ liệu mặc định"><i class="fa fa-refresh"></i></button>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-3 kc-0 mb-3 canh-le-p">
+                    <a href="@Url.Action("ThemCapNhat")" class="btn btn-mac-dinh"><i class="fa fa-plus">&nbsp;</i> Thêm mới</a>
+                    @*<button id="btnThem" class="btn btn-mac-dinh" onclick="Them()">
+                            <i class="fa fa-plus"></i> Thêm mới
+                        </button>*@
+                    <button type="button" id="btnXoa" onclick="XuLyXoa()" class="btn btn-danger" disabled><i class="fa fa-trash">&nbsp;</i>Xóa</button>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div id="ThongBao_Index"></div>
+            <div id="DanhSach_CapNhat">
+                @{Html.RenderPartial("_DanhSachPartial");}
+            </div>
+        </div>
+    </div>
+</div>
+@section styles{
+}
+@section Scripts {
+    <script src="~/Areas/NguoiDung/Contents/VaiTroIndex.js"></script>
+}

@@ -1,0 +1,159 @@
+﻿@using Common.Enum;
+@{
+    ViewBag.Title = "Quản lý phòng ban";
+    Layout = ChucNang.GiaoDien.SBAdmin;
+    ViewBag.active = ChucNang.Ma.DanhMucPhongBan;
+}
+
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="@Url.Action("Index","Home",new { area = "Admin" })"><i class="fa fa-tachometer"></i> Bảng điều khiển</a>
+    </li>
+    <li class="breadcrumb-item active">Quản lý quảng cáo</li>
+</ol>
+<div class="container-fluid p-0">
+    <div class="">
+        <div class="panel-body">
+            <div class="row px-3">
+                <div class="col-md-9 kc-0 mb-3">
+                    <div class="row pl-3">
+
+                        <div class="col-md-3 plrb-022">
+                            <input type="text" name="tuKhoa" id="TuKhoa" class="form-control w-100" placeholder="Tìm kiếm theo tiêu đề">
+                        </div>
+                        <div class="col-md-3 plrb-022">
+                            <button type="button" id="btnTimKiem" onclick="XuLyTimKiem()" class="btn btn-info"><i class="fa fa-search">&nbsp;</i>Tìm kiếm</button>
+                            <button type="button" id="btnLamLai" onclick="XuLyLamLai()" class="btn btn-secondary" title="Tải lại dữ liệu mặc định"><i class="fa fa-refresh"></i></button>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-3 kc-0 mb-3 canh-le-p">
+                    <button id="btnThem" class="btn btn-mac-dinh" onclick="Them()">
+                        <i class="fa fa-plus"></i> Thêm mới
+                    </button>
+                    <button type="button" id="btnXoa" onclick="XuLyXoa()" class="btn btn-danger" disabled><i class="fa fa-trash">&nbsp;</i>Xóa</button>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div id="ThongBao_Index"></div>
+            <div id="DanhSach_CapNhat">
+                @{Html.RenderPartial("_DanhSachPartial");}
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var HamXuLy = {
+            Luu: "Luu",
+            LuuDong: "LuuDong",
+            Dong: "Dong"
+        };
+        $(document).ready(function () {
+            var thamSo = DocThamSoTraVeObject(location.search);
+            $("#TuKhoa").val(thamSo.tukhoa);
+            if (thamSo.NenTang) {
+                $("#NenTangTimKiem").val(thamSo.NenTang);
+            }
+            if (thamSo.NenTang) {
+                $("#ThuocTrangTimKiem").val(thamSo.ThuocTrang);
+            }
+            XuLyTimKiem(thamSo.trang);
+        });
+        function XuLyDocDanhSachThuocTrangTheoNenTang(obj, ThuocTrangId) {
+            try {
+                $('#' + ThuocTrangId).empty();
+                var MaNenTang = $(obj).val();
+                var input = { "MaNenTang": MaNenTang };
+                XuLyAPIOutputData('PhongBan/PhongBan/XuLyDocDanhSachNenTang', input, ThuocTrangId, iXuLyCapNhatThuocTrang);
+            } catch (e) {
+                Modal.Message(Message.LoiDuLieu);
+            }
+        }
+        function iXuLyCapNhatThuocTrang(ThuocTrangId, data) {
+            if (data) {
+                if (data.KetQua === 1) {
+                    var danhSach = data.DuLieu;
+                    for (var i = 0; i < danhSach.length; i++) {
+                        $('#' + ThuocTrangId).append('<option value="' + danhSach[i].Value + '">' + danhSach[i].Text + '</option>');
+                    }
+                }
+                else {
+                    Modal.Message(data.ThongBao + "Đọc danh sách thuộc trang.");
+                }
+            }
+        }
+        function XuLyTimKiem(trang) {
+            try {
+                if (!trang) {
+                    trang = 1;
+                }
+                var thamSo = "?tukhoa=" + $('#TuKhoa').val();
+                XuLyCapNhatDanhSach('PhongBan/PhongBan/XemDanhSach', thamSo);
+            } catch (e) {
+                Modal.Message(Message.LoiDuLieu);
+            }
+        }
+        function XuLyLamLai() {
+            $("#TuKhoa").val("");
+            $('#NenTangTimKiem option:first-child').attr("selected", "selected");
+            $('#ThuocTrangTimKiem option:first-child').attr("selected", "selected");
+            XuLyTimKiem();
+        }
+
+        function Them() {
+            ThemCapNhat('PhongBan/PhongBan/ThongTinThemCapNhat', HamXuLy);
+        }
+        function ChinhSua(Id) {
+            ThemCapNhat('PhongBan/PhongBan/ThongTinThemCapNhat', HamXuLy, Id);
+        }
+        function XuLyLayThongTinLuu() {
+            return JsonInput = {
+                Id: $('#Id').val(),
+                Ten: $('#Ten').val(),
+                Ma: $('#Ma').val(),
+                MoTa: $('#MoTa').val(),
+                ThuTu: $('#ThuTu').val(),
+                KichHoat: $('#KichHoat').prop('checked')
+            };
+        }
+        function Luu(DongModal) {
+            var JsonInput = XuLyLayThongTinLuu();
+            XuLyThongTinThemCapNhat('PhongBan/PhongBan/XuLyLuu', JsonInput, HamXuLy, 'PhongBan/PhongBan/XemDanhSach', DongModal);
+        }
+        function LuuDong() {
+            Luu(true);
+        }
+        function Dong() {
+            DongModalThemCapNhat();
+        }
+
+        function XuLyXoa() {
+            Modal.AddConfirmXoa(Message.XacNhanXoa, 'XoaDanhSach()', 'HuyBo()');
+        }
+        function XoaDanhSach() {
+            var danhSachId = DocDanhSachIdCanXoa();
+            var input = { "danhSachId": danhSachId };
+            XuLyAPI('PhongBan/PhongBan/XuLyXoaDanhSach', input, 'html', 'POST', iXuLyXoa);
+        }
+        function iXuLyXoa(data) {
+            if (data) {
+                if (data.KetQua === 1) {
+                    $("#ModalConfirm").modal('hide');
+                    var duLieu = JSON.parse(data.DuLieu);
+                    Modal.Message(Message.XoaThanhCong + '(' + duLieu.TongSoLuong + ' dòng)');
+                    var thamSo = DocThamSo();
+                    XuLyCapNhatDanhSach('PhongBan/PhongBan/XemDanhSach', thamSo);
+                }
+                if (data.KetQua === 0) {
+                    Modal.Message(Message.XoaThatBai);
+                }
+            }
+        }
+        function HuyBo() {
+            DongModalConfirm();
+        }
+    </script>
+}

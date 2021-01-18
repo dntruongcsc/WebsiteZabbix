@@ -1,0 +1,449 @@
+﻿
+@{
+    ViewBag.Title = "Error";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>@ViewBag.Title - Nông nghiệp Cà Mau - Sở Nông nghiệp và Phát triển nông thôn tỉnh Cà Mau</title>
+    <!-- Bootstrap core CSS-->
+    <link href="~/Content/csc/csc.style.css" rel="stylesheet" />
+    <link href="~/Template/front-end/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/Template/front-end/css/color-theme.css" rel="stylesheet" />
+    <link href="~/Template/front-end/css/easy-responsive-tabs.css" rel="stylesheet" />
+    <link href="~/Template/front-end/css/nncm.css" rel="stylesheet" />
+    <link href="~/Template/front-end/css/owl.carousel.css" rel="stylesheet" />
+    <link href="~/Template/front-end/css/owl.theme.css" rel="stylesheet" />
+    <link href="~/Template/front-end/css/owl.theme.default.min.css" rel="stylesheet" />
+    <link href="~/Template/front-end/css/owl.transitions.css" rel="stylesheet" />
+    <link href="~/Template/front-end/css/webslidemenu.css" rel="stylesheet" />
+    <link href="~/Template/front-end/css/font-awesome.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Template/sb-admin/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="~/Scripts/jquery.preloaders.min.js"></script>
+    <script src="~/Scripts/umd/popper.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="~/Scripts/csc/csc.message.js"></script>
+    <script src="~/Scripts/csc/csc.modal.js"></script>
+    <script src="~/Scripts/csc/csc.xuly-1.0.2.js"></script>
+
+    <script src="~/Template/front-end/js/bootstrap.js"></script>
+
+    <style>
+        .search {
+            display: block;
+            padding-top: 10px;
+            text-align: right;
+            padding-right: 42px;
+            margin-right: 200px;
+            position: fixed;
+            z-index: 101;
+            height: 52px;
+            width: 100%
+        }
+
+        #owl-trang-chu .owl-dots {
+            display: block;
+            margin-top: -28px;
+            position: relative;
+        }
+
+        .close {
+            color: #ffffff;
+            font-weight: normal;
+            font-size: 24px;
+            opacity: 0.7;
+        }
+
+        .bieu-tuong {
+            width: 32px;
+            height: 32px;
+            font-size: 16px;
+            position: absolute;
+            top: 2px;
+            left: 17px;
+            text-align: center;
+            padding-top: 9px;
+            border-right: 1px solid #cacaca;
+            border-radius: 2px;
+        }
+    </style>
+
+    <style>
+        .btn-submit-search {
+            background-color: #2073d4;
+            border: none;
+            height: 34px;
+            padding: 4px 15px 2px 15px;
+            margin: 0;
+            color: #fff;
+            font-weight: 500;
+            font-family: Tahoma, Geneva, sans-serif;
+        }
+
+        .linh-vuc {
+            width: 120px;
+            border: none;
+            float: left;
+        }
+
+            .linh-vuc option {
+                line-height: 30px;
+            }
+
+        .chuc-nang-nhom {
+            text-align: center;
+            line-height: 40px;
+            border: 1px solid #2073d4;
+            border-bottom: 2px solid #2073d4;
+            color: #2073d4;
+            margin-bottom: 11px;
+            background-color: #ffffff;
+            border-top-right-radius: 5px;
+            border-top-left-radius: 5px;
+            cursor: pointer;
+        }
+
+        .owl-next, .owl-prev {
+            outline-color: #f1f1f1 !important;
+        }
+
+        .panel-default > .panel-heading {
+            background-color: #ebf4ff;
+        }
+
+        .panel-group .panel + .panel {
+            margin-top: 1px;
+        }
+
+        .nhom-tin-tuc {
+            margin: 5px 0 10px 10px;
+        }
+
+            .nhom-tin-tuc .tieu-de {
+                width: 100%;
+                color: #01458e;
+                font-size: 20px;
+                line-height: 30px;
+                margin-top: 10px;
+                margin-bottom: 5px;
+            }
+
+            .nhom-tin-tuc .noi-dung {
+                border-bottom: 1px solid #eae8e8;
+                margin-left: 8px;
+                padding-bottom: 8px;
+                margin-bottom: 8px;
+            }
+
+            .nhom-tin-tuc .tieu-de-phu {
+                font-size: 14px;
+                color: #504f4f;
+                line-height: 20px;
+                margin: 0px;
+            }
+
+        .footer p {
+            line-height: 22px;
+        }
+
+        @@media (max-width: 768px) {
+            .tin-tuc .tieu_de {
+                font-size: 18px;
+                height: 60px;
+                line-height: 24px;
+                padding: 5px;
+            }
+
+            .tin-tuc .tieu_de_phu {
+                font-size: 12px;
+                height: 38px;
+                line-height: 16px;
+                padding: 3px;
+            }
+
+            .nhom-tin-tuc {
+                margin: 0px;
+            }
+        }
+    </style>
+    <!--Bổ sung-->
+
+
+    <style>
+        #notfound .notfound {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+
+        .notfound {
+            line-height: 1.4;
+            padding: 0px 15px;
+        }
+
+            .notfound .notfound-404 {
+                margin-bottom: 25px;
+            }
+
+                .notfound .notfound-404 h1 {
+                    font-size: 186px;
+                    font-weight: 900;
+                    text-transform: uppercase;
+                    background-image: url('../../Content/Data/he-thong/images_web/text.png');
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-size: cover;
+                    background-position: center;
+                }
+
+            .notfound h2 {
+                font-size: 26px;
+                font-weight: 700;
+            }
+
+            .notfound p {
+                font-size: 14px;
+                font-weight: 500;
+                margin-bottom: 0px;
+                text-transform: uppercase;
+            }
+
+            .notfound a {
+                font-family: 'Titillium Web', sans-serif;
+                display: inline-block;
+                text-transform: uppercase;
+                color: #fff;
+                text-decoration: none;
+                border: none;
+                background: #5c91fe;
+                padding: 10px 40px;
+                font-size: 14px;
+                font-weight: 700;
+                border-radius: 1px;
+                margin-top: 15px;
+                -webkit-transition: 0.2s all;
+                transition: 0.2s all;
+            }
+
+                .notfound a:hover {
+                    opacity: 0.8;
+                }
+
+        @@media only screen and (max-width: 767px) {
+            .notfound .notfound-404 {
+                height: 110px;
+                line-height: 110px;
+            }
+
+                .notfound .notfound-404 h1 {
+                    font-size: 120px;
+                }
+        }
+
+        @@media (min-width: 768px) {
+            .modal-dialog {
+                width: 400px;
+                margin: 30px auto;
+            }
+        }
+    </style>
+</head>
+
+
+
+<body>
+    <!-- Scroll to Top Button-->
+    <div class="wsmenucontainer clearfix">
+        @Html.Action("Header", "TrangChu")
+        <div class="wrapper">
+            <div class="wrapper">
+                <div class="container" style="min-height: calc(100vh - 264px); position: relative;">
+                    <div id="notfound">
+                        <div class="notfound">
+                            <div class="notfound-404">
+                                @*<h1>404</h1>*@
+                                <img src="~/Content/Data/he-thong/images_web/text.png" style="max-width: 410px" />
+                            </div>
+                            <h2 class="m-5">Không tìm thấy nội dung yêu cầu</h2>
+                            <p class="mt-5">Nội dung tìm kiếm không tồn tại hoặc đã bị xóa.</p>
+                            @*<a href="#">Về trang chủ</a>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @Html.Partial("~/Views/TrangChu/_PartialFooter.cshtml")
+        </div>
+    </div>
+    <div id="Khung_dang_nhap" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background-color: #eff4f5; top:70px">
+                <div class="modal-header" style="padding:10px; background-color: #2073d4;">
+                    <button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">×</span></button>
+                    <h3 class="modal-title" style="font-size:16px; color: #ffffff;"><i class="fa fa-user" style="padding-right:10px; font-size:16px"></i>Đăng nhập</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="margin-top:20px">
+                        <div class="col-md-12" style="font-size:14px;position:relative">
+                            <i class="fa fa-user bieu-tuong"></i>
+                            <input id="TenDangNhap" name="TenDangNhap" type="text" class="form-control" style="height:36px; padding-left:38px" placeholder="Tên Đăng nhập" onkeypress="return DangNhap(event)">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:10px">
+                        <div class="col-md-12" style="font-size:14px;position:relative">
+                            <i class="fa fa-lock bieu-tuong"></i>
+                            <input id="MatKhau" name="MatKhau" type="password" class="form-control" style="height:36px; padding-left:38px" placeholder="Mật khẩu" onkeypress="return DangNhap(event)">
+                        </div>
+                    </div>
+                    <div id="ThongBaoDangNhap" style="margin-top:15px;">
+                    </div>
+                    <div class="row" style="margin-top:10px;text-align:center">
+                        <button id="DangNhap" type="button" class="btn btn-primary" style="background-color:#2073d4">Đăng nhập</button>
+                    </div>
+                    @*<div class="row" style="margin-top:10px; text-align:center">
+                            <a href="#" style="color:#2073d4">Quên mật khẩu?</a>
+                        </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Message-->
+    <div class="modal fade" id="ModalMessage" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thông báo</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal"><i class="fa fa-close"></i> Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Confirm-->
+    <div id="divModalConfirm"></div>
+    <!-- Modal pdf -->
+    <div class="modal fade" id="XemFileModal" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 id="TenFile" class="modal-title">File pdf</h4>
+                </div>
+                <div id="body-view-pdf" class="modal-body b-center">
+                </div>
+                <div class="modal-footer">
+                    <div id="pdf-phan-trang" class="b-center">
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-close"></i> Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/Template/front-end/js/webslidemenu.js"></script>
+    <script src="~/Template/front-end/js/owl.carousel.js"></script>
+    <script src="~/Template/front-end/js/easyResponsiveTabs.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.myCollapse').click(function () {
+                //$(this).find('i').removeClass('icon-linh-vuc');
+                //$(this).parent().parent().parent().find('.icon-linh-vuc').removeClass('fa fa-chevron-right');
+                //$(this).parent().parent().parent().find('.icon-linh-vuc').addClass('fa fa-chevron-down');
+                //$(this).find('i').addClass('icon-linh-vuc');
+                $(this).find('i').toggleClass('fa fa-chevron-right').toggleClass('fa fa-chevron-down');
+            });
+            XuLyAnh();
+            XuLyChonMenu();
+        });
+        function XuLyAnh() {
+            $("img").each(function (index) {
+                var src = $(this).attr('onerror');
+                if (!src) {
+                    $(this).attr('onerror', "this.src='" + DuongDan.ImageDefault01 + "'");
+                }
+            });
+        }
+        function XuLyChonMenu() {
+            try {
+                $(".menu").each(function (index) {
+                    if ($(this).data('lien-ket') == '@ViewBag.MenuActive') {
+                        var ma_menu_1 = $(this).data('menu-1');
+                        var ma_menu_2 = $(this).data('menu-2');
+                        var maIcon = $(this).data('icon-active');
+                        //Menu cấp 1
+                        $('.active-body-heading-1-' + ma_menu_1).attr('aria-expanded', true);
+                        $('.active-body-menu-1-' + ma_menu_1).attr('aria-expanded', true);
+                        $('.active-body-menu-1-' + ma_menu_1).addClass('in');
+                        if (ma_menu_2) {
+                            //Menu cấp 2
+                            $('.active-heading-menu-2-' + ma_menu_2).attr('aria-expanded', true);
+                            $('.active-body-menu-2-' + ma_menu_2).attr('aria-expanded', true);
+                            $('.active-body-menu-2-' + ma_menu_2).addClass('in');
+                        }
+                        $('.active-icon-' + maIcon).addClass('active');
+                    }
+                });
+            } catch (e) {
+
+            }
+        }
+        function Mo_khung_dang_nhap() {
+            $('#Khung_dang_nhap').modal('show');
+        }
+        function DangNhap(e) {
+            if (e.keyCode == 13) {
+                event.preventDefault();
+                Dangnhap();
+                return false;
+            }
+        }
+        $('#DangNhap').on('click', function () {
+            Dangnhap();
+        });
+        function Dangnhap() {
+            var tenDangNhap = $('#TenDangNhap').val();
+            var matKhau = $('#MatKhau').val();
+            if (!tenDangNhap || !matKhau) {
+                B3_Alert.Add('ThongBaoDangNhap', 'Vui lòng nhập đầy đủ thông tin!', MessageType.danger);
+            }
+            else {
+                var input = {
+                    "TenTaiKhoan": tenDangNhap,
+                    "MatKhau": matKhau
+                };
+                XuLyAPI('TrangChu/Login', input, 'html', 'POST', iXuLyDangNhap);
+            }
+        }
+        function iXuLyDangNhap(data) {
+            if (data) {
+                var thongTinKetQua = JSON.parse(data.DuLieu);
+                if (data.KetQua === 1 && thongTinKetQua.KetQua == 1) {
+                    $("#Khung_dang_nhap").modal('hide');
+                    location.href = window.location.protocol + "//" + window.location.host + "/Home/Index";
+                }
+                else {
+                    //Không thành công
+                    B3_Alert.Add('ThongBaoDangNhap', thongTinKetQua.ThongBao ? thongTinKetQua.ThongBao : "Đăng nhập thất bại!", MessageType.danger);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,262 @@
+﻿@using Common.Enum;
+@{
+    ViewBag.Title = "Quản lý người dùng";
+    Layout = ChucNang.GiaoDien.SBAdmin;
+    ViewBag.active = ChucNang.Ma.NguoiDung;
+}
+
+@section styles{
+    <style type="text/css">
+        .chieu-cao {
+            height: 36px;
+            font-size: 14px;
+        }
+        /*# sourceMappingURL=bootstrap.css.map */
+        @@media only screen and (max-width: 800px) {
+
+            .chieu-cao {
+                height: auto;
+                font-size: 12px;
+            }
+
+            .bang-bieu table,
+            .bang-bieu thead,
+            .bang-bieu tbody,
+            .bang-bieu th,
+            .bang-bieu td,
+            .bang-bieu tr {
+                display: block;
+            }
+
+
+                .bang-bieu thead tr {
+                    position: absolute;
+                    top: -9999px;
+                    left: -9999px;
+                }
+
+            .bang-bieu tr {
+                border: 1px solid #ccc;
+            }
+
+            .bang-bieu td {
+                border: none;
+                border-bottom: 1px solid #eee;
+                position: relative;
+                padding-left: 35%;
+                white-space: normal;
+                text-align: left;
+                font-size: 12px;
+            }
+
+                .bang-bieu td:before {
+                    position: absolute;
+                    top: 6px;
+                    left: 6px;
+                    width: 35%;
+                    padding-right: 10px;
+                    white-space: nowrap;
+                    text-align: left;
+                }
+
+                .bang-bieu td:before {
+                    content: attr(data-title);
+                }
+        }
+    </style>
+}
+
+<!-- Breadcrumbs-->
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="#">Dashboard</a>
+    </li>
+    <li class="breadcrumb-item active">Overview</li>
+</ol>
+<!-- Icon Cards-->
+
+<div class="container-fluid p-0">
+    <div class="">
+        <div class="panel-body">
+            <div class="row px-3">
+                <div class="col-md-9 kc-0 mb-3">
+                    <div class="row pl-3">
+                        <div class="col-md-4 plrb-022">
+                            <input type="text" name="tuKhoa" id="TuKhoa" class="form-control w-100" placeholder="Tìm kiếm theo tiêu đề">
+                        </div>
+                        <div class="col-md-4 plrb-022">
+                            <button type="button" id="btnTimKiem" onclick="XuLyTimKiem()" class="btn btn-info"><i class="fa fa-search">&nbsp;</i>Tìm kiếm</button>
+                            <button type="button" id="btnLamLai" onclick="XuLyLamLai()" class="btn btn-secondary" title="Tải lại dữ liệu mặc định"><i class="fa fa-refresh"></i></button>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-3 kc-0 mb-3 canh-le-p">
+                    <button id="btnThem" data-toggle="modal" data-target="#formThem" class="btn btn-mac-dinh" onclick="Them()">
+                        <i class="fa fa-plus"></i> Thêm mới
+                    </button>
+                    <button type="button" id="btnXoa" onclick="XuLyXoa()" class="btn btn-danger" disabled><i class="fa fa-trash">&nbsp;</i>Xóa</button>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div id="ThongBao_Index"></div>
+            <div id="DanhSach_CapNhat">
+                @{Html.RenderPartial("_DanhSachPartial");}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+            var tk = DocThamSoTraVeObject(location.search);
+            $("#TuKhoa").val(tk.tukhoa);
+            $("#NenTang").val(tk.NenTang);
+            $("#ThuocTrang").val(tk.ThuocTrang);
+        });
+        function XuLyDocDanhSachThuocTrangTheoNenTang(obj, ThuocTrangId) {
+            try {
+                $('#' + ThuocTrangId).empty();
+                var MaNenTang = $(obj).val();
+                var input = { "MaNenTang": MaNenTang };
+                var url = '@Url.Action("XuLyDocDanhSachNenTang", "Manage", new { area = "NguoiDung" })';
+                XuLyAPIOutputData(url, input, ThuocTrangId, iXuLyCapNhatThuocTrang);
+            } catch (e) {
+                Modal.Message(Message.LoiDuLieu);
+            }
+        }
+        function iXuLyCapNhatThuocTrang(ThuocTrangId, data) {
+            if (data) {
+                if (data.KetQua == 1) {
+                    var danhSach = data.DuLieu;
+                    for (var i = 0; i < danhSach.length; i++) {
+                        $('#' + ThuocTrangId).append('<option value="' + danhSach[i].Value + '">' + danhSach[i].Text + '</option>');
+                    }
+                }
+            }
+        }
+
+
+    function XuLyTimKiem() {
+            try {
+                var url = '@Url.Action("XemDanhSach", "Manage", new { area = "NguoiDung" })';
+                var thamSo = "?tukhoa=" + $('#TuKhoa').val();
+                var thamSo = thamSo + "&NenTang=" + $('#NenTangTimKiem').val();
+                var thamSo = thamSo + "&ThuocTrang=" + $('#ThuocTrangTimKiem').val();
+                thamSo = thamSo + "&trang=1";
+                XuLyCapNhatDanhSach(url, thamSo);
+            } catch (e) {
+                Modal.Message(Message.LoiDuLieu);
+            }
+        }
+    function ChonTatCa(obj) {
+        var row = $(obj).closest("tr");
+        row.find(".child").prop("checked", obj.checked);
+    }
+    function ChonTungQuyen(obj) {
+        var row = $(obj).closest("tr");
+        if (row.find('.child:checked').length == row.find('.child').length) {
+            row.find('.parent').prop('checked', true);
+        } else {
+            row.find('.parent').prop('checked', false);
+        }
+    }
+
+    function XuLyLamLai() {
+        $("#Ten").val("");
+         XuLyCapNhatDanhSach('@Url.Action("XemDanhSach", "Manage", new { area = "NguoiDung" })',"");
+    }
+    $(document).ready(function () {
+        XuLyChonTatCa();
+    })
+
+    function XuLyXoa() {
+            Modal.AddConfirmXoa(Message.XacNhanXoa, 'XoaDanhSach()', 'HuyBo()');
+        }
+        function XoaDanhSach() {
+            var danhSachId = DocDanhSachIdCanXoa();
+            var input = { "danhSachId": danhSachId };
+            var url = '@Url.Action("XuLyXoaDanhSach", "Manage", new { area = "NguoiDung" })';
+            XuLyAPI(url, input, 'html', 'POST', iXuLyXoa);
+        }
+        function iXuLyXoa(data) {
+            if (data) {
+                if (data.KetQua == 1) {
+                    $("#ModalConfirm").modal('hide');
+                    var duLieu = JSON.parse(data.DuLieu);
+                    Modal.Message(Message.XoaThanhCong + '(' + duLieu.TongSoLuong + ' dòng)');
+                    var thamSo = DocThamSo();
+                    XuLyCapNhatDanhSach('@Url.Action("DocDanhSach", "Manage", new { area = "NguoiDung" })', thamSo);
+                } else if (data.KetQua == 0) {
+                    Modal.Message(Message.XoaThatBai);
+                }
+            }
+        }
+
+
+    function HuyBo() {
+        $("#ModalConfirm").modal('hide');
+    }
+
+    function Luu(Dong) {
+        var mk = $('#MatKhau').val();
+        var nlmk = $('#ReMatKhau').val();
+        if (mk.localeCompare(nlmk) == 0) {
+            var JsonInput = {
+                Id: $('#Id').val(),
+                Ten: $('#Ten').val(),
+                TaiKhoan: $('#TaiKhoan').val(),
+                MatKhau: $('#MatKhau').val(),
+                ReMatKhau: $('#ReMatKhau').val(),
+                SDT: $('#SDT').val(),
+                Email: $('#Email').val(),
+                DanhSachIdVaiTro: $('#DanhSachIdVaiTro').val(),
+                IdDonVi: $('#IdDonVi').val(),
+                ThuTu: $('#ThuTu').val(),
+                KichHoat: $('#KichHoat').prop('checked'),
+                DiaChi: $('#DiaChi').val(),
+                Ho: $('#Ho').val()
+            };
+            var kq = XuLyThongTinThemCapNhat('@Url.Action("XuLyLuu", "Manage", new { area = "NguoiDung" })', JsonInput);
+            if (kq == 1) {
+                var thamSo = location.search;
+                XuLyCapNhatDanhSach('@Url.Action("XemDanhSach", "Manage", new { area = "NguoiDung" })', thamSo);
+                if (Dong == true) {
+                    $('#ModalThemCapNhat').modal('hide');
+                    Alert.Add('ThongBao_Index', Message.LuuThanhCong, MessageType.success);
+                }
+                else {
+                    Alert.Add('ThongBao_Modal', Message.LuuThanhCong, MessageType.success);
+                }
+            } else {
+                Alert.Add('ThongBao_Modal', Message.LuuThatBai, MessageType.warning);
+            }
+        }
+        else {
+            alert('Mat khau khong dung');
+        }
+    }
+
+    function LuuDong() {
+        Luu(true);
+    }
+
+    function Dong() {
+        $('#ModalThemCapNhat').modal('hide');
+    }
+    function Them() {
+        ThemCapNhat('@Url.Action("ThongTinThemCapNhat", "Manage", new { area = "NguoiDung" })', 'Luu()', 'LuuDong()', 'Dong()');
+    }
+
+    function ChinhSua(Id) {
+        ThemCapNhat('@Url.Action("ThongTinThemCapNhat", "Manage", new { area = "NguoiDung" })', 'Luu()', 'LuuDong()', 'Dong()', Id);
+    }
+
+</script>
+
+
+
+
+
+
+

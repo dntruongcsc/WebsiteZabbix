@@ -1,0 +1,92 @@
+﻿@using Common.Enum
+@model PhanAnhNhanhModel
+@{
+    int stt = ((Model.CurrentPage - 1) * PageNumber.ChiDaoDieuHanh) + 1;
+}
+@if (TempData["Error"] != null)
+{
+    Html.RenderPartial("_AlertPartial");
+}
+
+@if (Model != null)
+{
+    <div class="col-md-12 khoang-cach-0 canh-le">
+        <div id="bang-bieu" style="color:#2B2B2B; margin:5px 0px 15px 0px;">
+            <div class="scrollbar scrollbar-custom">
+                <table class="col-sm-12 table-bordered table-striped table-condensed" style="padding:0px; width:100%; font-size:14px;">
+                    <thead>
+                        <tr class="chieu-cao" style="background-color:#ffffff; color:#49491A; font-size:14px; font-weight:bold; text-align:center">
+                            <th style="width:40px; text-align:center"><input type='checkbox' /></th>
+                            <th style="width:40px; text-align:center">STT</th>
+                            <th style="width:10%; text-align:center;">Hình</th>
+                            <th style="width:20%; text-align:center;">Tiêu đề</th>
+                            <th style="width:10%; text-align:left;">Vấn đề</th>
+                            <th style="width:20%; text-align:left;">Địa chỉ</th>
+                            @*<th style="width:10%; text-align:left;">Thông tin người phản ánh</th>*@
+                            <th style="width:7%; text-align:center;">Ngày phản ánh</th>
+                            <th style="width:8%; text-align:center;">Tình trạng</th>
+                            <th style="width:4%">&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                                int soThuTu = 0;
+                                foreach (var item in Model.DanhSachPhanAnh)
+                                {
+                                    soThuTu++;
+                        <tr>
+                            <td style="text-align:center"><input type='checkbox' /></td>
+                            <td data-title="STT" style="text-align:center">@soThuTu</td>
+                            <td data-title="Hình ảnh" style="text-align:center">
+                                <img style="max-height:50px; max-width:50px" src='image/@item.DanhSachTapTin[0].TenThumbnail' />
+                            </td>
+                            <td data-title="Tiêu đề">
+                                @item.TieuDe
+                            </td>
+                            <td data-title="Vấn đề" style="text-align:left">@item.LoaiPhanAnhNguoiDan.Ten</td>
+                            <td data-title="Mô tả" style="text-align:justify">
+                                @item.DiaChi
+                            </td>
+                            @*<td data-title="Thông tin người phản ánh" style="text-align:left">@item.TenNguoiPhanAnh</td>*@
+                            <td data-title="Ngày phản ánh" style="text-align:center">@item.ThoiGian</td>
+                            <td data-title="Tình trạng" style="text-align:center">@(item.TrangThai==0?"Chưa xử lý":item.TrangThai==1?"Đang xử lý": "<span class=badge badge-primary>Đã xử lý</span>")</td>                       
+                            <td data-title="&nbsp;" style="text-align:center">
+                                <a href="@Url.Action("Edit")" class="btn" style="background-color:#00ADEE; padding:2px 4px" title="Hiệu chỉnh thông tin">
+                                    <img src="~/SBAdmin/images/pencil-striped-symbol-for-interface-edit-buttons.png" style="width:16px; height:16px;" />
+                                </a>
+                            </td>
+                        </tr>
+                                }
+                            }
+                    </tbody>
+                </table>
+            </div>
+            @if (Model.TotalPage > 1)
+            {
+                <div class="paging-wp" style="padding: 0 10px; width: 100%">
+                    @Html.Hidden("NoiDungTim", (string)ViewBag.NoiDungTim)
+                    <ul id="pagination" class="pagination">
+                        <li class="first @(Model.CurrentPage == 1 ? "disabled" : "")"><a href="@Url.Action("Index", "ChiDaoDieuHanh", new {page = 1, NoiDungTim = ViewBag.NoiDungTim})">Trang đầu</a></li>
+                        <li class="prev @(Model.CurrentPage == 1 ? "disabled" : "")"><a href="@Url.Action("Index", "ChiDaoDieuHanh", new {page = Model.CurrentPage - 1, NoiDungTim = ViewBag.NoiDungTim})">&lt;</a></li>
+                        @for (int i = 0; i < Model.TotalPage; i++)
+                        {
+                            <li class="page @(Model.CurrentPage == i+1 ? "active" : "")"><a href="@Url.Action("Index", "ChiDaoDieuHanh", new {page = i+1, NoiDungTim = ViewBag.NoiDungTim})">@(i + 1)</a></li>
+                        }
+                        <li class="next @(Model.CurrentPage == Model.TotalPage ? "disabled" : "")"><a href="@Url.Action("Index", "ChiDaoDieuHanh", new {page = Model.CurrentPage + 1, NoiDungTim = ViewBag.NoiDungTim})">&gt;</a></li>
+                        <li class="last" @(Model.CurrentPage == Model.TotalPage ? "disabled" : "")><a href="@Url.Action("Index", "ChiDaoDieuHanh", new {page = Model.TotalPage, NoiDungTim = ViewBag.NoiDungTim})">Trang cuối</a></li>
+                    </ul>
+                </div>
+            }
+            <div style="clear:both"></div>
+        </div>
+        @if (TempData["Success"] != null)
+        {
+            @Html.Partial("_DialogSuccessPartial", (string)TempData["Success"])
+        }
+    </div>
+    <script>
+        $(document).ready(function () {
+            Xuly_checkbox_xoa();
+        })
+    </script>}
+

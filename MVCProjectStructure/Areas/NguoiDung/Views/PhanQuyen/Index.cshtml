@@ -1,0 +1,114 @@
+﻿@using Common.Enum;
+@{
+    ViewBag.Title = "Phân quyền sử dụng";
+    Layout = ChucNang.GiaoDien.SBAdmin;
+    ViewBag.Active = "PhanQuyenSuDung";
+}
+
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="@ChucNang.DuongDan.BangDieuKhien"><i class="fa fa-tachometer"></i> Bảng điều khiển</a>
+    </li>
+    <li class="breadcrumb-item active">Quản lý phân quyền</li>
+</ol>
+
+<div class="container-fluid p-0">
+    <div class="">
+        <div class="panel-body">
+            <div class="row px-3">
+                <div class="col-md-9 kc-0 mb-3">
+                    <!--Tìm kiếm-->
+                </div>
+                <div class="col-md-3 kc-0 mb-3 canh-le-p">
+                    <button id="btnThem" class="btn btn-mac-dinh" onclick="Them()"><i class="fa fa-plus"></i> Thêm mới</button>
+                    <button id="btnXoa" class="btn btn-danger" type="button" onclick="XuLyXoa()" disabled><i class="fa fa-trash">&nbsp;</i>Xóa</button>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div id="ThongBao_Index"></div>
+            <div id="DanhSach_CapNhat">
+                @{Html.RenderPartial("_DanhSachPartial");}
+            </div>
+        </div>
+    </div>
+</div>
+@section styles{
+    <style>
+        input[type="checkbox"] {
+            cursor: pointer;
+        }
+        .modal-dialog {
+            margin-top: 15px;
+        }
+
+        @@media (min-width: 992px) {
+            .modal-lg {
+                max-width: 1200px;
+            }
+        }
+    </style>
+}
+@section Scripts {
+    <script src="~/Areas/NguoiDung/Contents/PhanQuyen.js"></script>
+}
+<script>
+    function ChonTatCa(obj) {
+        var row = $(obj).closest("tr");
+        row.find(".child").prop("checked", obj.checked);
+    }
+    function ChonTungQuyen(obj) {
+        var row = $(obj).closest("tr");
+        if (row.find('.child:checked').length == row.find('.child').length) {
+            row.find('.parent').prop('checked', true);
+        } else {
+            row.find('.parent').prop('checked', false);
+        }
+    }
+</script>
+<script>
+
+    function DieuKienLoc() {
+        // Declare variables
+        var nhom, viTri, filter_0, filter_1, table, tr, td_0, td_1, i, txtValue_0, txtValue_1;
+        nhom = document.getElementById("Nhom");
+        filter_0 = nhom.value.toUpperCase();
+        viTri = document.getElementById("ViTri");
+        filter_1 = viTri.value.toUpperCase();
+        table = document.getElementById("BangChucNangXuLy");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td_0 = tr[i].getElementsByTagName("td")[0];
+            td_1 = tr[i].getElementsByTagName("td")[1];
+            if (td_0 && td_1) {
+                txtValue_0 = td_0.textContent || td_0.innerText;
+                txtValue_1 = td_1.textContent || td_1.innerText;
+                if (filter_0 && filter_1) {
+                    if (txtValue_0.toUpperCase().indexOf(filter_0) > -1 && txtValue_1.toUpperCase().indexOf(filter_1) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+                if (filter_0 && filter_1 == '') {
+                    if (txtValue_0.toUpperCase().indexOf(filter_0) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+                if (filter_0 == '' && filter_1) {
+                    if (txtValue_1.toUpperCase().indexOf(filter_1) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+                if (filter_0 == '' && filter_1 == '') {
+                    tr[i].style.display = "";
+                }
+            }
+        }
+    }
+</script>

@@ -1,0 +1,239 @@
+﻿@model MVCProjectStructure.Areas.NguoiDung.Models.PhanQuyenModel.PhanQuyenOutput.ThongTinPhanQuyen
+
+<div class="col-md-12 kc-0">
+    <div id="no-more-tables">
+        <table id="BangDuLieu" class="table table-bordered table-striped table-condensed table-hover table-style">
+            <thead>
+                <tr>
+                    <th rowspan="2" class="w-5">STT</th>
+                    <th rowspan="2">Chức năng</th>
+                    <th colspan="7">Quyền hạn</th>
+                </tr>
+                <tr>
+                    <th>Tất cả</th>
+                    <th>Xem</th>
+                    <th>Thêm</th>
+                    <th>Sửa</th>
+                    <th>Xóa</th>
+                    <th>Phê duyệt</th>
+                </tr>
+            </thead>
+            @if (Model != null)
+            {
+                int stt = 1;
+                var danhSach = Model.DanhSachChucNang;
+                <tbody data-id="@Model.Id">
+                    @foreach (var item in danhSach)
+                    {
+                        //Cấp 0
+                        <tr>
+                            <td data-title="STT" class="text-center">@(stt++)</td>
+                            <td data-title="Chức năng" class="d-chuc-nang" data-id="@item.IdChucnang" data-ten="@item.TenChucNang" data-ma="@item.MaChucNang" data-id-chuc-nang-cha="@item.IdChucnangCha">@item.TenChucNang</td>
+                            @if (item.DanhSachQuyen != null && item.DanhSachQuyen.Count > 0)
+                            {
+                                var xem = "";
+                                var them = "";
+                                var sua = "";
+                                var xoa = "";
+                                var pheDuyet = "";
+                                var dem = 0;
+                                var tatCa = "";
+                                foreach (var i in item.DanhSachQuyen)
+                                {
+                                    if (i == "Xem")
+                                    {
+                                        xem = "checked";
+                                        dem++;
+                                    }
+                                    if (i == "Them")
+                                    {
+                                        them = "checked";
+                                        dem++;
+                                    }
+                                    if (i == "Sua")
+                                    {
+                                        sua = "checked";
+                                        dem++;
+                                    }
+                                    if (i == "Xoa")
+                                    {
+                                        xoa = "checked";
+                                        dem++;
+                                    }
+                                    if (i == "PheDuyet")
+                                    {
+                                        pheDuyet = "checked";
+                                        dem++;
+                                    }
+                                }
+                                if (dem == 5)
+                                {
+                                    tatCa = "checked";
+                                }
+                                <td data-title="Tất cả" class="text-center"><input type="checkbox" class="parent d-tat-ca" @tatCa onclick="ChonTatCa(this)" /></td>
+                                <td data-title="Xem" class="text-center"><input type="checkbox" class="child d-xem" @xem onclick="ChonTungQuyen(this)" /></td>
+                                <td data-title="Thêm" class="text-center"><input type="checkbox" class="child d-them" @them onclick="ChonTungQuyen(this)" /></td>
+                                <td data-title="Sửa" class="text-center"><input type="checkbox" class="child d-sua" @sua onclick="ChonTungQuyen(this)" /></td>
+                                <td data-title="Xóa" class="text-center"><input type="checkbox" class="child d-xoa" @xoa onclick="ChonTungQuyen(this)" /></td>
+                                <td data-title="Phê duyệt" class="text-center"><input type="checkbox" class="child d-phe-duyet" @pheDuyet onclick="ChonTungQuyen(this)" /></td>
+
+                            }
+                            else
+                            {
+                                <td data-title="Tất cả" class="text-center"><input type="checkbox" class="parent d-tat-ca" onclick="ChonTatCa(this)" /></td>
+                                <td data-title="Xem" class="text-center"><input type="checkbox" class="child d-xem" onclick="ChonTungQuyen(this)" /></td>
+                                <td data-title="Thêm" class="text-center"><input type="checkbox" class="child d-them" onclick="ChonTungQuyen(this)" /></td>
+                                <td data-title="Sửa" class="text-center"><input type="checkbox" class="child d-sua" onclick="ChonTungQuyen(this)" /></td>
+                                <td data-title="Xóa" class="text-center"><input type="checkbox" class="child d-xoa" onclick="ChonTungQuyen(this)" /></td>
+                                <td data-title="Phê duyệt" class="text-center"><input type="checkbox" class="child d-phe-duyet" onclick="ChonTungQuyen(this)" /></td>
+                            }
+                        </tr>
+                        var danhsachCap1 = item.DanhSachChucNang;
+                        if (danhsachCap1 != null && danhsachCap1.Count > 0)
+                        {
+                            foreach (var item_con in danhsachCap1)
+                            {
+                                var dsQuyen1 = item_con.DanhSachQuyen;
+                                //Cấp 1
+                                <tr>
+                                    <td data-title="STT" class="text-center">@(stt++)</td>
+                                    <td data-title="Chức năng" class="d-chuc-nang" data-id="@item_con.IdChucnang" data-ten="@item_con.TenChucNang" data-ma="@item.MaChucNang" data-id-chuc-nang-cha="@item_con.IdChucnangCha">&nbsp;&nbsp;&nbsp;&nbsp;|- @item_con.TenChucNang</td>
+                                    @if (dsQuyen1 != null && dsQuyen1.Count > 0)
+                                    {
+                                        var xem1 = "";
+                                        var them1 = "";
+                                        var sua1 = "";
+                                        var xoa1 = "";
+                                        var pheDuyet1 = "";
+                                        var dem1 = 0;
+                                        var tatCa1 = "";
+                                        foreach (var i in dsQuyen1)
+                                        {
+                                            if (i == "Xem")
+                                            {
+                                                xem1 = "checked";
+                                                dem1++;
+                                            }
+                                            if (i == "Them")
+                                            {
+                                                them1 = "checked";
+                                                dem1++;
+                                            }
+                                            if (i == "Sua")
+                                            {
+                                                sua1 = "checked";
+                                                dem1++;
+                                            }
+                                            if (i == "Xoa")
+                                            {
+                                                xoa1 = "checked";
+                                                dem1++;
+                                            }
+                                            if (i == "PheDuyet")
+                                            {
+                                                pheDuyet1 = "checked";
+                                                dem1++;
+                                            }
+                                        }
+                                        if (dem1 == 5)
+                                        {
+                                            tatCa1 = "checked";
+                                        }
+                                        <td data-title="Tất cả" class="text-center"><input type="checkbox" class="parent d-tat-ca" @tatCa1 onclick="ChonTatCa(this)" /></td>
+                                        <td data-title="Xem" class="text-center"><input type="checkbox" class="child d-xem" @xem1 onclick="ChonTungQuyen(this)" /></td>
+                                        <td data-title="Thêm" class="text-center"><input type="checkbox" class="child d-them" @them1 onclick="ChonTungQuyen(this)" /></td>
+                                        <td data-title="Sửa" class="text-center"><input type="checkbox" class="child d-sua" @sua1 onclick="ChonTungQuyen(this)" /></td>
+                                        <td data-title="Xóa" class="text-center"><input type="checkbox" class="child d-xoa" @xoa1 onclick="ChonTungQuyen(this)" /></td>
+                                        <td data-title="Phê duyệt" class="text-center"><input type="checkbox" class="child d-phe-duyet" @pheDuyet1 onclick="ChonTungQuyen(this)" /></td>
+
+                                    }
+                                    else
+                                    {
+                                        <td data-title="Tất cả" class="text-center"><input type="checkbox" class="parent d-tat-ca" onclick="ChonTatCa(this)" /></td>
+                                        <td data-title="Xem" class="text-center"><input type="checkbox" class="child d-xem" onclick="ChonTungQuyen(this)" /></td>
+                                        <td data-title="Thêm" class="text-center"><input type="checkbox" class="child d-them" onclick="ChonTungQuyen(this)" /></td>
+                                        <td data-title="Sửa" class="text-center"><input type="checkbox" class="child d-sua" onclick="ChonTungQuyen(this)" /></td>
+                                        <td data-title="Xóa" class="text-center"><input type="checkbox" class="child d-xoa" onclick="ChonTungQuyen(this)" /></td>
+                                        <td data-title="Phê duyệt" class="text-center"><input type="checkbox" class="child d-phe-duyet" onclick="ChonTungQuyen(this)" /></td>
+                                    }
+                                </tr>
+
+                                var danhsachCap2 = item_con.DanhSachChucNang;
+                                if (danhsachCap2 != null && danhsachCap2.Count > 0)
+                                {
+                                    foreach (var item_chau in danhsachCap2)
+                                    {
+                                        var dsQuyen2 = item_chau.DanhSachQuyen;
+                                        //Cấp 2
+                                        <tr>
+                                            <td data-title="STT" class="text-center">@(stt++)</td>
+                                            <td data-title="Chức năng" class="d-chuc-nang" data-id="@item_chau.IdChucnang" data-ten="@item_chau.TenChucNang" data-ma="@item.MaChucNang" data-id-chuc-nang-cha="@item_chau.IdChucnangCha">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|-- @item_chau.TenChucNang</td>
+                                            @if (dsQuyen2 != null && dsQuyen2.Count > 0)
+                                            {
+                                                var xem2 = "";
+                                                var them2 = "";
+                                                var sua2 = "";
+                                                var xoa2 = "";
+                                                var pheDuyet2 = "";
+                                                var dem2 = 0;
+                                                var tatCa2 = "";
+                                                foreach (var i in dsQuyen2)
+                                                {
+                                                    if (i == "Xem")
+                                                    {
+                                                        xem2 = "checked";
+                                                        dem2++;
+                                                    }
+                                                    if (i == "Them")
+                                                    {
+                                                        them2 = "checked";
+                                                        dem2++;
+                                                    }
+                                                    if (i == "Sua")
+                                                    {
+                                                        sua2 = "checked";
+                                                        dem2++;
+                                                    }
+                                                    if (i == "Xoa")
+                                                    {
+                                                        xoa2 = "checked";
+                                                        dem2++;
+                                                    }
+                                                    if (i == "PheDuyet")
+                                                    {
+                                                        pheDuyet2 = "checked";
+                                                        dem2++;
+                                                    }
+                                                }
+                                                if (dem2 == 5)
+                                                {
+                                                    tatCa2 = "checked";
+                                                }
+                                                <td data-title="Tất cả" class="text-center"><input type="checkbox" class="parent d-tat-ca" @tatCa2 onclick="ChonTatCa(this)" /></td>
+                                                <td data-title="Xem" class="text-center"><input type="checkbox" class="child d-xem" @xem2 onclick="ChonTungQuyen(this)" /></td>
+                                                <td data-title="Thêm" class="text-center"><input type="checkbox" class="child d-them" @them2 onclick="ChonTungQuyen(this)" /></td>
+                                                <td data-title="Sửa" class="text-center"><input type="checkbox" class="child d-sua" @sua2 onclick="ChonTungQuyen(this)" /></td>
+                                                <td data-title="Xóa" class="text-center"><input type="checkbox" class="child d-xoa" @xoa2 onclick="ChonTungQuyen(this)" /></td>
+                                                <td data-title="Phê duyệt" class="text-center"><input type="checkbox" class="child d-phe-duyet" @pheDuyet2 onclick="ChonTungQuyen(this)" /></td>
+
+                                            }
+                                            else
+                                            {
+                                                <td data-title="Tất cả" class="text-center"><input type="checkbox" class="parent d-tat-ca" onclick="ChonTatCa(this)" /></td>
+                                                <td data-title="Xem" class="text-center"><input type="checkbox" class="child d-xem" onclick="ChonTungQuyen(this)" /></td>
+                                                <td data-title="Thêm" class="text-center"><input type="checkbox" class="child d-them" onclick="ChonTungQuyen(this)" /></td>
+                                                <td data-title="Sửa" class="text-center"><input type="checkbox" class="child d-sua" onclick="ChonTungQuyen(this)" /></td>
+                                                <td data-title="Xóa" class="text-center"><input type="checkbox" class="child d-xoa" onclick="ChonTungQuyen(this)" /></td>
+                                                <td data-title="Phê duyệt" class="text-center"><input type="checkbox" class="child d-phe-duyet" onclick="ChonTungQuyen(this)" /></td>
+                                            }
+                                        </tr>
+                                    }
+                                }
+                            }
+                        }
+                    }
+                </tbody>
+            }
+        </table>
+    </div>
+</div>

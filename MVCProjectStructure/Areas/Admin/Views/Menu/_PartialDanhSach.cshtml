@@ -1,0 +1,186 @@
+﻿@model MVCProjectStructure.Areas.Admin.Models.Menu.MenuModel.MenuOutput.DocDanhSach
+
+<div class="col-md-12 kc-0">
+    <div id="bang-bieu">
+        <div class="scrollbar mb-3">
+            <table class="col-sm-12 table-bordered table-condensed table-hover table-style">
+                <thead>
+                    <tr class="chieu-cao">
+                        <th class="w-5 al-c"><input type='checkbox' id="chonXoaTatCa" title="Chọn xóa tất cả" /></th>
+                        <th class="w-20 al-c">Tên</th>
+                        <th class="w-15 al-c">Mã</th>
+                        <th class="w-10 al-c">Nhóm</th>
+                        <th class="w-5 al-c">Liên kết</th>
+                        <th class="w-10 al-c">Loại</th>
+                        <th class="w-5 al-c">Vị trí</th>
+                        <th class="w-5 al-c">Kiểu hiển thị</th>
+                        <th class="w-5 al-c">Kích hoạt</th>
+                        <th class="w-25 al-c">Mô tả</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (Model != null && Model.DanhSach.Count > 0)
+                    {
+                        var danhSach = Model.DanhSach;
+                        if (danhSach != null && danhSach.Count > 0)
+                        {
+                            foreach (var i in danhSach)
+                            {
+                                <tr id="@i.Id">
+                                    <td class="al-c"><input type="checkbox" class="checkbox_xoa" name="IDs" value="@i.Id" /></td>
+                                    <td class="al-l" style="font-weight: bold"><i class="@i.Icon" data-toggle="tooltip" data-placement="top" title="@i.Icon"></i><a href="javascript:void(0)" onclick="ChinhSua('@i.Id')" data-id="@i.Id"> @i.Ten</a></td>
+                                    <td class="al-l">@i.Ma</td>
+                                    <td class="al-l">@(i.Nhom == 1 ? "Quản trị" : i.Nhom == 2 ? "Khai thác" : i.Nhom == 3 ? "Mobile" : "Tàu cá")</td>
+                                    <td class="al-c">
+                                        @{
+                                            if (!String.IsNullOrEmpty(i.LienKet))
+                                            {
+                                                <a href="@i.LienKet" target="_blank"><i class="fa fa-link"></i>&nbsp;Xem</a>
+                                            }
+                                        }
+                                    </td>
+                                    <td class="al-l">@(i.Loai == 1 ? "Menu trên" : (i.Loai == 2 ? "Menu trái" : (i.Loai == 3 ? "Menu phải" : (i.Loai == 4 ? "Menu dưới" : "Menu giữa"))))</td>
+                                    <td class="al-c p-0"><input type="number" class="vi-tri" data-id="@i.Id" value="@i.ViTri" style="width: 45px;" onchange="ThemDanhSachViTri(this)" /></td>
+                                    <td class="al-c">@(i.KieuHienThi == 0 ? "" : i.KieuHienThi.ToString())</td>
+                                    <td class="al-c"><i class="fa fa-check text-info" @(i.KichHoat == 1 ? "" : "hidden")></i></td>
+                                    <td class="al-l">@i.MoTa</td>
+                                    @*<td class="center"><a href="javascript:void(0)" onclick="DocThongTin('@i.Id')" data-id="@i.Id"><i class="fa fa-edit"></i></a></td>*@
+                                </tr>
+                                if (i.DsMenuCha != null && i.DsMenuCha.Count > 0)
+                                {
+                                    foreach (var j in i.DsMenuCha)
+                                    {
+                                        <tr id="@j.Id">
+                                            <td class="al-c"><input type="checkbox" class="checkbox_xoa" name="IDs" value="@j.Id" /></td>
+                                            <td class="al-l" style="padding-left: 15px">|-- <i class="@j.Icon" data-toggle="tooltip" data-placement="top" title="@j.Icon"></i> <a href="javascript:void(0)" onclick="ChinhSua('@j.Id')" data-id="@j.Id">@j.Ten</a></td>
+                                            <td class="al-l">@j.Ma</td>
+                                            <td class="al-l">@(j.Nhom == 1 ? "Quản trị" : j.Nhom == 2 ? "Khai thác" : j.Nhom == 3 ? "Mobile" : "Tàu cá")</td>
+                                            <td class="al-c">
+                                                @{
+                                                    if (!String.IsNullOrEmpty(j.LienKet))
+                                                    {
+                                                        <a href="@j.LienKet" target="_blank"><i class="fa fa-link"></i>&nbsp;Xem</a>
+                                                    }
+                                                }
+                                            </td>
+                                            <td class="al-l">@(j.Loai == 1 ? "Menu trên" : (j.Loai == 2 ? "Menu trái" : (j.Loai == 3 ? "Menu phải" : (j.Loai == 4 ? "Menu dưới" : "Menu giữa"))))</td>
+                                            <td class="al-c"><input type="number" class="vi-tri" data-id="@j.Id" value="@j.ViTri" style="width: 45px;" onchange="ThemDanhSachViTri(this)" /></td>
+                                            <td class="al-c">@(j.KieuHienThi == 0 ? "" : j.KieuHienThi.ToString())</td>
+                                            <td class="al-c"><i class="fa fa-check text-info" @(j.KichHoat == 1 ? "" : "hidden")></i></td>
+                                            <td class="al-l">@j.MoTa</td>
+                                            @*<td class="center"><a href="javascript:void(0)" data-id="@j.Id" onclick="DocThongTin('@j.Id')"><i class="fa fa-edit"></i></a></td>*@
+                                        </tr>
+                                        if (j.DsMenuCon != null && j.DsMenuCon.Count > 0)
+                                        {
+                                            foreach (var m in j.DsMenuCon)
+                                            {
+                                                <tr id="@m.Id">
+                                                    <td class="al-c"><input type="checkbox" class="checkbox_xoa" name="IDs" value="@m.Id" /></td>
+                                                    <td class="al-l" style="padding-left: 30px">|-- <i class="@m.Icon" data-toggle="tooltip" data-placement="top" title="@m.Icon"></i> <a href="javascript:void(0)" onclick="ChinhSua('@m.Id')" data-id="@m.Id">@m.Ten</a></td>
+                                                    <td class="al-l">@m.Ma</td>
+                                                    <td class="al-l">@(m.Nhom == 1 ? "Quản trị" : m.Nhom == 2 ? "Khai thác" : m.Nhom == 3 ? "Mobile" : "Tàu cá")</td>
+                                                    <td class="al-c">
+                                                        @{
+                                                            if (!String.IsNullOrEmpty(m.LienKet))
+                                                            {
+                                                                <a href="@m.LienKet" target="_blank"><i class="fa fa-link"></i>&nbsp;Xem</a>
+                                                            }
+                                                        }
+                                                    </td>
+                                                    <td class="al-l">@(m.Loai == 1 ? "Menu trên" : (m.Loai == 2 ? "Menu trái" : (m.Loai == 3 ? "Menu phải" : (m.Loai == 4 ? "Menu dưới" : "Menu giữa"))))</td>
+                                                    <td class="al-c"><input type="number" class="vi-tri" data-id="@m.Id" value="@m.ViTri" style="width: 45px;" onchange="ThemDanhSachViTri(this)" /></td>
+                                                    <td class="al-c">@(m.KieuHienThi == 0 ? "" : m.KieuHienThi.ToString())</td>
+                                                    <td class="al-c"><i class="fa fa-check text-info" @(m.KichHoat == 1 ? "" : "hidden")></i></td>
+                                                    <td class="al-l">@m.MoTa</td>
+                                                    @*<td class="center"><a href="javascript:void(0)" data-id="@j.Id" onclick="DocThongTin('@j.Id')"><i class="fa fa-edit"></i></a></td>*@
+                                                </tr>
+                                                if (m.DsMenuChau != null && m.DsMenuChau.Count > 0)
+                                                {
+                                                    foreach (var n in m.DsMenuChau)
+                                                    {
+                                                        <tr id="@n.Id">
+                                                            <td class="al-c"><input type="checkbox" class="checkbox_xoa" name="IDs" value="@n.Id" /></td>
+                                                            <td class="al-l" style="padding-left: 45px">|-- <i class="@n.Icon" data-toggle="tooltip" data-placement="top" title="@n.Icon"></i> <a href="javascript:void(0)" onclick="ChinhSua('@n.Id')" data-id="@n.Id">@n.Ten</a></td>
+                                                            <td class="al-l">@n.Ma</td>
+                                                            <td class="al-l">@(n.Nhom == 1 ? "Quản trị" : n.Nhom == 2 ? "Khai thác" : n.Nhom == 3 ? "Mobile" : "Tàu cá")</td>
+                                                            <td class="al-c">
+                                                                @{
+                                                                    if (!String.IsNullOrEmpty(n.LienKet))
+                                                                    {
+                                                                        <a href="@n.LienKet" target="_blank"><i class="fa fa-link"></i>&nbsp;Xem</a>
+                                                                    }
+                                                                }
+                                                            </td>
+                                                            <td class="al-l">@(n.Loai == 1 ? "Menu trên" : (n.Loai == 2 ? "Menu trái" : (n.Loai == 3 ? "Menu phải" : (n.Loai == 4 ? "Menu dưới" : "Menu giữa"))))</td>
+                                                            <td class="al-c"><input type="number" class="vi-tri" data-id="@n.Id" value="@n.ViTri" style="width: 45px;" onchange="ThemDanhSachViTri(this)" /></td>
+                                                            <td class="al-c">@(n.KieuHienThi == 0 ? "" : n.KieuHienThi.ToString())</td>
+                                                            <td class="al-c"><i class="fa fa-check text-info" @(n.KichHoat == 1 ? "" : "hidden")></i></td>
+                                                            <td class="al-l">@n.MoTa</td>
+                                                            @*<td class="center"><a href="javascript:void(0)" data-id="@j.Id" onclick="DocThongTin('@j.Id')"><i class="fa fa-edit"></i></a></td>*@
+                                                        </tr>
+                                                        if (n.DsMenu != null && n.DsMenu.Count > 0)
+                                                        {
+                                                            foreach (var o in n.DsMenu)
+                                                            {
+                                                                <tr id="@o.Id">
+                                                                    <td class="al-c"><input type="checkbox" class="checkbox_xoa" name="IDs" value="@o.Id" /></td>
+                                                                    <td class="al-l" style="padding-left: 60px">|-- <i class="@o.Icon" data-toggle="tooltip" data-placement="top" title="@o.Icon"></i> <a href="javascript:void(0)" onclick="ChinhSua('@o.Id')" data-id="@o.Id">@o.Ten</a></td>
+                                                                    <td class="al-l">@o.Ma</td>
+                                                                    <td class="al-l">@(o.Nhom == 1 ? "Quản trị" : o.Nhom == 2 ? "Khai thác" : o.Nhom == 3 ? "Mobile" : "Tàu cá")</td>
+                                                                    <td class="al-c">
+                                                                        @{
+                                                                            if (!String.IsNullOrEmpty(o.LienKet))
+                                                                            {
+                                                                                <a href="@o.LienKet" target="_blank"><i class="fa fa-link"></i>&nbsp;Xem</a>
+                                                                            }
+                                                                        }
+                                                                    </td>
+                                                                    <td class="al-l">@(o.Loai == 1 ? "Menu trên" : (o.Loai == 2 ? "Menu trái" : (o.Loai == 3 ? "Menu phải" : (o.Loai == 4 ? "Menu dưới" : "Menu giữa"))))</td>
+                                                                    <td class="al-c"><input type="number" class="vi-tri" data-id="@o.Id" value="@o.ViTri" style="width: 45px;" onchange="ThemDanhSachViTri(this)" /></td>
+                                                                    <td class="al-c">@(o.KieuHienThi == 0 ? "" : o.KieuHienThi.ToString())</td>
+                                                                    <td class="al-c"><i class="fa fa-check text-info" @(o.KichHoat == 1 ? "" : "hidden")></i></td>
+                                                                    <td class="al-l">@o.MoTa</td>
+                                                                    @*<td class="center"><a href="javascript:void(0)" data-id="@j.Id" onclick="DocThongTin('@j.Id')"><i class="fa fa-edit"></i></a></td>*@
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="10"><div class="alert alert-secondary mb-0 text-center">Không tìm thấy dữ liệu</div></td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        XuLyChonTatCa();
+
+        @*var a = '@ViewBag.Active';
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PartialMenuLeft", "Menu", new { area = "Admin" })',
+            success: function (data) {
+                $('#MenuLeft').html(data);
+
+                $('.nav-item.'+a).addClass("active");
+                var activeMenuCoCon = $('.dropdown-item.@ViewBag.Active');
+                activeMenuCoCon.addClass("active");
+                activeMenuCoCon.parent().addClass("show");
+                activeMenuCoCon.parent().parent().addClass("show");
+                activeMenuCoCon.parent().parent().addClass("active");
+            }
+        });*@
+    });
+</script>

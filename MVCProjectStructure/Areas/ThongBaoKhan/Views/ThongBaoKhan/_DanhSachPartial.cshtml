@@ -1,0 +1,132 @@
+﻿
+@using Common.Utilities;
+@using Common.Enum
+@using MVCProjectStructure.Helpers;
+@model MVCProjectStructure.Areas.ThongBaoKhan.Models.ThongBaoKhanModel.Output.DocDanhSach
+@{
+    int stt =(Model==null?0: ((Model.TrangHienTai - 1) * PageNumber.Default) + 1);
+   // int stt = 0;
+}
+@if (TempData["Error"] != null)
+{
+    Html.RenderPartial("_AlertPartial");
+}
+
+@if (Model != null)
+{
+    <div class="col-md-12 khoang-cach-0 canh-le">
+        <div id="bang-bieu" style="color:#2B2B2B; margin:5px 0px 15px 0px;">
+            <div class="scrollbar scrollbar-custom">
+                <table class="col-sm-12 table-bordered table-striped table-condensed" style="padding:0px; width:100%; font-size:14px;">
+                    <thead>
+                        <tr class="chieu-cao" style="background-color:#ffffff; color:#49491A; font-size:14px; font-weight:bold; text-align:center">
+                            <th style="width:5%; text-align:center"><input type='checkbox' id="chonXoaTatCa" title="Chọn xóa tất cả" /></th>
+                            <th style="width:5%; text-align:center">STT</th>
+                            <th style="width:10%; text-align:center;">Hình</th>
+                            <th style="width:25%; text-align: center;">Tiêu đề</th>
+                            <th style="text-align:center;">Nội dung tóm tắt</th>
+                            <th style="width:8%; text-align:center;">Thông báo</th>
+                            <th style="width:8%; text-align:center;">Kích hoạt</th>
+                            <th style="width:8%; text-align:center;">Người cập nhật</th>
+                            @*<th style="width:4%">&nbsp;</th>*@
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.DanhSach)
+                        {
+                            <tr id="tr_@item.Id">
+                                <td style="text-align:center">
+                                    <input type='checkbox' class="checkbox_xoa" onchange="Xulycheckbox()" value="@item.Id" title="Chọn xóa" id="@item.Id" name="IDs" />
+                                    @*<div class="visible-xs-inline visible-sm-inline">
+                                        <label for="@item.Id" style="display:inline!important">Chọn xóa</label>
+                                    </div>*@
+                                </td>
+                                <td data-title="STT" style="text-align:center">@(stt++)</td>
+                                <td data-title="Hình" style="text-align:center">
+                                    <img src='@item.HinhDaiDien' style="width:100%" />
+                                </td>
+                                <td data-title="Tiêu đề" style="text-align: left" id="@item.Id" onclick="ChinhSua(this.id)"><a href="#">@item.TieuDe</a></td>
+                                <td data-title="Nội dung tóm tắt" style="text-align:left">@Utility.CatChuoi(item.NoiDungTomTat, 170)</td>
+                                <td data-title="Thông báo" style="text-align:center">
+                                    @if (item.DoUuTien)
+                                    {<i class="fa fa-check text-success" aria-hidden="true"></i>}
+                                </td>
+                                <td data-title="Kích hoạt" style="text-align:center">
+                                    @if (item.TrangThai)
+                                    {<i class="fa fa-check text-info" aria-hidden="true"></i>}
+                                </td>
+                                <td data-title="Người cập nhật" style="text-align:left">@item.TenNguoiCapNhat</td>
+                                @*<td data-title="&nbsp;" style="text-align:center">
+                                    <button type="button" id="@item.Id" class="btn btn-sm btn-success edit" title="Hiệu chỉnh thông tin" onclick="ChinhSua(this.id)">
+                                        <i class="fa fa-pencil"></i>
+                                    </button>
+                                </td>*@
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div style="clear:both"></div>
+        </div>
+        @{
+            if (Model != null)
+            {
+                string duongDan = Url.Action("XemDanhSach", "ThongBaoKhan", new { area = "ThongBaoKhan" });
+                string kq = XuLyPhanTrang.TaoPhanTrang(Model.TongSoTrang, Model.TrangHienTai, duongDan, ViewBag.DanhSachThamSo);
+                @Html.Raw(kq);
+            }
+        }
+        <div style="clear:both"></div>
+
+        @if (TempData["Success"] != null)
+        {
+            @Html.Partial("_DialogSuccessPartial", (string)TempData["Success"])
+        }
+    </div>
+}
+
+<!-- KhungYouTube-->
+<div class="modal fade" id="KhungYouTube" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:#00ADEE; color:#ffffff">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icons-office-52"></i></button>
+                <h4 class="modal-title">Bản tin truyền hình</h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="iframeYoutube" width="560" height="315" style="width:100%;" src="" frameborder="0" allowfullscreen></iframe>
+                <div style="clear:both"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-embossed" style="background-color:#00ADEE; color:#ffffff; padding:5px 10px" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /KhungYouTube-->
+
+
+<script>
+
+
+    $('#chonXoaTatCa').change(function () {
+        $('.checkbox_xoa').not(this).prop('checked', this.checked);
+        Xulycheckbox()
+    });
+
+    function Xulycheckbox() {
+        var chk = $('.checkbox_xoa:checkbox:checked').length
+        var c = $('.checkbox_xoa').length
+        if (chk > 0) {
+            $("#btnXoa")[0].disabled = false;
+        } else {
+            $("#btnXoa")[0].disabled = true;
+        }
+        if (chk == c) {
+            $('#chonXoaTatCa').prop('checked', true)
+        } else {
+            $('#chonXoaTatCa').prop('checked', false)
+        }
+    }
+</script>
+

@@ -1,0 +1,162 @@
+﻿@model MVCProjectStructure.Areas.NguoiDung.Models.NguoiDungModel.NguoiDungOutput.ThongTin
+<input id="Id" name="Id" value="@Model.Id" hidden />
+
+<div class="row them-cap-nhat">
+    <input id="KetQuaOutput" data-ketqua="@ViewBag.KetQua" hidden />
+    @if (Model != null)
+    {
+        <div class="col-7">
+            <div class="form-group row">
+                <label for="Ten" class="col-md-4 col-form-label control-label required">Họ và tên: </label>
+                <div class="col-md-8"><input type="text" id="Ten" name="Ten" required class="form-control" value="@Model.Ten" placeholder="Họ và tên" title="Họ và tên"></div>
+            </div>
+            <div class="form-group row">
+                <label for="TenTaiKhoan" class="col-md-4 col-form-label control-label required">Tên tài khoản: </label>
+                <div class="col-md-8">
+                    <input type="text" id="TenTaiKhoan" name="TenTaiKhoan" class="form-control" value="@Model.TenTaiKhoan" placeholder="Tên tài khoản" title="Tên tài khoản">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="MatKhau" class="col-md-4 col-form-label control-label required">Mật khẩu: </label>
+                <div class="col-md-8">
+                    <input id="MatKhau" name="MatKhau" type="password" class="form-control" value="@Model.MatKhau" placeholder="Mật khẩu" title="Mật khẩu">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="NhapLaiMatKhau" class="col-md-4 col-form-label control-label required">Nhập lại mật khẩu: </label>
+                <div class="col-md-8">
+                    <input id="NhapLaiMatKhau" name="NhapLaiMatKhau" type="password" class="form-control" value="@(!string.IsNullOrEmpty(Model.Id) ? Model.MatKhau : "")" placeholder="Nhập lại mật khẩu" title="Nhập lại mật khẩu">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="VaiTro" class="col-md-4 col-form-label control-label ">Vai trò: </label>
+                <div class="col-md-8">
+                    <select id="VaiTro" name="VaiTro" class="form-control w-100">
+                        @if (ViewBag.DanhSachVaiTro != null)
+                        {
+                            foreach (var item in ViewBag.DanhSachVaiTro)
+                            {
+                                <option value="@item.Ma" @(Model.MaVaiTro == item.Ma ? "selected" : "") data-id="@item.Id">@item.Ten</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="DonVi" class="col-md-4 col-form-label control-label ">Đơn vị: </label>
+                <div class="col-md-8">
+                    <select id="DonVi" name="DonVi" class="form-control w-100">
+                        @if (ViewBag.DanhSachDonVi != null)
+                        {
+                            foreach (var item in ViewBag.DanhSachDonVi)
+                            {
+                                <option value="@item.Ma" @(Model.MaDonVi == item.Ma ? "selected" : "")  data-id="@item.Id">@item.Ten</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="DienThoai" class="col-md-4 col-form-label control-label ">Điện thoại: </label>
+                <div class="col-md-8">
+                    <input id="DienThoai" name="DienThoai" class="form-control" value="@Model.DienThoai" placeholder="Điện thoại" title="Điện thoại">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="Email" class="col-md-4 col-form-label control-label ">Email: </label>
+                <div class="col-md-8">
+                    <input id="Email" name="Email" class="form-control" value="@Model.Email" placeholder="Email" title="Email">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-4 col-form-label control-label ">&nbsp;</label>
+                <div class="col-md-8">
+                    @if (Model.KichHoat || !string.IsNullOrEmpty(Model.Id))
+                    {
+                        <input class="form-check-input ml-1" type="checkbox" id="KichHoat" name="KichHoat" checked>
+                    }
+                    else
+                    {
+                        <input class="form-check-input ml-1" type="checkbox" id="KichHoat" name="KichHoat">
+                    }
+                    <label class="form-check-label ml-4" for="KichHoat">
+                        Kích hoạt
+                    </label>
+                </div>
+            </div>
+            <hr />
+            <div class="form-group row">
+                <div class="col-md-12">
+                    <h6>Chọn cấp hành chính để phân quyền quản lý dữ liệu</h6>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="Huyen" class="col-md-4 col-form-label control-label ">Quận Huyện: </label>
+                <div class="col-md-8">
+                    <select id="Huyen" name="Huyen" class="form-control w-100" onchange="XuLyDocDanhSachHuyenXaAp(this, 'Xa', 'Xa');">
+                        <option value="">-- Toàn tỉnh --</option>
+                        @if (ViewBag.DanhSachHuyen != null)
+                        {
+                            foreach (var item in ViewBag.DanhSachHuyen)
+                            {
+                                <option value="@item.Id" @(Model.IdHuyen == item.Id ? "selected" : "")>@item.Ten</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="Xa" class="col-md-4 col-form-label control-label ">Phường Xã: </label>
+                <div class="col-md-8">
+                    <select id="Xa" name="Xa" class="form-control w-100">
+                        <option value="">-- Toàn huyện --</option>
+                        @if (ViewBag.DanhSachXa != null)
+                        {
+                            foreach (var item in ViewBag.DanhSachXa)
+                            {
+                                <option value="@item.Id" @(Model.IdXa == item.Id ? "selected" : "")>@item.Ten</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-5">
+
+            <div class="form-group row">
+                <div class="col-md-12">
+                    <h6 class="font-weight-bold">Danh sách quyền cho tài khoản</h6>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-12" style="max-height:1000px; overflow-y:auto;">
+                    <ul class="pl-0" style="list-style-type:none">
+                        @if (ViewBag.DanhSachPhanQuyen != null)
+                        {
+                            foreach (var item in ViewBag.DanhSachPhanQuyen)
+                            {
+                                bool chon = false;
+                                if (Model.DanhSachIdPhanQuyen != null)
+                                {
+                                    foreach (var i in Model.DanhSachIdPhanQuyen)
+                                    {
+                                        if (i == item.Id)
+                                        {
+                                            chon = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                <li class="checkbox" style="padding-top:0">
+                                    <input id="@item.Id" name="IdPhanQuyens" type="checkbox" class="checkbox-quyen" value="@item.Id" @(chon ? "checked" : "")>
+                                    <label for="@item.Id" style="padding-left:0">@item.TenQuyen</label>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    }
+</div>

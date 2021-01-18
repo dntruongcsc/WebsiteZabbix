@@ -1,0 +1,232 @@
+﻿@using Common.Enum;
+@{
+    ViewBag.Title = "Phản ánh người dân";
+    Layout = ChucNang.GiaoDien.SBAdmin;
+    ViewBag.Active = "PhanAnhTuNguoiDan";
+}
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="@Url.Action("Index","Home",new { area = "Admin" })"><i class="fa fa-tachometer"></i> Bảng điều khiển</a>
+    </li>
+    <li class="breadcrumb-item active">Phản ánh từ người dân</li>
+</ol>
+<!-- Body -->
+<div class="row px-3 mb-3">
+    @*<div class="col-md-3 plrb-022">
+            <select id="chonHuyen" onchange="chonHuyen(this.value);" class="form-control">
+                <option value="">--Chọn huyện--</option>
+            </select>
+        </div>
+        <div class="col-md-3 plrb-022">
+            <select id="chonXa" onchange="chonXa(this.value);" class="form-control">
+                <option value="">--Chọn xã--</option>
+            </select>
+        </div>
+        <div class="col-md-3 plrb-022">
+            <select id="chonAp" class="form-control">
+                <option value="">--Chọn ấp--</option>
+            </select>
+        </div>*@
+    <div class="col-md-3 plrb-022">
+        <select class="form-control" id="LoaiPhanAnh">
+            <option selected value="">-- Tất cả loại phản ánh --</option>
+            @if (ViewBag.DanhSachLoaiPhanAnh != null && ViewBag.DanhSachLoaiPhanAnh.Count > 0)
+            {
+                foreach (var item in ViewBag.DanhSachLoaiPhanAnh)
+                {
+                    <option value="@item.Id">@item.Ten</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="col-md-3 plrb-022">
+        <select class="form-control" id="TinhTrang">
+            <option selected value="-1">-- Tất cả tình trạng --</option>
+            <option value="0">Đã tiếp nhận</option>
+            <option value="1">Đang xử lý</option>
+            <option value="2">Đã xử lý</option>
+        </select>
+    </div>
+    <div class="col-md-3 plrb-022">
+        <input id="TuKhoa" type="text" class="form-control" placeholder="Tìm theo tên, số điện thoại" />
+    </div>
+
+    <div class="col-md-1 plrb-022">
+        <button type="button" class="btn btn-info" onclick="xuLyTimKiem()"><i class="fa fa-search">&nbsp;</i>Tìm kiếm</button>
+    </div>
+    <div class="col-md-2 p-0 canh-le-p">
+        <button id="btnThem" class="btn btn-mac-dinh" onclick="Them()">
+            <i class="fa fa-plus"></i> Thêm mới
+        </button>
+        <button type="button" id="btnXoa" class="btn btn-danger" onclick="XuLyXoa()"><i class="fa fa-trash">&nbsp;</i>Xóa</button>
+    </div>
+</div>
+<div id="nodungbaobieuinan" hidden>
+
+</div>
+
+<div id="ThongBao_Index"></div>
+<div id="DanhSach_CapNhat">
+</div>
+<div style="z-index: 99999; background-color: #8080804d;" class="modal fade" id="ModalXemHinh" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                @*<h5 class="modal-title" id="exampleModalLongTitle"></h5>*@
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img id="HinhXemTruoc" style="max-width: 100%"/>
+            </div>
+        </div>
+    </div>
+</div>
+@section ContentHead{
+    <link href="~/Content/datetimepicker/bootstrap-datetimepicker.css" rel="stylesheet" />
+    <script src="~/Scripts/datetimepicker/moment.min.js"></script>
+    <script src="~/Scripts/datetimepicker/bootstrap-datetimepicker.min.js"></script>
+}
+@section Scripts{
+    <script>
+        var HamXuLy = {
+            Luu: "Luu",
+            LuuDong: "LuuDong",
+            Dong: "Dong"
+        };
+        $(document).ready(function () {
+            var thamSo = DocThamSoTraVeObject(location.search);
+            $("#TuKhoa").val(thamSo.tukhoa);
+            if (thamSo.loai) {
+                $("#LoaiPhanAnh").val(thamSo.loai);
+            }
+            if (thamSo.tinhtrang) {
+                $("#TinhTrang").val(thamSo.tinhtrang);
+            }
+            //if (thamSo.idap) {
+            //    $("#IdAp").val(thamSo.idap);
+            //}
+            //if (thamSo.tungay) {
+            //    $("#TuNgay input").val(thamSo.tungay);
+            //}
+            //if (thamSo.denngay) {
+            //    $("#DenNgay input").val(thamSo.denngay);
+            //}
+            XuLyTimKiem(thamSo.trang);
+        });
+        function XuLyTimKiem(trang) {
+            try {
+                if (!trang) {
+                    trang = 1;
+                }
+                var thamSo = "?tukhoa=" + $('#TuKhoa').val();
+                thamSo = thamSo + "&loai=" + $('#LoaiPhanAnh').val();
+                thamSo = thamSo + "&tinhtrang=" + $('#TinhTrang').val();
+                thamSo = thamSo + "&trang=" + trang;
+                XuLyCapNhatDanhSach('PhanAnhNhanh/PhanAnhNhanh/XemDanhSach', thamSo);
+            } catch (e) {
+                Modal.Message(Message.LoiDuLieu);
+            }
+        }
+        function Them() {
+            ThemCapNhat('PhanAnhNhanh/PhanAnhNhanh/ThongTinThemCapNhat', HamXuLy);
+        }
+        function ChinhSua(Id) {
+            ThemCapNhat('PhanAnhNhanh/PhanAnhNhanh/ThongTinThemCapNhat', HamXuLy, Id);
+        }
+
+        function XuLyLayThongTinLuu() {
+            let danhSachHinh = [];
+            let ds = $("#DsHinhAnh .danh-sach-hinh");
+            for (i = 0; i < ds.length; i++) {
+                let row = $(ds[i]);
+                let manggach = row.data("url").split("/");
+                let mangcham = manggach[manggach.length - 1].split(".");
+
+                let item = {
+                    Ten: row.data("url"),
+                    TenThumbnail: row.data("url"),
+                    LoaiTapTin: mangcham[mangcham.length - 1],
+                }
+                danhSachHinh.push(item);
+            }
+
+            let dsTapTinPhanHoi = [];
+            let taptin = {
+                Ten: $("#DinhKemVanBanPhanHoi").val()
+            }
+            if ($("#DinhKemVanBanPhanHoi").val() != "") dsTapTinPhanHoi.push(taptin);
+            let phanHoi = {
+                NoiDung: CKEDITOR.instances['NoiDungPhanHoi'].getData(),
+                DanhSachTapTin: dsTapTinPhanHoi
+            }
+
+            return JsonInput = {
+                Id: $('#Id').val(),
+                IdLoaiPhanAnhNguoiDan: $('#LoaiPhanAnhThem').val(),
+                Sdt: $('#Sdt').val(),
+                NoiDung: $('#NoiDungPhanAnh').val(),
+                DanhSachTapTin: danhSachHinh,
+                TenNguoiPhanAnh: $("#TenNguoiPhanAnh").val(),
+                TrangThai: $("#TrangThai").val(),
+                XuatBan: $("#XuatBan").prop("checked"),
+                ThongTinPhanHoi: phanHoi,
+            };
+        }
+        function Luu(DongModal) {
+            let ten = $('#TenNguoiPhanAnh');
+            if (ten.val() == null || ten.val() == "") {
+                ten.css("border-color", "red");
+                return;
+            }
+            ten.css("border-color", "");
+
+            let nd = $('#NoiDungPhanAnh');
+            if (nd.val() == null || nd.val() == "") {
+                nd.css("border-color", "red");
+                return;
+            }
+            nd.css("border-color", "");
+
+            var JsonInput = XuLyLayThongTinLuu();
+            XuLyThongTinThemCapNhat('PhanAnhNhanh/PhanAnhNhanh/XuLyLuu', JsonInput, HamXuLy, 'PhanAnhNhanh/PhanAnhNhanh/XemDanhSach', DongModal);
+        }
+        function LuuDong() {
+            Luu(true);
+        }
+        function XuLyXoa() {
+            Modal.AddConfirmXoa(Message.XacNhanXoa, 'XoaDanhSach()', 'HuyBo()');
+        }
+        function XoaDanhSach() {
+            var danhSachId = DocDanhSachIdCanXoa();
+            var input = { "danhSachId": danhSachId };
+            XuLyAPI('PhanAnhNhanh/PhanAnhNhanh/XuLyXoaDanhSach', input, 'html', 'POST', iXuLyXoa);
+        }
+        function iXuLyXoa(data) {
+            if (data) {
+                if (data.KetQua === 1) {
+                    $("#ModalConfirm").modal('hide');
+                    var duLieu = JSON.parse(data.DuLieu);
+                    Modal.Message(Message.XoaThanhCong + '(' + duLieu.TongSoLuong + ' dòng)');
+                    var thamSo = DocThamSo();
+                    XuLyCapNhatDanhSach('PhanAnhNhanh/PhanAnhNhanh/XemDanhSach', thamSo);
+                }
+                if (data.KetQua === 0 || data.KetQua === -3) {
+                    Modal.Message(Message.XoaThatBai);
+                }
+                if (data.KetQua === -2) {
+                    location.href = window.location.protocol + "//" + window.location.host + "/" + data.GhiChu;
+                }
+            }
+        }
+        function HuyBo() {
+            DongModalConfirm();
+        }
+
+        function Dong() {
+            DongModalThemCapNhat();
+        }
+    </script>
+
+}

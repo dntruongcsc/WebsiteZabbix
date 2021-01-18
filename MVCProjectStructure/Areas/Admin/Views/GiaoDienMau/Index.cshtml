@@ -1,0 +1,347 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_SBAdmin.cshtml";
+    ViewBag.active = "abc";
+}
+
+<div class="row form-small">
+    <!--Thông tin-->
+    <div class="form-group col-sm-12">
+        <div class="col-12 p-0">
+            <h6 class="p-1 text-info ">Thông tin</h6>
+            <hr class="my-1 mb-1">
+        </div>
+    </div>
+    <div class="col-md-6">
+        <!--Input-->
+        <div class="col-12 p-0">
+            <label class="col-sm-4 float-left">Input</label>
+            <input id="Input01" type="text" class="col-sm-8 float-left form-control form-control-sm mb-1" placeholder="" />
+            <div class="clearfix"></div>
+        </div>
+        <!--Dropdown-->
+        <div class="col-12 p-0">
+            <label class="col-sm-4 float-left">Dropdown</label>
+            <select id="Dropdown01" class="col-sm-8 float-left form-control form-control-sm mb-1">
+                <option value="">- Chọn -</option>
+                <option value="">1</option>
+                <option value="">2</option>
+            </select>
+            <div class="clearfix"></div>
+        </div>
+        <!--Input append-->
+        <div class="col-12 p-0">
+            <label class="col-sm-4 float-left">Input append</label>
+            <div class="col-sm-8 float-left input-group input-group-sm p-0">
+                <input type="text" class="form-control mb-1" aria-label="Small" placeholder="" />
+                <div class="input-group-append" style="z-index:0;">
+                    <div class="input-group-text btn"><i class="fas fa-search"></i>&nbsp;Tìm</div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <!--Input append-->
+        <div class="col-12 p-0">
+            <label class="col-sm-4 float-left">Input append</label>
+            <div class="col-sm-8 p-0 float-left">
+                <div class="form-group mb-0">
+                    <div class="input-group input-group-sm">
+                        <input type="number" class="thuc-vat float-left form-control form-control-sm mb-1" placeholder="" />
+                        <div class="input-group-append">
+                            <span class="input-group-text">m3</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <!--Input prepend-->
+        <div class="col-12 p-0">
+            <label class="col-sm-4 float-left">Input prepend</label>
+            <div class="col-sm-8 p-0 float-left">
+                <div class="form-group mb-0">
+                    <div class="input-group input-group-sm">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">m3</span>
+                        </div>
+                        <input type="number" class="thuc-vat float-left form-control form-control-sm mb-1" placeholder="" />
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <!--Input prepend append-->
+        <div class="col-12 p-0">
+            <label class="col-sm-4 float-left">Input prepend append</label>
+            <div class="col-sm-8 p-0 float-left">
+                <div class="form-group mb-0">
+                    <div class="input-group input-group-sm">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">m3</span>
+                        </div>
+                        <input type="number" class="thuc-vat float-left form-control form-control-sm mb-1" placeholder="" />
+                        <div class="input-group-append">
+                            <span class="input-group-text">m3</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <!--Checkbox-->
+        <div class="col-12 p-0">
+            <label class="col-sm-4 float-left">&nbsp;</label>
+            <div class="col-sm-8 float-left p-0">
+                <div class="form-check form-check-inline">
+                    <input id="KichHoat" class="form-check-input" type="checkbox">
+                    <label class="form-check-label" for="KichHoat">Kích hoạt</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input id="ThongBao" class="form-check-input" type="checkbox">
+                    <label class="form-check-label" for="ThongBao">Thông báo</label>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <!--Radio-->
+        <div class="col-12 p-0">
+            <label class="col-sm-4 float-left">&nbsp;</label>
+            <div class="col-sm-8 float-left p-0">
+                <div class="form-check form-check-inline">
+                    <input id="KichHoat1" class="form-check-input" type="radio" name="radio1">
+                    <label class="form-check-label" for="KichHoat1">Kích hoạt</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input id="ThongBao1" class="form-check-input" type="radio" name="radio1">
+                    <label class="form-check-label" for="ThongBao1">Thông báo</label>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <!--Input file-->
+        <div class="col-12 p-0">
+            <label class="col-sm-4 float-left">Input file</label>
+            <div class="col-sm-8 p-0 float-left">
+                <div class="form-group mb-0">
+                    <div class="input-group input-group-sm">
+                        <input id="DuongDanFile01" type="text" class="float-left form-control form-control-sm mb-1" placeholder="" />
+                        <div class="input-group-append">
+                            <div id="ChonFile01" class="input-group-text btn">Chọn</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <script>
+            $('#ChonFile01').on('click', function () {
+                var ckfider = new CKFinder();
+                ckfider.selectActionFunction = function (fileUrl) {
+                    $('#DuongDanFile01').val(fileUrl);
+                };
+                ckfider.popup();
+            });
+        </script>
+        <!--Input date-->
+        <div class="col-12 p-0">
+            <label class="col-sm-4 float-left">Input date</label>
+            <div class="col-sm-8 p-0 float-left">
+                <div class="form-group">
+                    <div class="input-group date datetimepicker">
+                        <input id="" type='text' class="form-control form-control-sm" placeholder="dd/mm/yyyy" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <!--Double Input-->
+        <div class="col-12 p-0">
+            <label class="col-sm-4 float-left">Double Input</label>
+            <div class="col-sm-4 p-0 float-left">
+                <div class="form-group mb-0">
+                    <div class="input-group input-group-sm">
+                        <input type="number" class="float-left form-control form-control-sm mb-1" placeholder="" />
+                        <div class="input-group-append">
+                            <span class="input-group-text">Kg</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 p-0 float-left">
+                <div class="form-group mb-0">
+                    <div class="input-group input-group-sm">
+                        <input type="number" class="float-left form-control form-control-sm mb-1" placeholder="" />
+                        <div class="input-group-append">
+                            <span class="input-group-text">Cá thể</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <!--Textarea-->
+        <div class="col-sm-12 p-0">
+            <label class="col-sm-4 float-left">Textarea</label>
+            <textarea rows="4" cols="50" class="col-sm-8 float-left form-control form-control-sm mb-1"></textarea>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <!--Textarea ckediter-->
+        <div class="col-sm-12 p-0">
+            <label class="col-sm-2 float-left">Textarea ckediter</label>
+            <div class="col-sm-10 float-left p-0">
+                <textarea id="NoiDung" rows="6" class="form-control form-control-sm mb-1"></textarea>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <!--Thông tin (có chừa khoàn trống bên phải)-->
+    <div class="form-group col-12">
+        <div class="col-12 p-0">
+            <h6 class="p-1 text-info ">Thông tin (có chừa khoàn trống bên phải)</h6>
+            <hr class="my-1 mb-1">
+        </div>
+    </div>
+    <div class="col-md-6">
+        <!--Input-->
+        <div class="col-12 p-0">
+            <label class="col-sm-4 float-left">Input</label>
+            <div class="col-sm-6 float-left input-group input-group-sm p-0">
+                <input type="text" class="form-control mb-1" aria-label="Small" placeholder="" />
+                <div class="input-group-append" style="z-index:0;">
+                    <div class="input-group-text btn"><i class="fas fa-search"></i>&nbsp;Tìm</div>
+                </div>
+            </div>
+            <div class="col-sm-2 float-left mt-1 text-info "><i class="fas fa-question-circle icon-help" data-toggle="popover" data-placement="left" data-content="Thông tin gợi ý"></i></div>
+            <div class="clearfix"></div>
+        </div>
+        <!--Input-->
+        <div class="col-12 p-0">
+            <label class="col-sm-4 float-left">Input</label>
+            <input type="text" class="col-sm-6 float-left form-control form-control-sm mb-1" placeholder="" />
+            <div class="clearfix"></div>
+        </div>
+        <!--Dropdown-->
+        <div class="col-12 p-0">
+            <label class="col-sm-4 float-left">Dropdown</label>
+            <select id="CapQuanLy" class="col-sm-6 float-left form-control form-control-sm mb-1">
+                <option value="">- Chọn -</option>
+                <option value="">1</option>
+                <option value="">2</option>
+            </select>
+            <div class="clearfix"></div>
+        </div>
+        <!--Input image-->
+        <div class="col-12 p-0">
+            <label class="col-sm-4 float-left">Input image</label>
+            <div class="col-sm-6 p-0 float-left">
+                <div class="form-group mb-0">
+                    <div class="input-group input-group-sm">
+                        <input id="DuongDanHinh01" type="text" class="float-left form-control form-control-sm mb-1" placeholder="" />
+                        <div class="input-group-append">
+                            <div id="ChonHinh01" class="input-group-text btn">Chọn</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2 float-left"><img id="Hinh01" class="zoom" src="" /></div>
+            <div class="clearfix"></div>
+        </div>
+        <script>
+            $('#ChonHinh01').on('click', function () {
+                var ckfider = new CKFinder();
+                ckfider.selectActionFunction = function (fileUrl) {
+                    $('#DuongDanHinh01').val(fileUrl);
+                    $('#Hinh01').attr('src', fileUrl);
+                };
+                ckfider.popup();
+            });
+        </script>
+    </div>
+    <div class="col-md-6">
+        <!--Textarea-->
+        <div class="col-sm-12 p-0">
+            <label class="col-sm-4 float-left">Textarea</label>
+            <textarea id="GhiChu" rows="4" cols="50" class="col-sm-6 float-left form-control form-control-sm mb-1"></textarea>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <!--Textarea lưu giá trị-->
+        <div class="col-sm-12 p-0">
+            <label class="col-sm-2 float-left">Textarea code</label>
+            <textarea id="TextClipBoard" rows="4" cols="50" class="col-sm-10 float-left form-control form-control-sm mb-1"></textarea>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+
+</div>
+@section styles{
+    <style>
+        .zoom {
+            -webkit-transition: all 1s ease-in-out;
+            -moz-transition: all 1s ease-in-out;
+            -o-transition: all 1s ease-in-out;
+            transition: transform 1s ease-in-out;
+            margin: 0 auto;
+            opacity: .5;
+            border-radius: 2px;
+            height: 35px;
+            vertical-align: top;
+            margin-left: 15px;
+            z-index: 100;
+            position: relative;
+        }
+
+            .zoom:hover {
+                opacity: 1;
+                -webkit-transform: scale(5.5);
+                -moz-transform: scale(5.5);
+                -ms-transform: scale(5.5);
+                transform: scale(5.5);
+            }
+    </style>
+}
+@section ContentHead{
+    <script src="~/Scripts/datetimepicker/moment.min.js"></script>
+    <script src="~/Scripts/datetimepicker/bootstrap-datetimepicker.min.js"></script>
+    <link href="~/Content/datetimepicker/bootstrap-datetimepicker.css" rel="stylesheet" />
+}
+@section Scripts {
+    <script src="~/Content/ckfinder/ckfinder.js"></script>
+    <script src="~/Content/ckeditor/ckeditor.js"></script>
+    <script>
+        $('[data-toggle="popover"]').popover().click(function () {
+            setTimeout(function () {
+                $('[data-toggle="popover"]').popover('hide');
+            }, 3000);
+        });
+        $('.datetimepicker').datetimepicker(
+            {
+                format: 'DD/MM/YYYY'
+            }
+        );
+        $(function () {
+            CKEDITOR.replace('NoiDung',
+                {
+                    height: '100px'
+                });
+        });
+        $('label').on('dblclick', function () {
+            var parent = $(this).parent();
+            var html = '<div class="col-12 p-0">' + parent.html() + '</div>';
+            $('#TextClipBoard').val('');
+            $('#TextClipBoard').val(html);
+            $('#TextClipBoard').select();
+            document.execCommand("copy");
+            console.log(html);
+        })
+    </script>
+}

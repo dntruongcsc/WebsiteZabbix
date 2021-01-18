@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewBag.Title = "ChuyenTrangDangNhap";
+    Layout = "~/Views/Shared/_SBAdmin.cshtml";
+    ViewBag.active = "abc";
+}
+<div class="alert alert-warning mt-3" role="alert">
+   Phiên làm việc đã kết thúc. Vui lòng đăng nhập lại để tiếp tục!
+</div>
+<button id="ChuyenTrangDangnhap" class="btn btn-mac-dinh">Đi đến trang đăng nhập</button>
+<script>
+    $(document).ready(function () {
+        setTimeout(function () { window.location.href = '@Url.Action("Login", "TaiKhoan", new { area = "NguoiDung" })'; }, 6000);
+    });
+    $('#ChuyenTrangDangNhap').on('click', function () {
+        window.location.href = '@Url.Action("Login", "TaiKhoan", new { area = "NguoiDung" })';
+    })
+</script>
+

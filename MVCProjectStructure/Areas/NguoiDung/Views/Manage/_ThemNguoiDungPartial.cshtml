@@ -1,0 +1,130 @@
+﻿@model MVCProjectStructure.Areas.NguoiDung.Models.NguoiDungModel.Output.ThongTinNguoiDung
+<input id="Id" name="Id" value="@Model.Id" hidden />
+
+<div>
+    <div class="row">
+        <input id="KetQuaOutput" data-ketqua="@ViewBag.KetQua" hidden />
+        <div class="form-group col-md-4">
+            <label for="Ho" class="control-label">Họ: </label>
+            <input type="text" id="Ho" name="Ho" required class="form-control" value="@Model.Ho" placeholder="Họ" title="Họ">
+        </div>
+
+        <div class="form-group col-md-4">
+            <label for="Ten" class="control-label">Tên: </label>
+            <input type="text" id="Ten" name="Ten" required class="form-control" value="@Model.Ten" placeholder="Tên" title="Tên">
+        </div>
+
+        <div class="form-group col-md-4">
+            <label for="DiaChi" class="control-label">Địa chỉ: </label>
+            <input type="text" id="DiaChi" name="DiaChi" required class="form-control" value="@Model.DiaChi" placeholder="Địa chỉ" title="Địa chỉ">
+        </div>
+                
+    </div>
+    <div class="row">
+
+        <div class="form-group col-md-4">
+            <label for="Ten" class="control-label">Số điện thoại: </label>
+            <input type="text" id="SDT" name="SDT" required class="form-control" value="@Model.SDT" placeholder="Số điện thoại" title="Mật khẩu">
+        </div>
+
+        <div class="form-group col-md-4">
+            <label for="Ten" class="control-label">Email: </label>
+            <input type="text" id="Email" name="Email" required class="form-control" value="@Model.Email" placeholder="Email" title="Email">
+        </div>
+
+        <div class="form-group col-md-4">
+            <label for="ThuTu" class="control-label">Thứ tự: </label>
+            <input type="number" id="ThuTu" name="ThuTu" required class="form-control" value="@Model.ThuTu" placeholder="Thứ tự" title="Thứ tự">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-4">
+            <label for="Ten" class="control-label">Tài khoản: </label>
+            <input type="text" id="TaiKhoan" name="TaiKhoan" required class="form-control" value="@Model.TaiKhoan" placeholder="Tài khoản" title="Tài khoản">
+        </div>
+
+        <div class="form-group col-md-4">
+            <label for="Ten" class="control-label">Mật khẩu: </label>
+            <input type="password" id="MatKhau" name="MatKhau" required class="form-control" value="@Model.MatKhau" placeholder="Mật khẩu" title="Mật khẩu">
+        </div>
+
+        <div class="form-group col-md-4">
+            <label for="Ten" class="control-label">Nhập lại mật khẩu: </label>
+            <input type="password" id="ReMatKhau" name="ReMatKhau" required class="form-control" value="@Model.MatKhau" placeholder="Nhập lại mật khẩu" title="nhập lại mật khẩu">
+        </div>
+
+
+    </div>
+    <div class="row">
+
+        <div class="form-group col-md-4">
+            <label for="ThuocTrang" class="control-label">Vai trò: </label>
+            <select id="DanhSachIdVaiTro" name="DanhSachIdVaiTro" class="form-control w-100">
+                @if (ViewBag.DanhSachVaiTro != null)
+                {
+                    foreach (var item in ViewBag.DanhSachVaiTro)
+                    {
+                        if (Model.DanhSachIdVaiTro != null ? Model.DanhSachIdVaiTro.Count > 0 ? item.Ma == Model.DanhSachIdVaiTro[0]: false : false)
+                        
+                        {
+                            <option value="@item.Id" selected>@item.Ten</option>
+                        }
+                        else
+                        {
+                            <option value="@item.Id">@item.Ten</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="form-group col-md-4">
+            <label for="ThuocTrang" class="control-label">Phòng ban: </label>
+            <select id="IdDonVi" name="IdDonVi" class="form-control w-100">
+                @if (ViewBag.DanhSachPhongBan != null)
+                {
+                    foreach (var item in ViewBag.DanhSachPhongBan)
+                    {
+                        if (item.Ma == Model.IdDonVi)
+                        {
+                            <option value="@item.Id" selected>@item.Ten</option>
+                        }
+                        else
+                        {
+                            <option value="@item.Id">@item.Ten</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="form-group col-md-4  mt-5">
+            @if (Model.KichHoat)
+            {
+                <input class="form-check-input ml-1" type="checkbox" id="KichHoat" name="KichHoat" checked>
+            }
+            else
+            {
+                <input class="form-check-input ml-1" type="checkbox" id="KichHoat" name="KichHoat">
+            }
+            <label class="form-check-label ml-4" for="KichHoat">
+                Kích hoạt
+            </label>
+        </div>
+    </div>
+</div>
+<script>
+                $(document).ready(function () {
+                    //createEditor('NoiDung');
+                });
+</script>
+
+
+
+
+
+
+
+
+

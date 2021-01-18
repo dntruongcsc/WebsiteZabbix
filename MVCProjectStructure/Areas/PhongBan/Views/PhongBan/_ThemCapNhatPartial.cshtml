@@ -1,0 +1,43 @@
+﻿@model MVCProjectStructure.Areas.PhongBan.Models.PhongBanModel.PhongBanOutput.ThongTinPhongBan
+<input id="Id" name="Id" value="@Model.Id" hidden />
+
+<div>
+    <div class="row">
+        <input id="KetQuaOutput" data-ketqua="@ViewBag.KetQua" hidden />
+        <div class="form-group col-md-4">
+            <label for="TieuDe" class="control-label">Tên: </label>
+            <input type="text" id="Ten" name="Ten" required class="form-control" value="@Model.Ten" placeholder="Tiêu đề" title="Tên">
+        </div>
+
+        <div class="form-group col-md-4">
+            <label for="TieuDe" class="control-label">Mã: </label>
+            <input type="text" id="Ma" name="Ma" required class="form-control" value="@Model.Ma" placeholder="Mã" title="Mã">
+        </div>
+
+        <div class="form-group col-md-4  mt-5">
+            @if (Model.KichHoat)
+            {
+                <input class="form-check-input ml-1" type="checkbox" id="KichHoat" name="KichHoat" checked>
+            }
+            else
+            {
+                <input class="form-check-input ml-1" type="checkbox" id="KichHoat" name="KichHoat">
+            }
+            <label class="form-check-label ml-4" for="KichHoat">
+                Kích hoạt
+            </label>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="form-group col-md-12">
+            <label for="MoTa" class="control-label">Mô tả: </label>
+            <textarea id="MoTa" name="MoTa" class="form-control" placeholder="Mô tả" title="Mô tả" rows="3">@Model.MoTa</textarea>
+        </div>
+    
+</div>
+<script>
+    $(document).ready(function () {
+        
+    });
+</script>

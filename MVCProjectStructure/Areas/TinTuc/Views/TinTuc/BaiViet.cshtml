@@ -1,0 +1,106 @@
+﻿
+@using Common.Enum;
+@{
+    ViewBag.Title = "Quản lý bài viết";
+    Layout = ChucNang.GiaoDien.SBAdmin;
+    ViewBag.active = ChucNang.Ma.BaiViet;
+}
+@*@Html.Partial("_ThemCapNhatPartial")*@
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="#"><i class="fas fa-home">&nbsp;</i>Bảng điều khiển</a></li>
+    <li class="breadcrumb-item active"><a>Quản lý bài viết</a></li>
+</ol>
+<div class="container-fluid p-0">
+    <div class="panel-body">
+        <div class="row px-3">
+            <div class="col-lg-8 kc-0 mb-3">
+                <div class="row pl-3">
+                    <div class="col-lg-3 plrb-022">
+                        <select id="IdLinhVucTim" class="form-control" onchange="DocDanhSachNhomTin()">
+                            @if (ViewBag.DanhSachPhongBan != null)
+                            {
+                                foreach (var item in ViewBag.DanhSachPhongBan)
+                                {
+                                    <option value="@item.Id" data-img="@item.Ma">@item.Ten</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-lg-3 plrb-022">
+                        <select class="form-control" id="DanhSachNhomTin" name="DanhSachNhomTin">
+                            <option value="" data-img="">--Chọn chuyên đề --</option>
+                            @*@if (ViewBag.DanhSachNhomTin != null)
+                                {
+                                    foreach (var item in ViewBag.DanhSachNhomTin.Items)
+                                    {
+                                        <option value="@item.Id" data-img="@item.Ma">@item.Ten</option>
+                                    }
+                                }*@
+                        </select>
+                    </div>
+                    <div class="col-lg-3 plrb-022">
+                        <input type="text" class="form-control" placeholder="Nhập nội dung tìm" aria-label="Nhập nội dung tìm" id="NoiDungTim" name="NoiDungTim">
+                    </div>
+                    <div class="plrb-022">
+                        <button type="button" id="btnTimKiem" onclick="XuLyTimKiem()" class="btn btn-info"><i class="fa fa-search">&nbsp;</i>Tìm kiếm</button>
+                        <button type="button" id="btnLamLai" onclick="XuLyLamLai()" class="btn btn-secondary" title="Tải lại dữ liệu mặc định"><i class="fa fa-refresh"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 kc-0 mb-3 canh-le-p">
+                <button onclick="NhomTin()" class="btn btn-success"> Quản lý chuyên đề</button>
+                <button class="btn btn-mac-dinh" onclick="Them()"><i class="fa fa-plus"></i> Thêm mới</button>
+                <button id="btnXoa" onclick="XuLyXoa()" class="btn btn-danger" disabled><i class="fa fa-trash">&nbsp;</i>Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div style="clear:both;margin-bottom:10px;"></div>
+<div id="ThongBao_Index"></div>
+<div id="DanhSach_CapNhat">
+    @*@{Html.RenderPartial("_DanhSachBaiVietPartial");}*@
+</div>
+@section ContentHead{
+    <link href="~/Content/datetimepicker/bootstrap-datetimepicker.css" rel="stylesheet" />
+    <script src="~/Scripts/datetimepicker/moment.min.js"></script>
+    <script src="~/Scripts/datetimepicker/bootstrap-datetimepicker.min.js"></script>
+}
+@section Scripts {
+    <script src="~/Areas/TinTuc/Contents/BaiVietIndex.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#IdLinhVucTim").change();
+        });
+        function NhomTin() {
+            window.location.href = "@Url.Action("NhomTin", "TinTuc", new { area = "TinTuc" })";
+        }
+
+        function DocDanhSachNhomTin() {
+            $.ajax({
+                url: '@Url.Action("DocDanhSachNhomTinTheoDonVi", "TinTuc", new { area="TinTuc"})',
+                type: "POST",
+                dataType: "json",
+                data: {
+                    idPhongBan: $("#IdLinhVucTim").val(),
+                },
+                success: function (data) {
+                    if (data != null) {
+                        $("#DanhSachNhomTin").empty();
+                        $("#DanhSachNhomTin").append('<option value="" data-img="">--Chọn chuyên đề --</option>');
+                        //let suaIdNhomTin = $("#SuaIdNhomTin").val();
+                        for (var i = 0; i < data.length; i++) {
+                            //if (suaIdNhomTin == data[i].Id)
+                            //    var html = '<option value="' + data[i].Id + '" data-img="' + data[i].Ma + '" selected>' + data[i].Ten + '</option>';
+                            //else
+                                var html = '<option value="' + data[i].Id + '" data-img="' + data[i].Ma + '" >' + data[i].Ten + '</option>';
+                            $("#DanhSachNhomTin").append(html);
+                        }
+                    }
+                },
+                error: function (xhr, status, error) { console.log("Lỗi: " + error); }
+            });
+        }
+    </script>
+}

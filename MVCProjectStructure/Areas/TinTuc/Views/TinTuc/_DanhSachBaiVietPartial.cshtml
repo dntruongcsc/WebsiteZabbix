@@ -1,0 +1,108 @@
+﻿@model MVCProjectStructure.Areas.TinTuc.Models.BaiVietModel.Output.DocDanhSach
+@using Common.Enum;
+@using MVCProjectStructure.Helpers;
+@using Common.Utilities;
+<div class="col-md-12 kc-0">
+    <div id="bang-bieu">
+        <div class="scrollbar mb-3" id="no-more-tables">
+            <table class="col-sm-12 table-bordered table-hover table-condensed table-style">
+                <thead>
+                    <tr class="chieu-cao">
+                        <th class="al-c" style="width: 40px"><input type='checkbox' id="chonXoaTatCa" title="Chọn xóa tất cả" /></th>
+                        <th class="al-c" style="width: 40px">STT</th>
+                        <th class="al-c">Hình đại diện</th>
+                        <th class="al-c w-30">Tiêu đề</th>
+                        <th class="al-c">Tiêu đề rút gọn</th>
+                        <th class="al-c">Thuộc chuyên đề</th>
+                        <th class="al-c">Nội dung tóm tắt</th>
+                        <th class="al-c">Thứ tự</th>
+                        <th class="al-c">Kích hoạt</th>
+                        <th class="al-c">Ưu tiên</th>
+                        <th class="al-c">Trang chủ</th>
+                        <th class="al-c">Nổi bật</th>
+                        <th class="al-c">Thông báo</th>
+                        <th class="al-c">Người cập nhật</th>
+                        @*<th class="w-4">&nbsp;</th>*@
+                    </tr>
+                </thead>
+                <tbody id="danhSachSanPham">
+                    @if (Model != null)
+                    {
+                        int stt = (Model.TrangHienTai - 1) * PageNumber.Page10 + 1;
+                        var danhSach = Model.DanhSachThongTinBaiViet;
+                        var tongSoLuong = Model.TongSoLuong;
+                        foreach (var item in danhSach)
+                        {
+                            <tr id="@item.Id">
+                                <td class="al-c">
+                                    <input type='checkbox' class="checkbox_xoa" value="@item.Id" title="Chọn xóa" id="@item.Id" name="IDs" />
+                                </td>
+                                <td class="al-c" data-title="STT">@(stt++)</td>
+                                <td class="al-c" data-title="Hình đại diện">
+                                    @*<img src="@item.HinhDaiDien" class="hinh-dai-dien" />*@
+                                    <img src="@(!string.IsNullOrEmpty(item.HinhDaiDien) ? item.HinhDaiDien:ConstantValues.Image.Default01)" onerror="this.src='@ConstantValues.Image.Default01';" class="hinh-dai-dien" />
+                                </td>
+                                <td class="al-l" data-title="Tiêu đề"><a class="CapNhat" href="#" onclick="ChinhSua('@item.Id')" data-id="@item.Id">@item.TieuDe</a></td>
+                                <td class="al-l" data-title="Tiêu đề rút gọn">@item.TieuDeRutGon</td>
+                                <td class="al-l" data-title="Thuộc nhóm tin">@item.TenNhomTin</td>
+                                <td class="al-l" data-title="Nội dung tóm tắt">@Utility.CatChuoi(item.NoiDungTomTat, 120)</td>
+                                <td class="al-c" data-title="Thứ tự">@item.ThuTu</td>
+                                <td class="al-c" data-title="Xuất bản">
+                                    @if (item.KichHoat)
+                                    {
+                                        <i class="fa fa-check text-info" aria-hidden="true"></i>
+                                    }
+                                </td>
+                                <td class="al-c" data-title="Ưu tiên">
+                                    @if (item.UuTien)
+                                    {
+                                        <i class="fa fa-check text-info" aria-hidden="true"></i>
+                                    }
+                                </td>
+                                <td class="al-c" data-title="Trang chủ">
+                                    @if (item.TrangChu)
+                                    {
+                                        <i class="fa fa-check text-info" aria-hidden="true"></i>
+                                    }
+                                </td>
+                                <td class="al-c" data-title="Nổi bật">
+                                    @if (item.NoiBat)
+                                    {
+                                        <i class="fa fa-check text-info" aria-hidden="true"></i>
+                                    }
+                                </td>
+                                <td class="al-c" data-title="Thông báo">
+                                    @if (item.ThongBao)
+                                    {
+                                        <i class="fa fa-check text-info" aria-hidden="true"></i>
+                                    }
+                                </td>
+                                <td class="al-c">@item.NguoiCapNhat</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="14"><div class="alert alert-secondary mb-0 text-center">Không tìm thấy dữ liệu</div></td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @{
+            if (Model != null)
+            {
+                string duongDan = Url.Action("XemDanhSachBaiViet", "TinTuc", new { area = "TinTuc" });
+                string kq = XuLyPhanTrang.TaoPhanTrang(Model.TongSoTrang, Model.TrangHienTai, duongDan, ViewBag.DanhSachThamSo);
+                @Html.Raw(kq);
+            }
+        }
+
+        <div style="clear:both"></div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        XuLyChonTatCa();
+    })
+
+</script>

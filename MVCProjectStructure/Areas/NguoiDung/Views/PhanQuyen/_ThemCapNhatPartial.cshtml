@@ -1,0 +1,382 @@
+﻿@model MVCProjectStructure.Models.CommonModel.CommonPhanQuyen.PhanQuyenOutput.ThongTinPhanQuyen
+@{
+    /**/
+
+    var DanhSachChucNangXuLy = ViewBag.DanhSachChucNangXuLy as List<MVCProjectStructure.Models.CommonModel.CommonChucNangXuLy.ChucNangXuLyOutput.ThongTin>;
+    var SoLuongChucNangXuLy = DanhSachChucNangXuLy != null && DanhSachChucNangXuLy.Count > 0 ? DanhSachChucNangXuLy.Count : 1;//Cộng 1 cho chọn tất cả
+    var maVaiTro = "";
+    var maDonVi = "";
+    var tenQuyen = "";
+    if (Model != null)
+    {
+        tenQuyen = Model.TenQuyen;
+        maVaiTro = Model.MaVaiTro;
+        maDonVi = Model.MaDonVi;
+        <input id="Id" name="Id" value="@Model.Id" hidden />
+        <input id="KetQuaOutput" data-ketqua="@ViewBag.KetQua" hidden />
+    }
+
+}
+<div class="col-md-12 kc-0">
+    <div class="mb-3">
+        <div class="row form-row mb-3">
+            <div class="col-md-2 al-r font-weight-bold"><label for="TenQuyen" class="control-label pt-2 required">Tên quyền: </label></div>
+            <div class="col-md-2"><input id="TenQuyen" name="TenQuyen" class="form-control w-100" value="@tenQuyen" /></div>
+            <div class="col-md-2 al-r font-weight-bold"><label for="VaiTro" class="control-label pt-2">Vai trò: </label></div>
+            <div class="col-md-2">
+                <select id="VaiTro" name="VaiTro" class="form-control w-100">
+                    @if (ViewBag.DanhSachVaiTro != null)
+                    {
+                        foreach (var item in ViewBag.DanhSachVaiTro)
+                        {
+                            <option value="@item.Ma" data-ma="@item.Ma" @(maVaiTro == item.Ma ? "selected" : "")>@item.Ten</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-2 al-r font-weight-bold"><label for="DonVi" class="control-label pt-2">Đơn vị: </label></div>
+            <div class="col-md-2">
+                <select id="DonVi" name="DonVi" class="form-control w-100">
+                    @if (ViewBag.DanhSachDonVi != null)
+                    {
+                        foreach (var item in ViewBag.DanhSachDonVi)
+                        {
+                            <option value="@item.Ma" @(maDonVi == item.Ma ? "selected" : "")>@item.Ten</option>
+                        }
+                    }
+                </select>
+            </div>
+
+        </div>
+        <div class="row form-row">
+            <div class="col-md-2 al-r font-weight-bold"><label for="Nhom" class="control-label pt-2">Nhóm menu: </label></div>
+            <div class="col-md-2">
+                <select id="Nhom" name="Nhom" class="form-control w-100" onchange="DieuKienLoc()">
+                    <option value="">-- Chọn --</option>
+                    @if (ViewBag.DanhSachNhom != null)
+                    {
+                        foreach (var item in ViewBag.DanhSachNhom)
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-2 al-r font-weight-bold"><label for="ViTri" class="control-label pt-2">Vị trí menu: </label></div>
+            <div class="col-md-2">
+                <select id="ViTri" name="ViTri" class="form-control w-100" onchange="DieuKienLoc()">
+                    <option value="">-- Chọn --</option>
+                    @if (ViewBag.DanhSachViTri != null)
+                    {
+                        foreach (var item in ViewBag.DanhSachViTri)
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <div id="no-more-tables">
+        <table id="BangChucNangXuLy" class="table table-bordered table-condensed table-hover table-style">
+            <thead>
+                <tr>
+                    <th rowspan="2" class="d-none">Nhóm</th>
+                    <th rowspan="2" class="d-none">Loại</th>
+                    <th rowspan="2" class="w-5">STT</th>
+                    <th rowspan="2">Chức năng</th>
+                    <th colspan="@(SoLuongChucNangXuLy + 1)">Quyền hạn</th>
+                </tr>
+                <tr>
+                    <th>Tất cả</th>
+                    @if (DanhSachChucNangXuLy != null)
+                    {
+                        foreach (var item in DanhSachChucNangXuLy)
+                        {
+                            <th>@item.Ten</th>
+                        }
+                    }
+                </tr>
+            </thead>
+            @if (Model != null)
+            {
+                int stt = 1;
+                var danhSach = Model.DanhSachMenu;
+                <tbody data-id="@Model.Id">
+                    @if (danhSach != null)
+                    {
+                        foreach (var item in danhSach)
+                        {
+                            //Cấp 0
+                            <tr>
+                                <td data-title="Nhom" class="d-none">@item.Nhom</td>
+                                <td data-title="Loai" class="d-none">@item.Loai</td>
+                                <td data-title="STT" class="text-center">@(stt++)</td>
+                                <td data-title="Chức năng" class="d-menu" data-id="@item.Id" data-ten="@item.Ten" data-nhom="@item.Nhom" data-loai="@item.Loai" data-id-menu-cha="@item.IdMenuCha"><b>@item.Ten</b></td>
+                                @if (DanhSachChucNangXuLy != null && DanhSachChucNangXuLy.Count > 0)
+                                {
+                                    if (item.DanhSachMaChucNangXuLy != null)
+                                    {
+                                        if (SoLuongChucNangXuLy == item.DanhSachMaChucNangXuLy.Count)
+                                        {
+                                            <td data-title="Tất cả" title="Tất cả" class="text-center"><input type="checkbox" class="parent d-tat-ca" checked onclick="ChonTatCa(this)" /> Tất cả</td>
+                                        }
+                                        else
+                                        {
+                                            <td data-title="Tất cả" title="Tất cả" class="text-center"><input type="checkbox" class="parent d-tat-ca" onclick="ChonTatCa(this)" /> Tất cả</td>
+
+                                        }
+                                        foreach (var i in DanhSachChucNangXuLy)
+                                        {
+                                            if (item.DanhSachMaChucNangXuLy.Count > 0)
+                                            {
+                                                var _checked = "";
+                                                foreach (var j in item.DanhSachMaChucNangXuLy)
+                                                {
+                                                    if (i.Ma == j) { _checked = "checked"; break; }
+                                                }
+                                                <td data-title="@i.Ten" title="@i.Ten" class="text-center"><input type="checkbox" class="child d-@i.Ma" @_checked onclick="ChonTungQuyen(this)" /> @i.Ten</td>
+                                            }
+                                            else
+                                            {
+                                                <td data-title="@i.Ten" title="@i.Ten" class="text-center"><input type="checkbox" class="child d-@i.Ma" onclick="ChonTungQuyen(this)" /> @i.Ten</td>
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <td data-title="Tất cả" title="Tất cả" class="text-center"><input type="checkbox" class="parent d-tat-ca" onclick="ChonTatCa(this)" /> Tất cả</td>
+                                        foreach (var i in DanhSachChucNangXuLy)
+                                        {
+                                            <td data-title="@i.Ten" title="@i.Ten" class="text-center"><input type="checkbox" class="child d-@i.Ma" onclick="ChonTungQuyen(this)" /> @i.Ten</td>
+                                        }
+                                    }
+                                }
+                            </tr>
+                            var danhsachCap1 = item.DanhSachMenuCon;
+                            if (danhsachCap1 != null && danhsachCap1.Count > 0)
+                            {
+                                foreach (var item1 in danhsachCap1)
+                                {
+                                    var dsQuyen1 = item1.DanhSachMaChucNangXuLy;
+                                    //Cấp 1
+                                    <tr>
+                                        <td data-title="Nhom" class="d-none">@item.Nhom</td>
+                                        <td data-title="Loai" class="d-none">@item.Loai</td>
+                                        <td data-title="STT" class="text-center">@(stt++)</td>
+                                        <td data-title="Chức năng" class="d-menu" data-id="@item1.Id" data-ten="@item1.Ten" data-nhom="@item1.Nhom" data-loai="@item1.Loai" data-id-menu-cha="@item1.IdMenuCha">&nbsp;&nbsp;&nbsp;&nbsp;|- @item1.Ten</td>
+                                        @if (DanhSachChucNangXuLy != null && DanhSachChucNangXuLy.Count > 0)
+                                        {
+                                            if (item1.DanhSachMaChucNangXuLy != null)
+                                            {
+                                                if (SoLuongChucNangXuLy == item1.DanhSachMaChucNangXuLy.Count)
+                                                {
+                                                    <td data-title="Tất cả" title="Tất cả" class="text-center"><input type="checkbox" class="parent d-tat-ca" checked onclick="ChonTatCa(this)" /> Tất cả</td>
+                                                }
+                                                else
+                                                {
+                                                    <td data-title="Tất cả" title="Tất cả" class="text-center"><input type="checkbox" class="parent d-tat-ca" onclick="ChonTatCa(this)" /> Tất cả</td>
+
+                                                }
+                                                foreach (var i1 in DanhSachChucNangXuLy)
+                                                {
+                                                    if (item1.DanhSachMaChucNangXuLy.Count > 0)
+                                                    {
+                                                        var _checked = "";
+                                                        foreach (var j1 in item1.DanhSachMaChucNangXuLy)
+                                                        {
+                                                            if (i1.Ma == j1) { _checked = "checked"; break; }
+                                                        }
+                                                        <td data-title="@i1.Ten" title="@i1.Ten" class="text-center"><input type="checkbox" class="child d-@i1.Ma" @_checked onclick="ChonTungQuyen(this)" /> @i1.Ten</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td data-title="@i1.Ten" title="@i1.Ten" class="text-center"><input type="checkbox" class="child d-@i1.Ma" onclick="ChonTungQuyen(this)" /> @i1.Ten</td>
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <td data-title="Tất cả" title="Tất cả" class="text-center"><input type="checkbox" class="parent d-tat-ca" onclick="ChonTatCa(this)" /> Tất cả</td>
+                                                foreach (var i1 in DanhSachChucNangXuLy)
+                                                {
+                                                    <td data-title="@i1.Ten" title="@i1.Ten" class="text-center"><input type="checkbox" class="child d-@i1.Ma" onclick="ChonTungQuyen(this)" /> @i1.Ten</td>
+                                                }
+                                            }
+                                        }
+                                    </tr>
+
+                                    var danhsachCap2 = item1.DanhSachMenuCon;
+                                    if (danhsachCap2 != null && danhsachCap2.Count > 0)
+                                    {
+                                        foreach (var item2 in danhsachCap2)
+                                        {
+                                            var dsQuyen2 = item2.DanhSachMaChucNangXuLy;
+                                            //Cấp 2
+                                            <tr>
+                                                <td data-title="Nhom" class="d-none">@item2.Nhom</td>
+                                                <td data-title="Loai" class="d-none">@item2.Loai</td>
+                                                <td data-title="STT" class="text-center">@(stt++)</td>
+                                                <td data-title="Chức năng" class="d-menu" data-id="@item2.Id" data-ten="@item2.Ten" data-nhom="@item2.Nhom" data-loai="@item2.Loai" data-id-menu-cha="@item2.IdMenuCha">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|-- @item2.Ten</td>
+                                                @if (DanhSachChucNangXuLy != null && DanhSachChucNangXuLy.Count > 0)
+                                                {
+                                                    if (item2.DanhSachMaChucNangXuLy != null)
+                                                    {
+                                                        if (SoLuongChucNangXuLy == item2.DanhSachMaChucNangXuLy.Count)
+                                                        {
+                                                            <td data-title="Tất cả" title="Tất cả" class="text-center"><input type="checkbox" class="parent d-tat-ca" checked onclick="ChonTatCa(this)" /> Tất cả</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td data-title="Tất cả" title="Tất cả" class="text-center"><input type="checkbox" class="parent d-tat-ca" onclick="ChonTatCa(this)" /> Tất cả</td>
+
+                                                        }
+                                                        foreach (var i2 in DanhSachChucNangXuLy)
+                                                        {
+                                                            if (item2.DanhSachMaChucNangXuLy.Count > 0)
+                                                            {
+                                                                var _checked = "";
+                                                                foreach (var j2 in item2.DanhSachMaChucNangXuLy)
+                                                                {
+                                                                    if (i2.Ma == j2) { _checked = "checked"; break; }
+                                                                }
+                                                                <td data-title="@i2.Ten" title="@i2.Ten" class="text-center"><input type="checkbox" class="child d-@i2.Ma" @_checked onclick="ChonTungQuyen(this)" /> @i2.Ten</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td data-title="@i2.Ten" title="@i2.Ten" class="text-center"><input type="checkbox" class="child d-@i2.Ma" onclick="ChonTungQuyen(this)" /> @i2.Ten</td>
+                                                            }
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <td data-title="Tất cả" title="Tất cả" class="text-center"><input type="checkbox" class="parent d-tat-ca" onclick="ChonTatCa(this)" /> Tất cả</td>
+                                                        foreach (var i2 in DanhSachChucNangXuLy)
+                                                        {
+                                                            <td data-title="@i2.Ten" title="@i2.Ten" class="text-center"><input type="checkbox" class="child d-@i2.Ma" onclick="ChonTungQuyen(this)" /> @i2.Ten</td>
+                                                        }
+                                                    }
+                                                }
+                                            </tr>
+                                            var danhsachCap3 = item2.DanhSachMenuCon;
+                                            if (danhsachCap3 != null && danhsachCap3.Count > 0)
+                                            {
+                                                foreach (var item3 in danhsachCap3)
+                                                {
+                                                    var dsQuyen3 = item3.DanhSachMaChucNangXuLy;
+                                                    //Cấp 3
+                                                    <tr>
+                                                        <td data-title="Nhom" class="d-none">@item3.Nhom</td>
+                                                        <td data-title="Loai" class="d-none">@item3.Loai</td>
+                                                        <td data-title="STT" class="text-center">@(stt++)</td>
+                                                        <td data-title="Chức năng" class="d-menu" data-id="@item3.Id" data-ten="@item3.Ten" data-nhom=" @item3.Nhom" data-loai="@item3.Loai" data-id-menu-cha="@item3.IdMenuCha">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--- @item3.Ten</td>
+                                                        @if (DanhSachChucNangXuLy != null && DanhSachChucNangXuLy.Count > 0)
+                                                        {
+                                                            if (item3.DanhSachMaChucNangXuLy != null)
+                                                            {
+                                                                if (SoLuongChucNangXuLy == item3.DanhSachMaChucNangXuLy.Count)
+                                                                {
+                                                                    <td data-title="Tất cả" title="Tất cả" class="text-center"><input type="checkbox" class="parent d-tat-ca" checked onclick="ChonTatCa(this)" /> Tất cả</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td data-title="Tất cả" title="Tất cả" class="text-center"><input type="checkbox" class="parent d-tat-ca" onclick="ChonTatCa(this)" /> Tất cả</td>
+
+                                                                }
+                                                                foreach (var i3 in DanhSachChucNangXuLy)
+                                                                {
+                                                                    if (item3.DanhSachMaChucNangXuLy.Count > 0)
+                                                                    {
+                                                                        var _checked = "";
+                                                                        foreach (var j3 in item3.DanhSachMaChucNangXuLy)
+                                                                        {
+                                                                            if (i3.Ma == j3) { _checked = "checked"; break; }
+                                                                        }
+                                                                        <td data-title="@i3.Ten" title="@i3.Ten" class="text-center"><input type="checkbox" class="child d-@i3.Ma" @_checked onclick="ChonTungQuyen(this)" /> @i3.Ten</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td data-title="@i3.Ten" title="@i3.Ten" class="text-center"><input type="checkbox" class="child d-@i3.Ma" onclick="ChonTungQuyen(this)" /> @i3.Ten</td>
+                                                                    }
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                <td data-title="Tất cả" title="Tất cả" class="text-center"><input type="checkbox" class="parent d-tat-ca" onclick="ChonTatCa(this)" /> Tất cả</td>
+                                                                foreach (var i3 in DanhSachChucNangXuLy)
+                                                                {
+                                                                    <td data-title="@i3.Ten" title="@i3.Ten" class="text-center"><input type="checkbox" class="child d-@i3.Ma" onclick="ChonTungQuyen(this)" /> @i3.Ten</td>
+                                                                }
+                                                            }
+                                                        }
+                                                    </tr>
+
+                                                    var danhsachCap4 = item3.DanhSachMenuCon;
+                                                    if (danhsachCap4 != null && danhsachCap4.Count > 0)
+                                                    {
+                                                        foreach (var item4 in danhsachCap4)
+                                                        {
+                                                            var dsQuyen4 = item4.DanhSachMaChucNangXuLy;
+                                                            //Cấp 4
+                                                            <tr>
+                                                                <td data-title="Nhom" class="d-none">@item4.Nhom</td>
+                                                                <td data-title="Loai" class="d-none">@item4.Loai</td>
+                                                                <td data-title="STT" class="text-center">@(stt++)</td>
+                                                                <td data-title="Chức năng" class="d-menu" data-id="@item4.Id" data-ten="@item4.Ten" data-nhom="@item4.Nhom" data-loai="@item4.Loai" data-id-menu-cha="@item4.IdMenuCha">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|---- @item4.Ten</td>
+                                                                @if (DanhSachChucNangXuLy != null && DanhSachChucNangXuLy.Count > 0)
+                                                                {
+                                                                    if (item4.DanhSachMaChucNangXuLy != null)
+                                                                    {
+                                                                        if (SoLuongChucNangXuLy == item4.DanhSachMaChucNangXuLy.Count)
+                                                                        {
+                                                                            <td data-title="Tất cả" title="Tất cả" class="text-center"><input type="checkbox" class="parent d-tat-ca" checked onclick="ChonTatCa(this)" /> Tất cả</td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td data-title="Tất cả" title="Tất cả" class="text-center"><input type="checkbox" class="parent d-tat-ca" onclick="ChonTatCa(this)" /> Tất cả</td>
+
+                                                                        }
+                                                                        foreach (var i4 in DanhSachChucNangXuLy)
+                                                                        {
+                                                                            if (item4.DanhSachMaChucNangXuLy.Count > 0)
+                                                                            {
+                                                                                var _checked = "";
+                                                                                foreach (var j4 in item4.DanhSachMaChucNangXuLy)
+                                                                                {
+                                                                                    if (i4.Ma == j4) { _checked = "checked"; break; }
+                                                                                }
+                                                                                <td data-title="@i4.Ten" title="@i4.Ten" class="text-center"><input type="checkbox" class="child d-@i4.Ma" @_checked onclick="ChonTungQuyen(this)" /> @i4.Ten</td>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <td data-title="@i4.Ten" title="@i4.Ten" class="text-center"><input type="checkbox" class="child d-@i4.Ma" onclick="ChonTungQuyen(this)" /> @i4.Ten</td>
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td data-title="Tất cả" title="Tất cả" class="text-center"><input type="checkbox" class="parent d-tat-ca" onclick="ChonTatCa(this)" /> Tất cả</td>
+                                                                        foreach (var i4 in DanhSachChucNangXuLy)
+                                                                        {
+                                                                            <td data-title="@i4.Ten" title="@i4.Ten" class="text-center"><input type="checkbox" class="child d-@i4.Ma" onclick="ChonTungQuyen(this)" /> @i4.Ten</td>
+                                                                        }
+                                                                    }
+                                                                }
+                                                            </tr>
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                </tbody>
+            }
+        </table>
+    </div>
+</div>
+

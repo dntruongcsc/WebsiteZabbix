@@ -1,0 +1,94 @@
+﻿@model MVCProjectStructure.Areas.TinTuc.Models.NhomTinModel.NhomTinOutput.ThongTin
+
+<input id="Id" name="Id" value="@Model.Id" hidden />
+<style>
+    input[type=text], select, textarea, input[type=file] {
+        min-width: 100%;
+    }
+</style>
+
+<div>
+    <input id="KetQuaOutput" data-ketqua="@ViewBag.KetQua" hidden />
+    <div class="form-group">
+        <label>Đơn vị</label>
+        <select class="form-control" id="IdPhongBan" multiple>
+            @if (ViewBag.IdPhongBan.Items != null)
+            {
+                if (Model.DanhSachIdPhongBan != null)
+                {
+                    foreach (var item in ViewBag.IdPhongBan.Items)
+                    {
+                        <option value="@item.Id" data-img="" @(Model.DanhSachIdPhongBan.Any(n => n == item.Id) ? "selected" : "")>@item.Ten</option>
+                    }
+                }
+                else
+                {
+                    foreach (var i in ViewBag.IdPhongBan.Items)
+                    {
+                        <option value="@i.Id" data-img="">@i.Ten</option>
+                    }
+
+                }
+            }
+            else
+            {
+                <option value="" data-img="">--Danh sách rỗng--</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="Ten">Tên nhóm tin</label>
+        <input type="text" class="form-control" id="Ten" placeholder="Tên nhóm tin" value="@Model.Ten" onblur="DuongDan1()">
+    </div>
+    <div class="form-group">
+        <label for="DuongDan">Đường dẫn</label>
+        <input type="text" class="form-control" id="DuongDan" placeholder="Đường dẫn" value="@Model.DuongDan">
+    </div>
+    <div class="form-group">
+        <label for="ThuTu">Thứ tự</label>
+        <input type="text" class="form-control" placeholder="Thứ tự" id="ThuTu" value="@Model.ThuTu" />
+    </div>
+    <div class="form-group">
+        <label for="exampleTextarea">Mô tả</label>
+        <textarea class="form-control" id="MoTa" name="MoTa" rows="3" placeholder="Mô tả nhóm tin">@Model.MoTa</textarea>
+    </div>
+
+    <div class="form-check">
+        @if (Model.KichHoat)
+        {
+            <input class="form-check-input" type="checkbox" id="KichHoat" name="KichHoat" checked>
+        }
+        else
+        {
+            <input class="form-check-input" type="checkbox" id="KichHoat" name="KichHoat">
+        }
+        <label class="form-check-label" for="KichHoat">Kích hoạt</label>
+    </div>
+</div>
+@*<script src="~/Scripts/jquery-tagsinput.min.js"></script>
+    <script src="//cdn.ckeditor.com/4.11.1/standard/ckeditor.js"></script>
+    <script src="~/Content/ckfinder/ckfinder.js"></script>*@
+
+<script>
+        //function DuongDan1() {
+        //    var Ten = $("#Ten").val();
+        //    if (Ten.length > 0) {
+        //        var DuongDan = bodau(Ten);
+        //        $("#DuongDan").val(DuongDan);
+        //    }
+        //};
+        //function bodau(str) {
+        //    str = str.toLowerCase();
+        //    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+        //    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+        //    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+        //    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+        //    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+        //    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+        //    str = str.replace(/đ/g, "d");
+        //    str = str.replace(/!|@@|\$|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\'| |\"|\&|\#|\[|\]|~/g, "-");
+        //    str = str.replace(/-+-/g, "-");
+        //    str = str.replace(/^\-+|\-+$/g, "");
+        //    return str;
+        //}
+</script>

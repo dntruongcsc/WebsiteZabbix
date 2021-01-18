@@ -1,0 +1,341 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Breadcrumbs-->
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <i class="fa fa-tachometer">&nbsp;</i>Bảng điều khiển
+    </li>
+</ol>
+<!-- Icon Cards-->
+<div class="row">
+    <!--Thống kê-->
+    <div class="col-xl-8 col-md-12 col-sm-12">
+        <div class="card mb-3">
+            <div class="card-header text-success">
+                <i class="fas fa-bar-chart"></i>
+                Thống kê dữ liệu
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 mb-3">
+                        <div class="card text-white bg-success o-hidden h-100">
+                            <div class="card-body">
+                                <div class="card-body-icon">
+                                    <i class="fas fa-fw fa-users"></i>
+                                </div>
+                                <h3>2,326 <small>người dùng</small></h3>
+                            </div>
+                            <a class="card-footer text-white clearfix small z-1" href="#">
+                                <span class="float-left">Quản lý tài khoản</span>
+                                <span class="float-right">
+                                    <i class="fas fa-angle-right"></i>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 mb-3">
+                        <div class="card text-white bg-primary o-hidden h-100">
+                            <div class="card-body">
+                                <div class="card-body-icon">
+                                    <i class="fas fa-fw fa-edit"></i>
+                                </div>
+                                <h3>2,426 <small>bài viết</small></h3>
+                            </div>
+                            <a class="card-footer text-white clearfix small z-1" href="#">
+                                <span class="float-left">Quản lý bài viết</span>
+                                <span class="float-right">
+                                    <i class="fas fa-angle-right"></i>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 mb-3">
+                        <div class="card text-white bg-danger o-hidden h-100">
+                            <div class="card-body">
+                                <div class="card-body-icon">
+                                    <i class="fas fa-fw fa-user-check"></i>
+                                </div>
+                                <h3>32,126 <small>lượt truy cập</small></h3>
+                            </div>
+                            <a class="card-footer text-white clearfix small z-1" href="#">
+                                <span class="float-left">Xem nhật ký</span>
+                                <span class="float-right">
+                                    <i class="fas fa-angle-right"></i>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer small text-muted">Cập nhật lúc 11:59 giờ, ngày 12/11/2018</div>
+        </div>
+    </div>
+
+    <!--Thông báo-->
+    <div class="col-xl-4 col-md-12 col-sm-12">
+        <div class="card mb-3">
+            <div class="card-header text-danger">
+                <i class="fas fa-bell">&nbsp;</i>
+                Thông báo
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-thongbao">
+                    <p>1. Chức năng Quản lý menu đã được chuyển vào Quản trị hệ thống -> Quản lý menu</p>
+                    <p>2. Chức năng Danh mục phòng ban, danh mục chức vụ chuyển vào Danh mục dữ liệu ->...</p>
+                    <p>2. Chức năng Danh mục phòng ban, danh mục chức vụ chuyển vào Danh mục dữ liệu ->...</p>
+                    <p>2. Chức năng Danh mục phòng ban, danh mục chức vụ chuyển vào Danh mục dữ liệu ->...</p>
+                </div>
+            </div>
+            <div class="card-footer small text-muted">Cập nhật lúc 11:59 giờ, ngày 12/11/2018</div>
+        </div>
+    </div>
+
+    <!-- Chức năng quản trị-->
+    <div class="col-xl-8 col-lg-6 col-md-12">
+        <div class="card mb-3">
+            <div class="card-header text-primary">
+                <i class="fas fa-th"></i>
+                Chức năng quản trị
+            </div>
+            <div class="card-body">
+                @*<canvas id="myAreaChart" width="100%" height="30"></canvas>*@
+                <div class="row">
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <a href="@Url.Action("BaiViet","BaiViet",new { Area="BaiViet"})">
+                                    <div class="card-img-top h1"><i class="fa fa-newspaper"></i></div>
+                                    <p>Quản lý bài viết</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <a href="#">
+                                    <div class="card-img-top h1"><i class="fa fa-sitemap"></i></div>
+                                    <p>Quản lý nhóm tin</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <a href="#">
+                                    <div class="card-img-top h1"><i class="fa fa-edit"></i></div>
+                                    <p>Quản lý bài viết</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <a href="#">
+                                    <div class="card-img-top h1"><i class="fa fa-edit"></i></div>
+                                    <p>Quản lý bài viết</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <a href="#">
+                                    <div class="card-img-top h1"><i class="fa fa-edit"></i></div>
+                                    <p>Quản lý bài viết</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <a href="#">
+                                    <div class="card-img-top h1"><i class="fa fa-edit"></i></div>
+                                    <p>Quản lý bài viết</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <a href="#">
+                                    <div class="card-img-top h1"><i class="fa fa-edit"></i></div>
+                                    <p>Quản lý bài viết</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <a href="#">
+                                    <div class="card-img-top h1"><i class="fa fa-edit"></i></div>
+                                    <p>Quản lý bài viết</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <a href="#">
+                                    <div class="card-img-top h1"><i class="fa fa-edit"></i></div>
+                                    <p>Quản lý bài viết</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <a href="#">
+                                    <div class="card-img-top h1"><i class="fa fa-edit"></i></div>
+                                    <p>Quản lý bài viết</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <a href="#">
+                                    <div class="card-img-top h1"><i class="fa fa-edit"></i></div>
+                                    <p>Quản lý bài viết</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <a href="#">
+                                    <div class="card-img-top h1"><i class="fa fa-edit"></i></div>
+                                    <p>Quản lý bài viết</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Nhật ký sử dụng-->
+    <div class="col-xl-4 col-lg-6 col-md-12">
+        <div class="card mb-3">
+            <div class="card-header text-info">
+                <i class="fas fa-pencil-alt"></i>
+                Nhật ký sử dụng
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-nhatky">
+                    <li class="list-group-item list-group-item-light">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Nguyễn Ngọc Trân</h5>
+                            <small class="text-muted">12:01 11/11/2018</small>
+                        </div>
+                        <p class="mb-1"><i class="fa fa-user text-primary">&nbsp;</i>Đăng nhập</p>
+                        <small>Máy tính (192.168.1.132), Chrome Version 70.0.3538.77 (Official Build) (64-bit)</small>
+                    </li>
+                    <li class="list-group-item list-group-item-light">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Nguyễn Thanh Đủ</h5>
+                            <small class="text-muted">02:01 11/11/2018</small>
+                        </div>
+                        <p class="mb-1"><i class="fa fa-plus text-success">&nbsp;</i>Thêm mới bài viết</p>
+                        <small>Làm thế nào để lập trình ASP.NET MVC trong 7 ngày?</small>
+                    </li>
+                    <li class="list-group-item list-group-item-light">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Nguyễn Minh Hải</h5>
+                            <small class="text-muted">01:11 01/11/2018</small>
+                        </div>
+                        <p class="mb-1"><i class="fa fa-edit text-warning">&nbsp;</i>Chỉnh sửa bài viết</p>
+                        <small>Làm thế nào để lập trình ASP.NET MVC trong 7 ngày?</small>
+                    </li>
+                    <li class="list-group-item list-group-item-light">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Trương Quốc Kỷ</h5>
+                            <small class="text-muted">02:11 02/11/2018</small>
+                        </div>
+                        <p class="mb-1"><i class="fa fa-trash text-danger">&nbsp;</i>Xoá bài viết</p>
+                        <small>Làm thế nào để lập trình ASP.NET MVC trong 7 ngày?</small>
+                    </li>
+                    <li class="list-group-item list-group-item-light">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Nguyễn Ngọc Trân</h5>
+                            <small class="text-muted">12:01 11/11/2018</small>
+                        </div>
+                        <p class="mb-1"><i class="fa fa-user text-primary">&nbsp;</i>Đăng nhập</p>
+                        <small>Máy tính (192.168.1.132), Chrome Version 70.0.3538.77 (Official Build) (64-bit)</small>
+                    </li>
+                    <li class="list-group-item list-group-item-light">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Nguyễn Thanh Đủ</h5>
+                            <small class="text-muted">02:01 11/11/2018</small>
+                        </div>
+                        <p class="mb-1"><i class="fa fa-plus text-success">&nbsp;</i>Thêm mới bài viết</p>
+                        <small>Làm thế nào để lập trình ASP.NET MVC trong 7 ngày?</small>
+                    </li>
+                    <li class="list-group-item list-group-item-light">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Nguyễn Minh Hải</h5>
+                            <small class="text-muted">01:11 01/11/2018</small>
+                        </div>
+                        <p class="mb-1"><i class="fa fa-edit text-warning">&nbsp;</i>Chỉnh sửa bài viết</p>
+                        <small>Làm thế nào để lập trình ASP.NET MVC trong 7 ngày?</small>
+                    </li>
+                    <li class="list-group-item list-group-item-light">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Trương Quốc Kỷ</h5>
+                            <small class="text-muted">02:11 02/11/2018</small>
+                        </div>
+                        <p class="mb-1"><i class="fa fa-trash text-danger">&nbsp;</i>Xoá bài viết</p>
+                        <small>Làm thế nào để lập trình ASP.NET MVC trong 7 ngày?</small>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer small text-muted"><a href="#">Xem thêm</a></div>
+        </div>
+    </div>
+</div>
+
+<style type="text/css">
+    .list-group-nhatky {
+        max-height: 410px;
+        margin-bottom: 10px;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .list-group-thongbao {
+        max-height: 143px;
+        margin-bottom: 0px;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+    }
+</style>
+<!-- Page level plugin JavaScript-->
+<script src="~/Template/sb-admin/vendor/chart.js/Chart.min.js"></script>
+<script src="~/Template/sb-admin/vendor/datatables/jquery.dataTables.js"></script>
+<script src="~/Template/sb-admin/vendor/datatables/dataTables.bootstrap4.js"></script>
+<!-- Custom scripts for all pages-->
+<!-- Demo scripts for this page-->
+<script src="~/Template/sb-admin/js/demo/datatables-demo.js"></script>
+<script src="~/Template/sb-admin/js/demo/chart-area-demo.js"></script>
+

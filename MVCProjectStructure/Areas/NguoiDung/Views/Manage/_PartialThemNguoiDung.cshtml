@@ -1,0 +1,158 @@
+﻿<link href="~/Content/jquery-tagsinput.min.css" rel="stylesheet" />
+<div class="modal fade bd-example-modal-lg" id="formThem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm người dùng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs"></ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div id="tomtat" class="container tab-pane active">
+                        <br>
+                        <form action="/Admin/Menu/QuanLyMenu" method="post" id="formThemSua">
+                            <input id="Id" name="Id" type="hidden">
+                            <!-- Tab panes -->
+                            <div>
+                                <div class="container">
+
+                                    <div class="row form-group">
+                                        <div class="col-md-6">
+                                            <label>Họ và tên</label>
+                                            <input id="Ten" name="Ten" type="text" class="form-control" placeholder="Nhập họ tên">
+
+                                            <label>Tên tài khoản</label>
+                                            <input id="MatKhau" name="MatKhau" type="text" class="form-control" placeholder="Nhập mật khẩu">
+
+                                            <label>Mật khẩu</label>
+                                            <input id="MatKhau" name="MatKhau" type="text" class="form-control" placeholder="Nhập mật khẩu">
+
+                                            <label>Nhập lại mật khẩu</label>
+                                            <input id="NhapLaiMatKhau" name="NhapLaiMatKhau" type="text" class="form-control" placeholder="Nhập lại mật khẩu">
+
+                                            <label>Email</label>
+                                            <input id="Email" name="Email" type="text" class="form-control" placeholder="Nhập email">
+
+                                            <label>Số điện thoại</label>
+                                            <input id="SoDienThoai" name="SoDienThoai" type="text" class="form-control" placeholder="Nhập số điện thoại">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>Vai trò</label>
+                                            <select id="example-include-reset-divider" name="VaiTro" class="chosen-select form-control" multiple="multiple">
+                                                <option value="1"> Quản trị viên </option>
+                                                <option value="2"> Cán bộ 1</option>
+                                                <option value="2"> Cán bộ 2</option>
+                                                <option value="2"> Cán bộ 3</option>
+                                                <option value="2"> Cán bộ 4</option>
+                                                <option value="2"> Cán bộ 5</option>
+                                            </select>
+
+                                            <label>Đơn vị</label>
+                                            <select id="DonVi" name="DonVi" class="chosen-select form-control">
+                                                <option value="1"> ---Chọn đơn vị--- </option>
+                                                <option value="2"> Chi cục </option>
+                                                <option value="3"> Ban quản lý </option>
+                                                <option value="4"> Lãnh đạo </option>
+                                            </select>
+
+                                            <label>Chức vụ</label>
+                                            <select id="ChucVu" name="ChucVu" class="chosen-select form-control">
+                                                <option value="1"> ---Chọn chức vụ--- </option>
+                                                <option value="2"> Giám đốc </option>
+                                                <option value="3"> Phó giám đốc </option>
+                                                <option value="4"> Trưởng phòng </option>
+                                            </select>
+
+                                            <label>Ghi chú</label>
+                                            <textarea id="GhiChu" name="GhiChu" class="form-control" rows="4"></textarea>
+                                            <br />
+                                            <fieldset class="form-group">
+
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input id="KichHoat" name="KichHoat" type="checkbox" class="form-check-input" />
+                                                        <small>Kích hoạt</small>
+                                                    </label>
+                                                </div>
+                                            </fieldset>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btnLuu" type="button" value="save" name="save" class="btn btn-mac-dinh" onclick="Luu()">
+                    <i class="fa fa-save"></i> Lưu
+                </button>
+                <button id="btnLuuDong" type="button" class="btn btn-success" data-dismiss="modal" onclick="LuuDong()">
+                    <i class="fa fa-save"></i> Lưu đóng
+                </button>
+                <button id="btnDong" type="button" class="btn btn-secondary" data-dismiss="modal" onclick="Dong()">
+                    <i class="fa fa-close"></i> Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.ckeditor.com/ckeditor5/11.1.1/classic/ckeditor.js"></script>
+<script src="~/Scripts/jquery-tagsinput.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('[data-role="tags-input"]').tagsInput();
+    });
+    ClassicEditor
+        .create(document.querySelector('#editor'))
+        .then(editor => {
+            window.editor = editor;
+        })
+        .catch(err => {
+            console.error(err.stack);
+        });
+</script>
+
+
+<script>
+    CloseModal = () => {
+        $("#formThem").modal('hide');
+        resetModal();
+    }
+    Luu = () => {
+        let promise = new Promise(
+            (resolve, reject) => {
+                if (IdTaiKhoan == null) {
+                    // Thêm
+                    getDataJson("http://localhost:13194/api/TaiKhoan/Them", {
+                        Ten: document.getElementById("exampleInputEmail1").value,
+                        TaiKhoan: document.getElementById("exampleInputEmail1").value,
+                        MatKhau: document.getElementById("exampleTextarea").value,
+                        KichHoat: true
+                    },
+                        (ar) => {
+                            if (ar.KetQua == 1) {
+                                resolve(1);
+                            } else {
+                                reject(1);
+                            }
+                        })
+                }
+                     }
+                );
+            }
+</script>
+
+
+<script>
+    window.onload = () => {
+        document.getElementById('example-include-reset-divider').multiselect = true;
+    }
+</script>
+

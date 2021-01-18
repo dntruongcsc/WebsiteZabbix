@@ -1,0 +1,100 @@
+﻿@model IEnumerable<MVCProjectStructure.Areas.Admin.Models.Menu.MenuModel.MenuOutput.ThongTinMenuPhanCap>
+@*@model MVCProjectStructure.Areas.Admin.Models.Menu.MenuModel.MenuOutput.DocDanhSach*@
+
+<ul class="sidebar navbar-nav">
+    @*@if (Model != null)
+        {
+            var danhSach = Model.DanhSach;
+            if (danhSach != null && danhSach.Count > 0)
+            {
+                foreach (var item in danhSach)
+                {
+                    if (item.KichHoat == 1 && item.Nhom == 1 && item.Loai == 2)
+                    {
+                        if (item.DsMenuCha != null && item.DsMenuCha.Count() > 0)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="menu-icon @item.Icon"></i>
+                                    <span>@item.Ten</span>
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                                    @foreach (var i in item.DsMenuCha)
+                                    {
+                                        if (i.KichHoat == 1)
+                                        {
+                                            <a class="dropdown-item @i.Ma" href="@i.LienKet">
+                                                <i class="@i.Icon">&nbsp;</i>@i.Ten
+                                            </a>
+                                        }
+                                    }
+                                </div>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item @item.Ma">
+                                <a class="nav-link" href="@item.LienKet">
+                                    <i class="menu-icon @item.Icon"></i>
+                                    <span class="menu-text"> @item.Ten </span>
+                                </a>
+                            </li>
+                        }
+                    }
+                }
+            }
+        }*@
+    @if (Model != null)
+    {
+        foreach (var item in Model)
+        {
+            if (item.KichHoat == 1 && item.Nhom == 1 && item.Loai == 2)
+            {
+                if (item.DanhSachMenuCon != null && item.DanhSachMenuCon.Count() > 0)
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="menu-icon @item.Icon"></i>
+                            <span>@item.Ten</span>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                            @foreach (var i in item.DanhSachMenuCon)
+                            {
+                                if (i.KichHoat == 1)
+                                {
+                                    if (!string.IsNullOrEmpty(i.LienKet) && (i.LienKet.Contains("pdf") || i.LienKet.Contains("PDF")))
+                                    {
+                                        <a class="dropdown-item @i.Ma" href="@i.LienKet" target="_blank">
+                                            <i class="@i.Icon">&nbsp;</i>@i.Ten
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a class="dropdown-item @i.Ma" href="@i.LienKet">
+                                            <i class="@i.Icon">&nbsp;</i>@i.Ten
+                                        </a>
+                                    }
+                                }
+                            }
+                        </div>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item @item.Ma">
+                        <a class="nav-link" href="@item.LienKet">
+                            <i class="menu-icon @item.Icon"></i>
+                            <span class="menu-text"> @item.Ten </span>
+                        </a>
+                    </li>
+                }
+            }
+        }
+    }
+    <li class="nav-item">
+        <a style="text-align:center;" class="nav-link sidebarToggle" href="javascript:void(0)">
+            <i class="fa fa-arrow-left" id="icon_toggle"></i>
+        </a>
+    </li>
+</ul>
+

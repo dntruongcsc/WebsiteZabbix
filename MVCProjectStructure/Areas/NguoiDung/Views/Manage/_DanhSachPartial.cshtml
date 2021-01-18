@@ -1,0 +1,83 @@
+﻿
+@model MVCProjectStructure.Areas.NguoiDung.Models.NguoiDungModel.Output.DocDanhSach
+@using Common.Enum;
+@using MVCProjectStructure.Helpers;
+<div class="col-md-12 kc-0">
+    <div id="bang-bieu">
+        <div class="scrollbar mb-3">
+            <table class="col-sm-12 table-bordered table-striped table-condensed table-style">
+                <thead>
+                    <tr>
+                        <th class="w-5 al-c"><input type='checkbox' id="chonXoaTatCa" title="Chọn xóa tất cả" /></th>
+                        <th class="w-5 al-c">STT</th>
+                        <th class="w-15 al-c">Họ và tên</th>
+                        <th class="w-15 al-c">Tên tài khoản</th>
+                        <th class="w-15 al-c">Đơn vị/Phòng ban</th>
+                        <th class="w-10 al-c">Vai trò</th>
+                        <th class="w-5 al-c">Kích hoạt</th>
+                        <th class="w-4">&nbsp;</th>
+                    </tr>
+                </thead>
+
+                <tbody id="listNguoiDung">
+                    @if (Model != null)
+                    {
+                        var danhSach = Model.DanhSach;
+                        int stt = (Model.TrangHienTai - 1) * PageNumber.Default + 1;
+
+
+                        var tongSoLuong = Model.TongSoDong;
+                        foreach (var item in danhSach)
+                        {
+                            string danhSachVaiTro = "";
+                            foreach (var item2 in item.DanhSachIdVaiTro)
+                            {
+                                danhSachVaiTro += item2;
+                            }
+                            <tr id="@item.Id">
+                                <td class="al-c">
+                                    <input type='checkbox' class="checkbox_xoa" value="@item.Id" title="Chọn xóa" id="@item.Id" name="IDs" />
+                                </td>
+                                <td class="al-c" data-title="STT">@(stt++)</td>
+                                <td class="al-l" data-title="Tên"><a class="CapNhat" href="#" onclick="ChinhSua('@item.Id')" data-id="@item.Id">@item.HoTen</a></td>
+                                <td class="al-l" data-title="Tên tài khoản">@item.TaiKhoan</td>
+                                <td class="al-l" data-title="Đơn vị">@item.TenDonVi</td>
+                                
+                                <td class="al-c" data-title="Vai trò">@string.Join(", ", item.DanhSachTenVaiTro)</td>
+                                <td class="al-c" data-title="Kích hoạt">
+                                    @if (item.KichHoat)
+                                    {
+                                        <i class="fa fa-check text-info" aria-hidden="true"></i>
+                                    }
+                                </td>
+
+                                <td data-title="&nbsp;" style="text-align:center">
+                                    <button type="button" data-id="@item.Id" class="btn btn-sm btn-info CapNhat" onclick="ChinhSua('@item.Id')" title="Hiệu chỉnh thông tin">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="10"><div class="alert alert-secondary mb-0 text-center">Không tìm thấy dữ liệu</div></td></tr>
+                    }
+                </tbody>
+
+            </table>
+
+        </div>
+        @{
+            if (Model != null)
+            {
+                string duongDan = Url.Action("XemDanhSach", "Manage", new { area = "NguoiDung" });
+                string kq = XuLyPhanTrang.TaoPhanTrang(Model.TongSoTrang, Model.TrangHienTai, duongDan, ViewBag.DanhSachThamSo);
+                @Html.Raw(kq);
+            }
+        }
+
+        <div style="clear:both"></div>
+    </div>
+
+</div>

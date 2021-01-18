@@ -1,0 +1,254 @@
+﻿
+@{
+    /**/
+
+    ViewBag.Title = "TaiKhoan";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Active = "NguoiDung";
+}
+@Html.Partial("_PartialThemNguoiDung")
+
+<style type="text/css">
+    .chieu-cao {
+        height: 36px;
+        font-size: 14px;
+    }
+    /*# sourceMappingURL=bootstrap.css.map */
+    @@media only screen and (max-width: 800px) {
+
+        .chieu-cao {
+            height: auto;
+            font-size: 12px;
+        }
+
+        .bang-bieu table,
+        .bang-bieu thead,
+        .bang-bieu tbody,
+        .bang-bieu th,
+        .bang-bieu td,
+        .bang-bieu tr {
+            display: block;
+        }
+
+
+            .bang-bieu thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+        .bang-bieu tr {
+            border: 1px solid #ccc;
+        }
+
+        .bang-bieu td {
+            border: none;
+            border-bottom: 1px solid #eee;
+            position: relative;
+            padding-left: 35%;
+            white-space: normal;
+            text-align: left;
+            font-size: 12px;
+        }
+
+            .bang-bieu td:before {
+                position: absolute;
+                top: 6px;
+                left: 6px;
+                width: 35%;
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+            }
+
+            .bang-bieu td:before {
+                content: attr(data-title);
+            }
+    }
+</style>
+<!-- Breadcrumbs-->
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="#">Dashboard</a>
+    </li>
+    <li class="breadcrumb-item active">Overview</li>
+</ol>
+<!-- Icon Cards-->
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="input-group mb-3">
+            <select class="chosen-select form-control" id="form-field-select-3" data-placeholder="Choose a State...">
+                <option value=""> --Chọn đơn vị-- </option>
+                <option value="WI">Lãnh đạo Sở</option>
+                <option value="WY">Chi cục thủy sản</option>
+                <option value="WY">Chi cục trồng trọt</option>
+                <option value="WY">Chi cục thú y</option>
+            </select>
+            <input type="text" class="form-control" placeholder="Nhập nội dung tìm" aria-label="Nhập nội dung tìm" aria-describedby="button-addon2">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary timkiem" type="button" id="button-addon2"><i class="fa fa-search"></i> Tìm kiếm</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 text-right">
+        <div class="btn-group">
+            <button class="btn btn-primary them" data-toggle="modal" data-target="#formThem"><i class="fa fa-plus"></i> Thêm</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-danger xoa" onclick="Modal('Xác nhận','Xóa?','Xóa','formXoa')"><i class="fa fa-trash"></i> Xóa</button>
+        </div>
+    </div>
+</div>
+
+<div class="table-header">
+
+</div>
+
+<!-- div.table-responsive -->
+<!-- div.dataTables_borderWrap -->
+<div>
+    <table id="dynamic-table" class="table table-striped table-bordered table-hover bang-bieu">
+        <thead>
+            <tr>
+                <th class="center">
+                    <!--<label class="pos-rel">
+                        <input type="checkbox" class="ace" />
+                        <span class="lbl"></span>
+                        </label>-->
+                </th>
+                <th class="center">STT</th>
+                <th class="center">Họ và tên</th>
+                <th class="center">Tên tài khoản</th>
+                <th class="center">Đơn vị/Phòng ban</th>
+                <th class="center">Vai trò</th>
+                <th class="center">Kích hoạt</th>
+                <th class="center">Sửa</th>
+            </tr>
+        </thead>
+
+        <tbody id="listNguoiDung"></tbody>
+    </table>
+</div>
+
+<script>
+    jQuery(function ($) {
+
+        var listNguoiDung = [
+            { Id: 1, STT: "1", HoVaTen: "Nguyễn Hoàng Hải", TenTaiKhoan: "admin", DonViPhongBan: "Chi cục", VaiTro: "Cán bộ", KichHoat: "" },
+            { Id: 2, STT: "2", HoVaTen: "Nguyễn Minh Hải", TenTaiKhoan: "admin", DonViPhongBan: "Chi cục", VaiTro: "Cán bộ", KichHoat: "" },
+            { Id: 3, STT: "3", HoVaTen: "Nguyễn Thanh Đủ", TenTaiKhoan: "nhanvien", DonViPhongBan: "Chi cục", VaiTro: "Cán bộ", KichHoat: "" },
+            { Id: 4, STT: "4", HoVaTen: "Bùi Thị Thủy Tiên", TenTaiKhoan: "nhanvien", DonViPhongBan: "Ban quản lý", VaiTro: "Cán bộ", KichHoat: "" },
+            { Id: 5, STT: "5", HoVaTen: "Nguyễn Văn Duẩn", TenTaiKhoan: "nhanvien", DonViPhongBan: "Ban quản lý", VaiTro: "Cán bộ", KichHoat: "" },
+            { Id: 6, STT: "6", HoVaTen: "Trương Quốc Kỷ", TenTaiKhoan: "admin", DonViPhongBan: "Lãnh đạo", VaiTro: "Quản trị viên", KichHoat: "" },
+            { Id: 7, STT: "7", HoVaTen: "Nguyễn Ngọc Trân", TenTaiKhoan: "admin", DonViPhongBan: "Lãnh đạo", VaiTro: "Quản trị viên", KichHoat: "" },
+
+        ];
+
+        for (var i = 0; i < listNguoiDung.length; i++) {
+            var NguoiDung = listNguoiDung[i];
+            var html =
+                '<tr>' +
+                '<td class="">' +
+                '<label class="pos-rel">' +
+                '<input type="checkbox" class="ace" /><span class="lbl"></span>' +
+                '</label>' +
+                '</td>' +
+                '<td class="p-0 center">' + NguoiDung.STT + '</td>' +
+
+                '<td>' + NguoiDung.HoVaTen + '</td>' +
+
+                '<td class="p-0 center">' + NguoiDung.TenTaiKhoan + '</td>' +
+
+                '<td>' + NguoiDung.DonViPhongBan + '</td>' +
+
+                '<td>' + NguoiDung.VaiTro + '</td>' +
+
+                '<td class="p-0 center">' + NguoiDung.KichHoat + '<i class="fa fa-check text-info" aria-hidden="true">' + '</i>' + '</td>' +
+
+                '<td>' +
+                '<div class="hidden-sm hidden-xs action-buttons">' +
+
+
+                '<button class="btn sua" onclick=SuaNguoiDung(' + NguoiDung.Id + ')>' +
+                '<i class="ace-icon fa fa-pencil bigger-130"></i>' +
+                '</button> ' +
+
+
+                '</div>' +
+                '</td>' +
+                '</tr>';
+
+
+            $("#listNguoiDung").append(html);
+        }
+
+        $('#dynamic-table')
+
+            .DataTable({
+                searching: "", paging: "", info: "", "bLengthChange": "",
+                bAutoWidth: "",
+                "aoColumns": [
+                    { "bSortable": "" },
+                    { "bSortable": "" },
+                    null,
+                    null,
+                    { "bSortable": "" },
+                    { "bSortable": "" },
+                    { "bSortable": "" },
+                    null,
+                    { "bSortable": "" }
+                ],
+                "aaSorting": [],
+
+
+
+
+                select: {
+                    style: 'multi'
+                }
+            });
+    });
+
+
+    function SuaNguoiDung(id) {
+        alert("Sửa người dùng " + id);
+    }
+
+    function XoaNguoiDung(id) {
+        alert("Xóa người dùng " + id);
+    }
+</script>
+
+<script type="text/javascript">
+    var IdNguoiDung = null;
+    var DuLieu = null;
+
+    //  đọc API
+    var getDataJson = function (url, dataInputObject, callbackHandle) {
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.responseType = 'json';
+        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        xhr.onload = function () {
+            if (xhr.status === 200 && xhr.readyState === 4) {
+                callbackHandle(xhr.response);
+            } else {
+                callbackHandle(xhr.response);
+            }
+        };
+        xhr.send(JSON.stringify(dataInputObject));
+    };
+    $(document).ready(() => {
+        docDanhSachNguoiDung("http://localhost:13194/api/TaiKhoan/DocDanhSach",
+            {}, (args) => {
+
+            });
+    });
+    docDanhSachNguoiDung = (url, input, callback) => {
+        getDataJson(url, input, callback);
+    }
+</script>
+
+
+

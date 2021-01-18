@@ -1,0 +1,63 @@
+﻿<input id="IdEdit" hidden value="@Model.Id" />
+<input id="txtMaTinh" hidden value="@Model.MaTinh" />
+<input id="KetQuaOutput" data-ketqua="@ViewBag.KetQua" hidden />
+<div id="ThongTinHuyenBody">
+    <div class="clearfix"></div>
+    <div class="font-small row p-3">
+        <div class="form-group col-12">
+            <h6 class="p-1 text-info ">Thông tin chi tiết</h6>
+            <hr class="my-1 mb-1">
+        </div>
+        <div class="col-md-6 col-12">
+            <div class="col-12 p-0">
+                <div class="row p-0 m-0 mb-1">
+                    <label class="col-sm-3 float-left">Tên tỉnh</label>
+                    <div class="col-sm-9 col-9 col-md-9 float-left input-group input-group-sm p-0">
+                        <select id="danhSachTinh" class="form-control">
+                            <option value="" hidden>-- Chọn tỉnh --</option>
+                            @foreach (var item in ViewBag.DanhSachTinh.DanhSach)
+                            {
+                                if (item.Id == Model.IdTinh)
+                                {
+                                    <option value="@item.Id" selected>@item.Ten</option>
+                                }
+                                else
+                                {
+                                    <option value="@item.Id">@item.Ten</option>
+                                }
+
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-12">
+            <div class="col-12 p-0">
+                <div class="row p-0 m-0 mb-1">
+                    <label class="col-sm-3 float-left">Mã huyện</label>
+                    <div class="col-sm-9 col-9 col-md-9 float-left input-group input-group-sm p-0">
+                        <input id="txtMaHuyen" type="text" class="form-control mb-1" aria-label="Small" placeholder="Nhập mã huyện" value="@Model.Ma">
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 p-0">
+                <div class="row p-0 m-0 mb-1">
+                    <label class="col-sm-3 float-left">Tên huyện</label>
+                    <div class="col-sm-9 col-9 col-md-9 float-left input-group input-group-sm p-0">
+                        <input id="txtTenHuyen" type="text" class="form-control mb-1" aria-label="Small" placeholder="Nhập tên huyện" value="@Model.Ten">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        var Jsoninputdata = {
+            TuKhoa: ""
+        };
+    });
+</script>
+
+

@@ -1,0 +1,163 @@
+﻿@using Common.Enum;
+@{
+    ViewBag.Title = "Quản lý menu";
+    Layout = ChucNang.GiaoDien.SBAdmin;
+    ViewBag.Active = ChucNang.Ma.Menu;
+}
+<style>
+    .them-menu {
+        position: fixed;
+        right: 15px;
+        bottom: 70px;
+        display: none;
+        width: 50px;
+        height: 50px;
+        text-align: center;
+        color: #fff !important;
+        background-color: rgba(67, 142, 185, 0.62);
+        line-height: 46px;
+        border-radius: 2.25rem !important;
+        z-index: 1000;
+        cursor: pointer;
+    }
+        .them-menu i {
+            font-weight: 800;
+            margin-top: 16px;
+        }
+        .them-menu:hover {
+            background-color: rgb(67, 142, 185);
+        }
+</style>
+<a class="them-menu" onclick="Them()">
+    <i class="fas fa-plus"></i>
+</a>
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="@Url.Action("Index","Home",new { area = "Admin" })"><i class="fa fa-tachometer"></i> Bảng điều khiển</a>
+    </li>
+    <li class="breadcrumb-item active">Quản lý menu</li>
+</ol>
+<div class="container-fluid p-0">
+    <div class="">
+        <div class="panel-body">
+            <div class="row px-3">
+                <div class="col-lg-9 kc-0 mb-3">
+                    <div class="row pl-3">
+                        <div class="col-lg-3 plrb-022">
+                            <input id="TuKhoa" name="TuKhoa" class="form-control" placeholder="Tìm theo tên hoặc mã" />
+                        </div>
+
+                        <div class="col-lg-2 plrb-022">
+                            <select id="Nhom" class="form-control">
+                                <option value="1">Quản trị hệ thống</option>
+                                <option value="2">Ứng dụng Website</option>
+                                <option value="3">Ứng dụng Mobile</option>
+                                <option value="4">Quản lý Tàu cá</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2 plrb-022">
+                            <select id="Loai" name="Loai" class="chosen-select form-control">
+                                <option value="">--Loại--</option>
+                                <option value="2">Menu trái</option>
+                                <option value="3">Menu phải</option>
+                                <option value="1">Menu trên</option>
+                                <option value="4">Menu dưới</option>
+                                <option value="5">Menu giữa</option>
+
+                            </select>
+                        </div>
+
+                        <div class="plrb-022">
+                            <button type="button" id="btnTimKiem" onclick="XuLyTimKiem()" class="btn btn-info"><i class="fa fa-search">&nbsp;</i>Tìm kiếm</button>
+                            <button type="button" id="btnLamLai" onclick="XuLyLamLai()" class="btn btn-secondary" title="Tải lại dữ liệu mặc định"><i class="fa fa-refresh"></i></button>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 kc-0 mb-3 canh-le-p">
+                    <button class="btn btn-success" onclick="LuuThayDoiViTri()">
+                        <i class="fa fa-check"></i> Cập nhật
+                    </button>
+                    <button id="btnThem" class="btn btn-mac-dinh" onclick="Them()">
+                        <i class="fa fa-plus"></i> Thêm mới
+                    </button>
+                    <button type="button" id="btnXoa" onclick="XuLyXoa()" class="btn btn-danger" disabled><i class="fa fa-trash">&nbsp;</i>Xóa</button>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div id="ThongBao_Index"></div>
+            <div id="DanhSach_CapNhat">
+                @{Html.RenderPartial("_PartialDanhSach");}
+            </div>
+
+            
+
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="~/Areas/Admin/Contents/MenuIndex.js"></script>
+    <script>
+        function LoadDanhSachMenuCha() {
+            var loai = $('#LoaiThem').val();
+            var nhom = $('#NhomThem').val();
+            $('#IdMenuCha').empty();
+            $('#IdMenuCha').append('<option value="parent"> --Không chọn-- </option>');
+            //$('#IdMenuCha option:first-child').attr("selected", "selected");
+            try {
+                $.ajax({
+                    url: '@Url.Action("DocDanhSachFormThemSua", "Menu",new { area = "Admin"})',
+                    data: { tukhoa: "", nhom: nhom, loai: loai },
+                    type: 'POST',
+                    success: function (result) {
+                        //console.log(result);
+                        for (var i = 0; i < result.length; i++) {
+                            var html = '<option value="' + result[i].Id+'">' + result[i].Ten + '</option>';
+                            $('#IdMenuCha').append(html);
+
+                            for (var j = 0; j < result[i].DsMenuCha.length; j++) {
+                                var html1 = '<option value="' + result[i].DsMenuCha[j].Id + '">|-- ' + result[i].DsMenuCha[j].Ten + '</option>';
+                                $('#IdMenuCha').append(html1);
+
+                                for (var k = 0; k < result[i].DsMenuCha[j].DsMenuCon.length; k++) {
+                                    var html2 = '<option value="' + result[i].DsMenuCha[j].DsMenuCon[k].Id + '">|--|-- ' + result[i].DsMenuCha[j].DsMenuCon[k].Ten + '</option>';
+                                    $('#IdMenuCha').append(html2);
+                                    if (result[i].DsMenuCha[j].DsMenuCon[k].DsMenuChau.length > 0) {
+                                        for (var l = 0; l < result[i].DsMenuCha[j].DsMenuCon[k].DsMenuChau.length; l++) {
+                                            var html3 = '<option value="' + result[i].DsMenuCha[j].DsMenuCon[k].DsMenuChau[l].Id + '">|--|--|-- ' + result[i].DsMenuCha[j].DsMenuCon[k].DsMenuChau[l].Ten + '</option>';
+                                            $('#IdMenuCha').append(html3);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        AddValue();
+                    }
+                });
+            } catch (e) {
+                console.log(e);
+            }
+            AddValue();
+        }
+
+        $(document).on('scroll', function () {
+            var scrollDistance = $(this).scrollTop();
+            if (scrollDistance > 100) {
+                $('.them-menu').fadeIn();
+            } else {
+                $('.them-menu').fadeOut();
+            }
+        });
+
+        //// Smooth scrolling using jQuery easing
+        //$(document).on('click', 'a.scroll-to-top', function (event) {
+        //    var $anchor = $(this);
+        //    $('html, body').stop().animate({
+        //        scrollTop: ($($anchor.attr('href')).offset().top)
+        //    }, 1000, 'easeInOutExpo');
+        //    event.preventDefault();
+        //});
+    </script>
+}

@@ -1,0 +1,7 @@
+﻿@if (TempData["Error"] != null)
+{
+    <div class="alert alert-warning alert-dismissable fade in" style="margin:15px;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>Lưu ý!</strong> @Html.Raw(TempData["Error"])
+    </div>
+}

@@ -1,0 +1,410 @@
+﻿@using Common.Enum;
+@{
+    ViewBag.Title = "Bảng điều khiển";
+    Layout = ChucNang.GiaoDien.SBAdmin;
+    ViewBag.active = ChucNang.Ma.BangDieuKhien;
+    //Thông báo khẩn
+    var thongTin = ViewBag.DocDanhSachThongBaoKhan != null ? ViewBag.DocDanhSachThongBaoKhan as MVCProjectStructure.Models.CommonModel.CommonThongBaoKhan.Output.DocDanhSach : new MVCProjectStructure.Models.CommonModel.CommonThongBaoKhan.Output.DocDanhSach();
+    var DocDanhSachThongBaoKhan = thongTin.DanhSach;
+    //Thiết bị
+    var soLuongThietBi = ViewBag.DocSoLuongThietBiDiDong != null ? ViewBag.DocSoLuongThietBiDiDong as MVCProjectStructure.Models.CommonModel.CommonThietBiDiDong.Output.SoLuongThietBiDiDong : new MVCProjectStructure.Models.CommonModel.CommonThietBiDiDong.Output.SoLuongThietBiDiDong();
+    //Bài viết
+    var thongTinDanhSachBaiViet = ViewBag.DocDanhSachBaiViet != null ? ViewBag.DocDanhSachBaiViet as MVCProjectStructure.Models.CommonModel.CommonBaiViet.Output.DocDanhSach : new MVCProjectStructure.Models.CommonModel.CommonBaiViet.Output.DocDanhSach();
+    var danhSachBaiViet = thongTinDanhSachBaiViet.DanhSachThongTinBaiViet;
+    var soLuongBaiViet = thongTinDanhSachBaiViet.TongSoLuong;
+
+    //Chỉ đạo
+    var thongTinDanhSachChiDaoDieuHanh = ViewBag.DocDanhSachChiDaoDieuHanh != null ? ViewBag.DocDanhSachChiDaoDieuHanh as MVCProjectStructure.Helpers.ChiDaoDieuHanhModelInput : new MVCProjectStructure.Helpers.ChiDaoDieuHanhModelInput();
+    var soLuongThongTinChiDao = ViewBag.SoLuongChiDao != null ? ViewBag.SoLuongChiDao : 0;
+
+    //Phản ánh
+    var soLuongPhanAnh = ViewBag.SoLuongPhanAnh != null ? ViewBag.SoLuongPhanAnh : 0;
+}
+
+<!-- Breadcrumbs-->
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="#"><i class="fa fa-tachometer"></i> Bảng điều khiển</a>
+    </li>
+</ol>
+<!-- Icon Cards-->
+<div class="row">
+    <!--Thống kê-->
+    <div class="col-xl-8 col-md-12 col-sm-12">
+        <div class="card mb-3">
+            <div class="card-header text-success">
+                <i class="fas fa-bar-chart"></i>
+                Thống kê dữ liệu
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 mb-3">
+                        <div class="card text-white bg-success o-hidden h-100">
+                            <div class="card-body">
+                                <div class="card-body-icon">
+                                    <i class="fas fa-fw fa-users"></i>
+                                </div>
+                                <h3><span class="timer count-title count-number" data-to="@soLuongBaiViet" data-speed="1500">@soLuongBaiViet</span><small> bài viết</small></h3>
+                            </div>
+                            <a class="card-footer text-white clearfix small z-1" href="#">
+                                <span class="float-left">Bài viết cung cấp thông tin cho người dân</span>
+                                @*<span class="float-right">
+                                        <i class="fas fa-angle-right"></i>
+                                    </span>*@
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 mb-3">
+                        <div class="card text-white bg-primary o-hidden h-100">
+                            <div class="card-body">
+                                <div class="card-body-icon">
+                                    <i class="fas fa-fw fa-edit"></i>
+                                </div>
+                                <h3><span class="timer count-title count-number" data-to="@soLuongThongTinChiDao" data-speed="1500">@soLuongThongTinChiDao</span><small> chỉ đạo</small></h3>
+                            </div>
+                            <a class="card-footer text-white clearfix small z-1" href="#">
+                                <span class="float-left">Thông tin chỉ đạo trong ngành nông nghiệp </span>
+                                @*<span class="float-right">
+                                        <i class="fas fa-angle-right"></i>
+                                    </span>*@
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 mb-3">
+                        <div class="card text-white bg-danger o-hidden h-100">
+                            <div class="card-body">
+                                <div class="card-body-icon">
+                                    <i class="fas fa-fw fa-user-check"></i>
+                                </div>
+                                <h3><span class="timer count-title count-number" data-to="@soLuongPhanAnh" data-speed="1500">@soLuongPhanAnh</span><small> phản ánh</small></h3>
+                            </div>
+                            <a class="card-footer text-white clearfix small z-1" href="#">
+                                <span class="float-left">Các phản ánh từ người dân (bão, sạt lỡ,...)</span>
+                                @*<span class="float-right">
+                                        <i class="fas fa-angle-right"></i>
+                                    </span>*@
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer small text-muted">Cập nhật lúc @String.Format("{0:HH:mm}", DateTime.Now) giờ, ngày @String.Format("{0:dd/MM/yyyy}", DateTime.Now)</div>
+        </div>
+    </div>
+
+    <!--Thông báo-->
+    <div class="col-xl-4 col-md-12 col-sm-12 animated slideInUp">
+        <div class="card mb-3">
+            <div class="card-header text-danger">
+                <i class="fas fa-bell">&nbsp;</i>
+                Thông báo
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-thongbao">
+                    @{
+                        if (DocDanhSachThongBaoKhan !=null && DocDanhSachThongBaoKhan.Count > 0)
+                        {
+                            for (int i = 0; i < DocDanhSachThongBaoKhan.Count; i++)
+                            {
+                                <p>@(i + 1). @DocDanhSachThongBaoKhan[i].TieuDe</p>
+                            }
+                        }
+                    }
+                    @*<p>1. Chức năng Quản lý menu đã được chuyển vào Quản trị hệ thống -> Quản lý menu</p>*@
+                </div>
+            </div>
+            <div class="card-footer small text-muted">Cập nhật lúc @String.Format("{0:HH:mm}", DateTime.Now) giờ, ngày @String.Format("{0:dd/MM/yyyy}", DateTime.Now)</div>
+        </div>
+    </div>
+
+    <!-- Thống kê lượt sử dụng-->
+    <div class="col-xl-8 col-lg-6 col-md-12">
+        <div class="card mb-3">
+            <div class="card-header text-primary">
+                <i class="fas fa-th"></i>
+                Thống kê lượt sử dụng
+            </div>
+            <div class="card-body scrollbar">
+                <div id="BieuDoThongKeLuotSuDung" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+                <script>
+                    //Set phân cách nghìn và thập phân
+                    Highcharts.setOptions({
+                        lang: {
+                            decimalPoint: ',',
+                            thousandsSep: '.'
+                        }
+                    });
+                    Highcharts.chart('BieuDoThongKeLuotSuDung', {
+                        colors: ['#9dbd3e', '#438eb9', '#eea29a', '#c94c4c'],
+                        chart: {
+                            plotBackgroundColor: null,
+                            plotBorderWidth: null,
+                            plotShadow: false,
+                            type: 'pie'
+                        },
+                        title: {
+                            text: 'Thống kê lượt sử dụng'
+                        },
+                        tooltip: {
+                            pointFormat: '<b>{point.y} lượt<br/> {point.percentage:.1f} %</b>'
+                        },
+                        plotOptions: {
+                            pie: {
+                                allowPointSelect: true,
+                                cursor: 'pointer',
+                                dataLabels: {
+                                    enabled: true,
+                                    //format: '<b>{point.name}</b>: {point.y} lượt<br/>({point.percentage:.1f} %)'
+
+                                    //Dùng formatter thay cho format để định dạng số theo Highcharts.numberFormat(<giá trị>,<số lượng số thập phân>, <phân cách thập phân>, <phân cách nghìn>)
+                                    formatter: function () {
+                                        return this.point.name + '<br/>' + Highcharts.numberFormat(this.point.y, 0, ',', '.') + ' lượt<br/>(<b>' + this.percentage.toFixed(1) + '</b>%)';
+                                    }
+                                }
+                            }
+                        },
+                        series: [{
+                            name: 'Lượt sử dụng',
+                            colorByPoint: true,
+                            data: [{
+                                name: 'Android',
+                                y: @soLuongThietBi.SoLuongThietBiAndroid
+                            }, {
+                                name: 'iOS',
+                                    y: @soLuongThietBi.SoLuongThietBiApple
+                            }]
+                        }],
+                        credits: {
+                            enabled: false
+                        },
+                        exporting: {
+                            enabled: false
+                        }
+                    });
+                </script>
+            </div>
+            @*<div class="card-body">
+                    <div class="row">
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <a href="#">
+                                        <div class="card-img-top h1"><i class="fa fa-sitemap"></i></div>
+                                        <p>Quản lý nhóm tin</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <a href="#">
+                                        <div class="card-img-top h1"><i class="fa fa-sitemap"></i></div>
+                                        <p>Quản lý nhóm tin</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <a href="#">
+                                        <div class="card-img-top h1"><i class="fa fa-edit"></i></div>
+                                        <p>Quản lý bài viết</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <a href="#">
+                                        <div class="card-img-top h1"><i class="fa fa-edit"></i></div>
+                                        <p>Quản lý bài viết</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <a href="#">
+                                        <div class="card-img-top h1"><i class="fa fa-edit"></i></div>
+                                        <p>Quản lý bài viết</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <a href="#">
+                                        <div class="card-img-top h1"><i class="fa fa-edit"></i></div>
+                                        <p>Quản lý bài viết</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <a href="#">
+                                        <div class="card-img-top h1"><i class="fa fa-edit"></i></div>
+                                        <p>Quản lý bài viết</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <a href="#">
+                                        <div class="card-img-top h1"><i class="fa fa-edit"></i></div>
+                                        <p>Quản lý bài viết</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <a href="#">
+                                        <div class="card-img-top h1"><i class="fa fa-edit"></i></div>
+                                        <p>Quản lý bài viết</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <a href="#">
+                                        <div class="card-img-top h1"><i class="fa fa-edit"></i></div>
+                                        <p>Quản lý bài viết</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <a href="#">
+                                        <div class="card-img-top h1"><i class="fa fa-edit"></i></div>
+                                        <p>Quản lý bài viết</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <a href="#">
+                                        <div class="card-img-top h1"><i class="fa fa-edit"></i></div>
+                                        <p>Quản lý bài viết</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>*@
+        </div>
+    </div>
+
+    <!--Bài viết mới nhất-->
+    <div class="col-xl-4 col-lg-6 col-md-12 animated slideInUp">
+        <div class="card mb-3">
+            <div class="card-header text-info">
+                <i class="fas fa-pencil-alt"></i>
+                Bài viết mới nhất
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-nhatky">
+                    @{
+                        foreach (var item in danhSachBaiViet)
+                        {
+                            <li class="list-group-item list-group-item-light">
+                                @*<div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">Nguyễn Ngọc Trân</h6>
+                                        <small class="text-muted">12:01 11/11/2018</small>
+                                    </div>*@
+                                <p class="mb-1" style="color:#585858">@item.TieuDe</p>
+                                <small><i>@item.NoiDungTomTat</i></small>
+                                <small class="float-right">@item.ChuoiNgayTao</small><br />
+                                <div class="clearfix"></div>
+                            </li>
+                        }
+                    }
+                    @*<li class="list-group-item list-group-item-light">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">Nguyễn Ngọc Trân</h6>
+                            <small class="text-muted">12:01 11/11/2018</small>
+                        </div>
+                        <p class="mb-1"><i class="fa fa-user text-primary">&nbsp;</i>Đăng nhập</p>
+                        <small>Máy tính (192.168.1.132), Chrome Version 70.0.3538.77 (Official Build) (64-bit)</small>
+                    </li>*@
+
+                </ul>
+            </div>
+            @*<div class="card-footer small text-muted"><a href="#">Xem thêm</a></div>*@
+        </div>
+    </div>
+</div>
+@section styles{
+
+    <style type="text/css">
+        .list-group-nhatky {
+            max-height: 390px;
+            margin-bottom: 10px;
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .list-group-thongbao {
+            max-height: 143px;
+            margin-bottom: 0px;
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        @@media screen and (max-width: 1366px) {
+            .list-group-thongbao {
+                max-height: 168px;
+            }
+            .list-group-nhatky {
+                max-height: 390px;
+            }
+        }
+    </style>
+}
+@section ContentHead{
+    <link href="~/Content/animate/animate.css" rel="stylesheet" />
+    <script src="~/Scripts/highcharts/highcharts.js"></script>
+    <script src="~/Scripts/highcharts/exporting.js"></script>
+    <script src="~/Scripts/highcharts/export-data.js"></script>
+}
+
+@section Scripts {
+    <script src="~/Scripts/csc/csc.aminated-number-counter.js"></script>
+    <script>
+        //Animation number counter (không có phân cách nghìn)
+        //Ex: <span class="count">2326</span>
+        $('.count').each(function () {
+            $(this).prop('Counter', 0).animate({
+                Counter: $(this).text()
+            }, {
+                    duration: 1000,
+                    easing: 'swing',
+                    step: function (now) {
+                        $(this).text(Math.ceil(now));
+                    }
+                });
+        });
+                            //End Animated number counter
+    </script>
+}

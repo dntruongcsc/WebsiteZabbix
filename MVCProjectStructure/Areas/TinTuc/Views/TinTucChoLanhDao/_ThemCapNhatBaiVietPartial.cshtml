@@ -1,0 +1,300 @@
+﻿@model MVCProjectStructure.Areas.TinTuc.Models.BaiVietModel.Output.ThongTin
+@using Common.Utilities
+@{
+    DateTime ngayHienTai = DateTime.Now;
+}
+<input id="Id" name="Id" value="@Model.Id" hidden />
+<input id="SuaIdNhomTin" value="@Model.IdNhomTin" hidden />
+<style>
+    input[type=text], select, textarea, input[type=file] {
+        min-width: 100%;
+    }
+</style>
+<div>
+    <input id="KetQuaOutput" data-ketqua="@ViewBag.KetQua" hidden />
+    <div class="form-small">
+        <input type="text" class="form-control" id="Id" hidden>
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label class="col-sm-2" for="TieuDe">Tiêu đề bài viết</label>
+                <div class="col-sm-10">
+                    <input id="TieuDe" type="text" class="form-control form-control-sm" placeholder="" value="@Model.TieuDe" onblur="DuongDan1()">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label class="col-sm-2" for="TieuDe">Tiêu đề rút gọn</label>
+                <div class="col-sm-10">
+                    <input id="TieuDeRutGon" type="text" class="form-control form-control-sm" placeholder="" value="@Model.TieuDeRutGon">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label class="col-sm-2" for="Duong_Dan">Đường dẫn</label>
+                <div class="col-sm-10">
+                    <input id="Duong_Dan" type="text" class="form-control form-control-sm" placeholder="" value="@Model.DuongDan">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label class="col-sm-2" for="HinhDaiDien">Hình đại diện</label>
+                <div class="col-sm-10">
+                    @*<div class="input-group">
+                            <div class="custom-file">
+                                <input id="HinhDaiDien" class="form-control form-control-sm" style="margin-bottom:7px;" value="@Model.HinhDaiDien">
+                                <label class="custom-file-label" for="HinhDaiDien" id="Browser">Chọn file</label>
+                                <img id="Hinh" src="" style="display:none;" />
+                            </div>
+                        </div>*@
+                    <div class="input-group">
+                        <input id="HinhDaiDien" class="form-control cach-duoi" value="@Model.HinhDaiDien" />
+                        <div class="input-group-prepend">
+                            <button id="Browser" class="btn" type="button" style="border-top-right-radius: 5px; border-bottom-right-radius: 5px;">Chọn</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group row">
+                        <label class="col-sm-4" for="IdLinhVuc">Lĩnh vực</label>
+                        <div class="col-sm-8">
+                            <select id="IdLinhVuc" class="form-control form-control-sm" onchange="DocDanhSachNhomTin()">
+                                @if (ViewBag.DanhSachPhongBan != null)
+                                {
+                                    foreach (var item in ViewBag.DanhSachPhongBan)
+                                    {
+                                        <option value="@item.Id" data-img="@item.Ma" @(item.Id == Model.IdDonVi ? "selected" : "")>@item.Ten</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group row">
+                        <label class="col-sm-4" for="IdNhomTin">Nhóm tin</label>
+                        <div class="col-sm-8">
+                            <select id="IdNhomTin" class="form-control form-control-sm">
+                                @if (ViewBag.DanhSachNhomTin != null)
+                                {
+                                    foreach (var item in ViewBag.DanhSachNhomTin)
+                                    {
+                                        <option value="@item.Id" data-img="@item.Ma" @(item.Id == Model.IdNhomTin ? "selected" : "")>@item.Ten</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group row">
+                        <label class="col-sm-4" for="ThuTu">Thứ tự</label>
+                        <div class="col-sm-8">
+                            <input id="ThuTu" type="number" class="form-control form-control-sm" placeholder="Thứ tự" value="@Model.ThuTu">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group row">
+                        <label class="col-sm-4" for="NgayTao">Ngày tạo</label>
+                        <div class="col-sm-8">
+                            <input id="NgayTao" type='text' class="form-control form-control-sm datetimepicker" placeholder="HH:mm, dd/mm/yyyy" value="@(!string.IsNullOrEmpty(Model.ChuoiNgayTao) ? Model.ChuoiNgayTao : ngayHienTai.ToString("HH:mm, dd/MM/yyyy"))" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label class="col-sm-2" for="Duong_Dan">Nội dung tóm tắt</label>
+                <div class="col-sm-10">
+                    <textarea id="NoiDungTomTat" class="form-control form-control-sm" rows="5">@Model.NoiDungTomTat</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label class="col-sm-2">&nbsp;</label>
+                <div class="col-sm-10 ">
+                    <div class="form-check form-check-inline">
+                        <input id="KichHoat" class="form-check-input" type="checkbox" @((Model.Id == null) ? "checked" : (Model.KichHoat ? "checked" : ""))>
+                        <label class="form-check-label" for="KichHoat">Kích hoạt</label>
+                    </div>
+                    @*<div class="form-check form-check-inline">
+                            <input id="TrangChu" class="form-check-input" type="checkbox" @(Model.TrangChu ? "checked" : "")>
+                            <label class="form-check-label" for="TrangChu">Trang chủ</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input id="UuTien" class="form-check-input" type="checkbox" @(Model.UuTien ? "checked" : "")>
+                            <label class="form-check-label" for="UuTien">Ưu tiên</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input id="NoiBat" class="form-check-input" type="checkbox" @(Model.NoiBat ? "checked" : "")>
+                            <label class="form-check-label" for="NoiBat">Nổi bật</label>
+                        </div>*@
+                    @*<div class="form-check form-check-inline">
+                            <input id="GioiHanThoiGian" class="form-check-input" type="checkbox" @(Model.GioiHanThoiGian ? "checked" : "")>
+                            <label class="form-check-label" for="GioiHanThoiGian">Giới hạn thời gian</label>
+                        </div>*@
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label class="col-sm-2" for="NoiDung">Nội dung</label>
+                <div class="col-sm-10">
+                    <textarea id="NoiDung" class="form-control form-control-sm" rows="7">@Model.NoiDung</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group row">
+                <label class="col-sm-2" for="TapTinDinhKem">Tập tin đính kèm</label>
+                <div class="col-sm-10">
+                    @*<div class="input-group">
+                            <div class="custom-file">
+                                <input id="TapTinDinhKem" class="form-control form-control-sm" style="margin-bottom:7px;" value="@Model.TapTinDinhKem">
+                                <label class="custom-file-label" for="HinhDaiDien" id="File">Chọn file</label>
+                            </div>
+                        </div>*@
+                    <div class="input-group">
+                        <input id="TapTinDinhKem" class="form-control cach-duoi" value="@Model.TapTinDinhKem" />
+                        <div class="input-group-prepend">
+                            <button id="File" class="btn" type="button" style="border-top-right-radius: 5px; border-bottom-right-radius: 5px;">Chọn</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*<div class="col-md-12">
+                <div class="form-group row">
+                    <label class="col-sm-2" for="TuKhoa">Từ khóa</label>
+                    <div class="col-sm-10">
+                        <input id="TuKhoa" type="text" class="form-control form-control-sm" placeholder="" value="@Model.TuKhoa">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group row">
+                    <label class="col-sm-2" for="TieuDeSeo">Tiêu đề SEO</label>
+                    <div class="col-sm-10">
+                        <input id="TieuDeSeo" type="text" class="form-control form-control-sm" placeholder="" value="@Model.TieuDeSeo">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group row">
+                    <label class="col-sm-2" for="MoTa">Mô tả</label>
+                    <div class="col-sm-10">
+                        <textarea id="MoTa" type="text" class="form-control form-control-sm" placeholder="" rows="2">@Model.MoTa</textarea>
+                    </div>
+                </div>
+            </div>*@
+    </div>
+
+</div>
+<script src="~/Scripts/jquery-tagsinput.min.js"></script>
+<script src="~/Content/ckeditor/ckeditor.js"></script>
+<script src="~/Content/ckfinder/ckfinder.js"></script>
+<script>
+    $(document).ready(function () {
+        CKEDITOR.replace('NoiDung',
+            {
+                height: '500px'
+            });
+        $("#IdLinhVuc").val($("#IdLinhVucTim").val());
+        $("#IdLinhVuc").change();
+
+        //let hinh = $("#HinhDaiDien").val();
+        //if (hinh != "") {
+        //    $('#Browser').text(hinh.split("/")[hinh.split("/").length - 1]);
+        //}
+
+        //let file = $("#TapTinDinhKem").val();
+        //if (file != "") {
+        //    $('#File').text(file.split("/")[file.split("/").length - 1]);
+        //}
+    });
+
+    $(function () {
+        $('#NgayTao').datetimepicker({
+            format: 'HH:mm, DD/MM/YYYY'
+        });
+    });
+
+    function DocDanhSachNhomTin() {
+        $.ajax({
+            url: '@Url.Action("DocDanhSachNhomTinTheoDonVi", "TinTucChoLanhDao", new { area="TinTuc"})',
+            type: "POST",
+            dataType: "json",
+            data: {
+                idPhongBan: $("#IdLinhVuc").val(),
+            },
+            success: function (data) {
+                if (data != null) {
+                    $("#IdNhomTin").empty();
+                    let suaIdNhomTin = $("#SuaIdNhomTin").val();
+                    for (var i = 0; i < data.length; i++) {
+                        if (suaIdNhomTin == data[i].Id)
+                            var html = '<option value="' + data[i].Id + '" data-img="' + data[i].Ma + '" selected>' + data[i].Ten + '</option>';
+                        else
+                            var html = '<option value="' + data[i].Id + '" data-img="' + data[i].Ma + '" >' + data[i].Ten + '</option>';
+                        $("#IdNhomTin").append(html);
+                    }
+                }
+            },
+            error: function (xhr, status, error) { console.log("Lỗi: " + error); }
+        });
+    }
+
+    $('#Browser').on('click', function () {
+        var ckfider = new CKFinder();
+        ckfider.selectActionFunction = function (fileUrl) {
+            $('#HinhDaiDien').val(fileUrl);
+            //$('#Browser').text(fileUrl.split("/")[fileUrl.split("/").length - 1]);
+            //$('#Hinh').attr('src', fileUrl);
+        };
+        ckfider.popup();
+    });
+    $('#File').on('click', function () {
+        var ckfider = new CKFinder();
+        ckfider.selectActionFunction = function (fileUrl) {
+            $('#TapTinDinhKem').val(fileUrl);
+            //$('#File').text(fileUrl.split("/")[fileUrl.split("/").length - 1]);
+            //$('#Hinh').attr('src', fileUrl);
+        };
+        ckfider.popup();
+    });
+    function DuongDan1() {
+        var Ten = $("#TieuDe").val();
+        if (Ten.length > 0) {
+            var DuongDan = bodau(Ten);
+            $("#Duong_Dan").val(DuongDan);
+            $("#TieuDeRutGon").val(Ten);
+        }
+    };
+    function bodau(str) {
+        str = str.toLowerCase();
+        str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+        str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+        str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+        str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+        str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+        str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+        str = str.replace(/đ/g, "d");
+        str = str.replace(/!|@@|\$|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\'| |\"|\&|\#|\[|\]|~/g, "-");
+        str = str.replace(/-+-/g, "-");
+        str = str.replace(/^\-+|\-+$/g, "");
+        return str;
+    }
+</script>

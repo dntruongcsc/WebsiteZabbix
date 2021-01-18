@@ -1,0 +1,322 @@
+﻿@using System.Web.Optimization;
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Đăng nhập hệ thống - Hệ thống quản lý thông tin</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+
+    <style>
+        body {
+            margin-top: 0;
+            background-color: #eaf6fd;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .khoang-cach-5 {
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+
+        .khoang-cach-15 {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .header {
+            display: block;
+            min-height: 144px;
+            padding-top: 0px;
+        }
+
+        .content {
+            min-height: calc(100vh - 248px);
+            background-color: #FFF;
+        }
+
+            .content .dang-nhap {
+                float: right;
+                color: #FFF;
+                margin-top: 7px;
+                margin-right: 15px;
+            }
+
+            .content .ten {
+                font-size: 14px;
+            }
+
+            .content .nav {
+                background-color: #438eb9;
+                height: 40px;
+            }
+
+        .khung-chuc-nang {
+            margin: 20px 0;
+        }
+
+        .khung-chuc-nang-dang-nhap {
+            background-image: url(/images/images/Background.png);
+            min-height: calc(100vh - 288px);
+            background-size: cover;
+            background-position: center center;
+            padding: 8% 0;
+        }
+
+        .khung-dang-nhap {
+            width: 360px;
+            margin: auto;
+            border: 1px solid#d0d2d3;
+            border-radius: 10px;
+            text-align: center;
+            padding: 10px 0;
+            background-color: #ffffff;
+            box-shadow: 3px 3px 10px #cdcbcb;
+        }
+
+            .khung-dang-nhap .tieu-de {
+                font-size: 20px;
+                font-weight: bold;
+            }
+
+            .khung-dang-nhap .dong {
+                margin: 18px 30px;
+                text-align: center;
+                position: relative;
+            }
+
+            .khung-dang-nhap .bieu-tuong {
+                width: 16px;
+                height: 16px;
+                position: absolute;
+                top: 11px;
+                left: 10px;
+            }
+
+            .khung-dang-nhap .nhap-lieu {
+                width: 100%;
+                height: 40px;
+                border-radius: 5px;
+                font-size: 16px;
+                padding-left: 34px;
+            }
+
+            .khung-dang-nhap .xu-ly {
+                width: 100%;
+                height: 40px;
+                border-radius: 5px;
+                background-color: #438eb9;
+                color: #ffffff;
+                font-size: 16px;
+            }
+
+            .khung-dang-nhap .tro-ve {
+                text-align: left;
+                margin-top: 10px;
+                color: #555555;
+            }
+
+                .khung-dang-nhap .tro-ve:hover {
+                    color: #ed2953;
+                }
+
+        .khung-chuc-nang .tieu-de-chinh {
+            font-size: 22px;
+            color: #0f6472;
+            font-weight: bold;
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 40px 0 20px;
+        }
+
+        .khung-chuc-nang .noi-dung {
+            padding: 25px 15px;
+            border: 2px solid #fff;
+            text-align: center;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+            .khung-chuc-nang .noi-dung:hover {
+                border: 2px solid #ccc;
+            }
+
+        .khung-chuc-nang .tieu-de {
+            font-size: 16px;
+            margin: 20px 0 10px;
+            font-weight: bold;
+        }
+
+        .khung-chuc-nang .gioi-thieu {
+            color: #464545;
+        }
+
+        .footer {
+            margin-bottom: 1px;
+        }
+
+            .footer .khung-don-vi {
+                height: 30px;
+                color: #ffffff;
+                text-align: left;
+                font-size: 14px;
+                line-height: 16px;
+                padding: 0px 5px;
+            }
+
+            .footer .noi-dung-don-vi {
+                height: 30px;
+                display: table-cell;
+                vertical-align: middle;
+            }
+
+            .footer p {
+                color: #FFF;
+                font-size: 14px;
+                margin: 0 0 4px;
+            }
+
+            .footer .logo-cach-tren {
+                padding-top: 50px;
+            }
+
+            .footer .do-cao-dong {
+                line-height: 30px;
+            }
+
+        @@media screen and (max-width:960px) {
+        }
+
+        @@media screen and (max-width:760px) {
+            body {
+                background-color: #ffffff;
+            }
+
+            .khoang-cach-5 {
+                padding-left: 0px;
+                padding-right: 0px;
+            }
+
+            .khoang-cach-15 {
+                padding-left: 0px;
+                padding-right: 0px;
+            }
+
+            .content {
+                min-height: calc(100vh - 105px);
+            }
+
+            .khung-chuc-nang .tieu-de-chinh {
+                font-size: 18px;
+                margin: 10px;
+            }
+
+            .khung-chuc-nang .noi-dung {
+                padding: 10px 5px;
+                border: 1px solid #fff;
+                text-align: center;
+                margin-bottom: 10px;
+                border-radius: 5px;
+            }
+
+            .khung-chuc-nang-dang-nhap {
+                min-height: calc(100vh - 130px);
+                padding: 20% 0;
+            }
+
+            .khung-dang-nhap {
+                width: 95%;
+                max-width: 400px;
+                box-shadow: none;
+            }
+
+                .khung-dang-nhap .dong {
+                    margin: 16px 16px;
+                    text-align: center;
+                    position: relative;
+                }
+
+            .footer {
+                margin-top: 0px;
+            }
+
+                .footer .logo-cach-tren {
+                    padding-top: 10px;
+                    padding-bottom: 10px;
+                }
+
+                .footer .do-cao-dong {
+                    line-height: 18px;
+                    margin-top: -3px;
+                }
+        }
+
+        @@media screen and (max-width:480px) {
+            .content .ten {
+                font-size: 12px;
+            }
+
+            .footer p {
+                color: #FFF;
+                font-size: 12px;
+                margin: 0 0 2px;
+            }
+
+            .footer .khung-don-vi {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header container khoang-cach-15 hidden-xs">
+        <img src="/images/images/Banner.png" width="100%" style="margin:2px 0">
+    </div>
+
+    <div class="container khoang-cach-15">
+
+        <div class="content">
+            <div class="nav">
+                <div class="dang-nhap">
+
+                </div>
+            </div>
+            <div class="khung-chuc-nang-dang-nhap">
+                @Html.Partial("_TaiKhoanLoginPartial")
+            </div>
+            <div style="clear:both"></div>
+        </div>
+    </div>
+    <div class="footer container khoang-cach-15">
+        <div style="background-color:#438eb9;">
+            <div class="row">
+                <div class="col-sm-6" style="padding-left: 30px!important;">
+                    <p class="pt-3 font-weight-bold">Bản quyền thuộc Sở Nông Nghiệp Và Phát Triển Nông Thôn Tỉnh Cà Mau </p>
+                    <p>Địa chỉ: 49A Hùng Vương, phường 5, thành phố Cà Mau, Tỉnh Cà Mau </p>
+                    <p>Điện thoại: (0780) 3831500 - Fax: (0780) 3832937 - Email: sonnptn@camau.org.vn </p>
+                </div>
+                <div class="col-sm-6">
+                    <p class="pt-3 font-weight-bold">Phát triển bởi Trung Tâm Tin Học Trường Đại Học Khoa Học Tự Nhiên TP.HCM </p>
+                    <p style="font-size:12px; margin-top:5px;">Địa chỉ: 227 Nguyễn Văn Cừ, phường 4, quận 5, Tp. Hồ Chí Minh </p>
+                    <p style="font-size:12px; margin-top:5px;">Điện thoại: (028) 38351056 - Email: pda@csc.hcmus.edu.vn </p>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/jqueryval")
+</body>
+</html>
+

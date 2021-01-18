@@ -1,0 +1,82 @@
+﻿@model MVCProjectStructure.Areas.PhanAnhNhanh.Models.PhanAnhNhanhModel.Output.DocDanhSach
+@using Common.Utilities;
+@using MVCProjectStructure.Helpers;
+<div class="col-md-12 kc-0">
+    <div id="bang-bieu">
+        <div class="scrollbar mb-3">
+            <table id="DanhSach" class="col-sm-12 table-bordered table-condensed table-style">
+                <thead>
+                    <tr class="chieu-cao">
+                        <th class="al-c" style="width: 40px"><input type='checkbox' id="chonXoaTatCa" title="Chọn xóa tất cả" /></th>
+                        <th class="al-c" style="width: 40px">STT</th>
+                        <th class="al-c">Hình</th>
+                        <th class="al-l" style="min-width: 150px">Người gửi</th>
+                        <th class="al-c" style="min-width: 150px">Vấn đề</th>
+                        <th class="al-c">Nội dung</th>
+                        <th class="al-c" style="min-width: 150px">Người duyệt</th>
+                        <th class="al-c">Tình trạng</th>
+                        <th class="al-c">Xuất bản</th>
+                        <th class="al-c"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null)
+                    {
+                        if (Model.DanhSach.Count != 0)
+                        {
+                            var stt = Model.TrangHienTai * 20 - 20;
+                            foreach (var item in Model.DanhSach)
+                            {
+                                stt++;
+                                <tr>
+                                    <td class="al-c">
+                                        <input type='checkbox' class="checkbox_xoa" value="@item.Id" title="Chọn xóa" id="" name="IDs" />
+                                    </td>
+                                    <td class="al-c" data-title="STT">@stt</td>
+                                    <td class="al-c">
+                                        <a href="#"><img style="width:100%; max-width: 200px" src='@((item.DanhSachTapTin!=null && item.DanhSachTapTin.Count>0)?item.DanhSachTapTin[0].TenThumbnail:"")' /></a>
+                                    </td>
+                                    <td class="al-l"><a href="javascript:void(0)" onclick="ChinhSua('@item.Id')">@item.TenNguoiPhanAnh</a><br /><i class="text-info small">(@item.ThoiGian)</i></td>
+                                    @*<td class="al-l">@((!string.IsNullOrEmpty(item.TenAp) ? item.TenAp + ", " : "") + (!string.IsNullOrEmpty(item.TenXa) ? item.TenXa + ", " : "") + (!string.IsNullOrEmpty(item.TenHuyen) ? item.TenHuyen : ""))</td>*@
+                                    <td class="al-l">@item.LoaiPhanAnhNguoiDan.Ten</td>
+                                    <td class="al-l">@Utility.CatChuoi(item.NoiDung, 200)</td>
+                                    <td class="al-l">@(!string.IsNullOrEmpty(item.TenNguoiPheDuyet) ? item.TenNguoiPheDuyet : "-")</td>
+                                    <td class="al-c"><span class="badge label-success">@(item.TrangThai == 0 ? "Đã tiếp nhận" : item.TrangThai == 1 ? "Đang xử lý" : "Đã xử lý")</span></td>
+                                    <td class="al-c"><i class="@(item.XuatBan==true?"fa fa-check text-info":"fa")" aria-hidden="true"></i></td>
+                                    <td class="al-c"><a href="javascript:void(0)" onclick="ChinhSua('@item.Id')"><i class="fa fa-edit"></i></a></td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="10"><div class="alert alert-info"><i class="fa fa-exclamation-circle"></i> Không có dữ liệu!</div></td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="10"><div class="alert alert-info"><i class="fa fa-exclamation-circle"></i> Không có dữ liệu!</div></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @{
+            if (Model != null)
+            {
+                string duongDan = Url.Action("XemDanhSach", "PhanAnhNhanh", new { area = "PhanAnhNhanh" });
+                string kq = XuLyPhanTrang.TaoPhanTrang(Model.TongSoTrang, Model.TrangHienTai, duongDan, ViewBag.DanhSachThamSo);
+                @Html.Raw(kq);
+            }
+        }
+        <div style="clear:both"></div>
+    </div>
+
+</div>
+<script>
+    $(document).ready(function () {
+        XuLyChonTatCa();
+    })
+</script>

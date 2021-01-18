@@ -1,0 +1,145 @@
+﻿@using Common.Enum;
+@{
+    ViewBag.Title = "Phân quyền sử dụng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.active = ChucNang.Ma.PhanQuyen;
+}
+
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="@Url.Action("Index","Home",new { area = "Admin" })"><i class="fa fa-tachometer"></i> Bảng điều khiển</a>
+    </li>
+    <li class="breadcrumb-item active">Quản lý phân quyền</li>
+</ol>
+
+<div class="container-fluid p-0">
+    <div class="">
+        <div class="panel-body">
+            <div class="row px-3">
+                <div class="col-md-9 kc-0 mb-3">
+                    <div class="row pl-3">
+                        <div class="col-md-3 plrb-022">
+                            <label for="VaiTro" class="control-label pt-2">Phân quyền cho vai trò: </label>
+                        </div>
+                        <div class="col-md-4 plrb-022">
+                            <select id="VaiTro" name="VaiTro" class="form-control w-100">
+                                @if (ViewBag.DanhSachVaiTro != null)
+                                {
+                                    foreach (var item in ViewBag.DanhSachVaiTro)
+                                    {
+                                        <option value="@item.Id" data-ma="@item.Ma">@item.Ten</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 kc-0 mb-3 canh-le-p">
+                    <button id="btnThem" class="btn btn-mac-dinh" onclick="CapNhat()"><i class="fa fa-save"></i>&nbsp;Cập nhật</button>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div id="ThongBao_Index"></div>
+            <div id="DanhSach_CapNhat">
+                @{Html.RenderPartial("_DanhSachPhanQuyenPartial");}
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#VaiTro').change();
+    })
+    $('#VaiTro').on('change', function () {
+        var url = '@Url.Action("XemDanhSachQuyenTheoVaiTro", "Manage", new { area = "NguoiDung" })';
+        var input = {
+            idVaiTro : $('#VaiTro').val()
+        }
+        var data = XuLyAPI(url, input, 'html', 'POST', iXuLyDanhSach);
+        
+    });
+    function iXuLyDanhSach(data) {
+        if (data) {
+            if (data.KetQua == 1) {
+                $('#DanhSach_CapNhat').fadeOut(100).fadeIn(200).html(data.DuLieu);
+            } else {
+                Modal.Message(data.ThongBao);
+            }
+        }
+    }
+    function CapNhat() {
+        var Id = $('#BangDuLieu tbody').data('id');
+        var IdVaiTro = $('#VaiTro').val();
+        var tr = $('#BangDuLieu').find('tbody tr');
+        var DanhSachChucnang = [];
+        var rowLength = tr.length;
+        for (var i = 0; i < rowLength; i++) {
+            var row = $(tr[i]);
+            var DanhSachQuyen = [];
+            var IdChucNang = row.find('.d-chuc-nang').data('id');
+            var TenChucNang = row.find('.d-chuc-nang').data('ten');
+            var MaChucNang = row.find('.d-chuc-nang').data('ma');
+            var IdChucNangCha = row.find('.d-chuc-nang').data('id-chuc-nang-cha');
+            var d_TatCa = row.find('.d-tat-ca').prop('checked');
+            var d_Xem = row.find('.d-xem').prop('checked');
+            var d_Them = row.find('.d-them').prop('checked');
+            var d_Sua = row.find('.d-sua').prop('checked');
+            var d_Xoa = row.find('.d-xoa').prop('checked');
+            var d_PheDuyet = row.find('.d-phe-duyet').prop('checked');
+            if (d_TatCa) {
+                DanhSachQuyen = ["Xem", "Them", "Sua", "Xoa", "PheDuyet"];
+            }
+            else {
+                if (d_Xem) {
+                    DanhSachQuyen.push("Xem");
+                }
+                if (d_Them) {
+                    DanhSachQuyen.push("Them");
+                }
+                if (d_Sua) {
+                    DanhSachQuyen.push("Sua");
+                }
+                if (d_Xoa) {
+                    DanhSachQuyen.push("Xoa");
+                }
+                if (d_PheDuyet) {
+                    DanhSachQuyen.push("PheDuyet");
+                }
+            }
+            DanhSachChucnang.push({
+                "IdChucNang": IdChucNang,
+                "TenChucNang": TenChucNang,
+                "MaChucNang": MaChucNang,
+                "IdChucNangCha": IdChucNangCha,
+                "DanhSachQuyen": DanhSachQuyen
+            });
+        }
+        var data = {
+            "Id": Id,
+            "IdVaiTro": IdVaiTro,
+            "DanhSachChucnang": DanhSachChucnang
+        };
+        var url = '@Url.Action("CapNhat", "Manage", new { area = "NguoiDung" })';
+        var output = XuLyAPIOutputData(url, data);
+        if (output) {
+            if (output.KetQua == 1) {
+                Modal.Message(output.ThongBao);
+                $('#VaiTro').change();
+            } else {
+                Modal.Message(output.ThongBao);
+            }
+        }
+    }
+    function ChonTatCa(obj) {
+        var row = $(obj).closest("tr");
+        row.find(".child").prop("checked", obj.checked);
+    }
+    function ChonTungQuyen(obj) {
+        var row = $(obj).closest("tr");
+        if (row.find('.child:checked').length == row.find('.child').length) {
+            row.find('.parent').prop('checked', true);
+        } else {
+            row.find('.parent').prop('checked', false);
+        }
+    }
+</script>

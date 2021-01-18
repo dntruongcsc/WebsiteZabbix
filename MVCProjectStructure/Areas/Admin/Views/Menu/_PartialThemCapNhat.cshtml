@@ -1,0 +1,295 @@
+﻿@model MVCProjectStructure.Areas.Admin.Models.Menu.MenuModel.MenuOutput.ThemCapNhatMenu
+<style>
+    .popover-body {
+        height: 250px !important;
+        overflow-x: scroll !important;
+    }
+</style>
+
+
+<div id="ThongBao"></div>
+<input id="Id" name="Id" type="text" value="@Model.ThongTinMenu.Id" hidden />
+<!-- Tab panes -->
+<div>
+    <div class="container">
+        <input id="KetQuaOutput" data-ketqua="@ViewBag.KetQua" hidden />
+        <div class="row form-group">
+            <div class="col-md-6">
+                <label>Lĩnh vực</label>
+                <select id="IdDonVi" class="form-control form-control-sm" onchange="DocDanhSachNhomTin()">
+                    @if (ViewBag.DanhSachDonVi != null)
+                    {
+                        foreach (var item in ViewBag.DanhSachDonVi)
+                        {
+                            <option value="@item.Id" data-img="@item.Ma" @(item.Id == Model.ThongTinMenu.IdDonVi ? "selected" : "")>@item.Ten</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-md-6">
+                <label>Nhóm menu</label>
+                <select id="NhomThem" name="NhomThem" class="chosen-select form-control" onchange="LoadDanhSachMenuCha()">
+                    <option value="1" @(Model.ThongTinMenu.Nhom == 1 ? "selected" : "")> Quản trị hệ thống </option>
+                    <option value="2" @(Model.ThongTinMenu.Nhom == 2 ? "selected" : "")> Ứng dụng Website</option>
+                    <option value="3" @(Model.ThongTinMenu.Nhom == 3 ? "selected" : "")> Ứng dụng Mobile </option>
+                    <option value="4" @(Model.ThongTinMenu.Nhom == 4 ? "selected" : "")> Quản lý Tàu cá </option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label>Loại menu</label>
+                <select id="LoaiThem" name="LoaiThem" class="chosen-select form-control" onchange="LoadDanhSachMenuCha()">
+                    <option value="2" @(Model.ThongTinMenu.Loai == 2 ? "selected" : "")>Menu trái</option>
+                    <option value="3" @(Model.ThongTinMenu.Loai == 3 ? "selected" : "")>Menu phải</option>
+                    <option value="1" @(Model.ThongTinMenu.Loai == 1 ? "selected" : "")>Menu trên</option>
+                    <option value="4" @(Model.ThongTinMenu.Loai == 4 ? "selected" : "")>Menu dưới</option>
+                    <option value="5" @(Model.ThongTinMenu.Loai == 5 ? "selected" : "")>Menu giữa</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label>Vị trí</label>
+                <input id="ViTri" name="ViTri" type="number" class="form-control" placeholder="Nhập số" value="@Model.ThongTinMenu.ViTri">
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-md-6">
+                <label>Tên</label>
+                <input id="Ten" name="Ten" type="text" class="form-control" placeholder="Nhập tên chức năng" value="@Model.ThongTinMenu.Ten">
+            </div>
+            <div class="col-md-6">
+                <label>Mã</label>
+                <input id="Ma" name="Ma" type="text" class="form-control" placeholder="Mã" value="@Model.ThongTinMenu.Ma">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Menu Cấp cha</label>
+                <select id="IdMenuCha" name="IdMenuCha" class="chosen-select form-control">
+                    @*<option value="parent"> --Không chọn-- </option>*@
+                    @*@if (Model != null)
+                    {
+                        foreach (var item in Model.DanhSachMenu)
+                        {
+                            <option value="@item.Id">@item.Ten</option>
+                            if (item.DsMenuCha != null && item.DsMenuCha.Count() > 0)
+                            {
+                                foreach (var i in item.DsMenuCha)
+                                {
+                                    <option value="@i.Id">|-- @i.Ten</option>
+                                }
+                            }
+                        }
+                    }*@
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label>Icon</label>
+                <div class="input-group mb-3">
+                    <input id="Icon" name="Icon" type="text" class="form-control" placeholder="Nhập css class [fa fa-users]" value="@Model.ThongTinMenu.Icon">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" data-toggle="popover" data-html="true" title="Class CSS mẫu" data-placement="top"><i class="fa fa-search"></i> Mẫu</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="popover-content" hidden>
+            <ul class="list-group">
+                <li class="list-group-item"><i class="fa fa-address-book"></i> fa fa-address-book</li>
+                <li class="list-group-item"><i class="fa fa-address-book-o"></i> fa fa-address-book-o</li>
+                <li class="list-group-item"><i class="fa fa-address-card"></i> fa fa-address-card</li>
+                <li class="list-group-item"><i class="fa fa-address-card-o"></i> fa fa-address-card-o</li>
+                <li class="list-group-item"><i class="fa fa-adjust"></i> fa fa-adjust</li>
+                <li class="list-group-item"><i class="fa fa-address-book"></i> fa fa-address-book</li>
+                <li class="list-group-item"><i class="fa fa-address-book-o"></i> fa fa-address-book-o</li>
+                <li class="list-group-item"><i class="fa fa-address-card"></i> fa fa-address-card</li>
+                <li class="list-group-item"><i class="fa fa-address-card-o"></i> fa fa-address-card-o</li>
+                <li class="list-group-item"><i class="fa fa-adjust"></i> fa fa-adjust</li>
+                <li class="list-group-item"><i class="fa fa-address-book"></i> fa fa-address-book</li>
+                <li class="list-group-item"><i class="fa fa-address-book-o"></i> fa fa-address-book-o</li>
+                <li class="list-group-item"><i class="fa fa-address-card"></i> fa fa-address-card</li>
+                <li class="list-group-item"><i class="fa fa-address-card-o"></i> fa fa-address-card-o</li>
+                <li class="list-group-item"><i class="fa fa-adjust"></i> fa fa-adjust</li>
+                <li class="list-group-item"><i class="fa fa-address-book"></i> fa fa-address-book</li>
+                <li class="list-group-item"><i class="fa fa-address-book-o"></i> fa fa-address-book-o</li>
+                <li class="list-group-item"><i class="fa fa-address-card"></i> fa fa-address-card</li>
+                <li class="list-group-item"><i class="fa fa-address-card-o"></i> fa fa-address-card-o</li>
+                <li class="list-group-item"><i class="fa fa-adjust"></i> fa fa-adjust</li>
+            </ul>
+        </div>
+        <div class="row form-group">
+            <div class="col-md-8">
+                <label>Biểu tượng</label>
+                @*<div class="custom-file">
+                    <input id="BieuTuong" value="@Model.ThongTinMenu.BieuTuong">
+                    <label class="custom-file-label" for="inputGroupFile01" id="Browser">@(string.IsNullOrEmpty(Model.ThongTinMenu.BieuTuong) ? "Chọn file" : Model.ThongTinMenu.BieuTuong.Split('/')[Model.ThongTinMenu.BieuTuong.Split('/').Length - 1]) </label>
+                    <img id="Hinh" src="" style="display:none;" />
+                </div>*@
+                <div class="input-group">
+                    <input id="BieuTuong" class="form-control cach-duoi" value="@Model.ThongTinMenu.BieuTuong" />
+                    <div class="input-group-prepend">
+                        <button id="Browser" class="btn" type="button" style="border-top-right-radius: 5px; border-bottom-right-radius: 5px;">Chọn</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label>Kiểu hiển thị</label>
+                <select id="KieuHienThi" name="KieuHienThi" class="chosen-select form-control">
+                    <option value="">--Không chọn--</option>
+                    <option value="1" @(Model.ThongTinMenu.KieuHienThi == 1 ? "selected" : "")>1. [Mobile] Lưới</option>
+                    <option value="2" @(Model.ThongTinMenu.KieuHienThi == 2 ? "selected" : "")>2. [Mobile] Hai bên</option>
+                    <option value="3" @(Model.ThongTinMenu.KieuHienThi == 3 ? "selected" : "")>3. [Mobile] Scroll</option>
+                    <option value="4" @(Model.ThongTinMenu.KieuHienThi == 4 ? "selected" : "")>4. [Mobile] Hình ảnh</option>
+                    <option value="5" @(Model.ThongTinMenu.KieuHienThi == 5 ? "selected" : "")>5. [Mobile] Thời tiết</option>
+                    <option value="6" @(Model.ThongTinMenu.KieuHienThi == 6 ? "selected" : "")>6. [Mobile] Thông báo chung</option>
+                    <option value="7" @(Model.ThongTinMenu.KieuHienThi == 7 ? "selected" : "")>7. [Mobile] Thông báo cập nhật</option>
+                    <option value="8" @(Model.ThongTinMenu.KieuHienThi == 8 ? "selected" : "")>8. [Mobile] Thời tiết 2</option>
+                    <option value="10" @(Model.ThongTinMenu.KieuHienThi == 10 ? "selected" : "")>10. [Web] Hình ảnh</option>
+                    <option value="11" @(Model.ThongTinMenu.KieuHienThi == 11 ? "selected" : "")>11. [Web] Lưới</option>
+                    <option value="12" @(Model.ThongTinMenu.KieuHienThi == 12 ? "selected" : "")>12. [Web] Danh sách ngang</option>
+                    <option value="13" @(Model.ThongTinMenu.KieuHienThi == 13 ? "selected" : "")>13. [Web] Scroll - Hình</option>
+                    <option value="14" @(Model.ThongTinMenu.KieuHienThi == 14 ? "selected" : "")>14. [Web] Scroll - Tiêu đề</option>
+                    <option value="15" @(Model.ThongTinMenu.KieuHienThi == 15 ? "selected" : "")>15. [Web] Scroll - Mô tả</option>
+                    <option value="16" @(Model.ThongTinMenu.KieuHienThi == 16 ? "selected" : "")>16. [Web] Tin tức</option>
+                    <option value="17" @(Model.ThongTinMenu.KieuHienThi == 17 ? "selected" : "")>17. [Web] Giới thiệu 1</option>
+                    <option value="18" @(Model.ThongTinMenu.KieuHienThi == 18 ? "selected" : "")>18. [Web] Giới thiệu 2</option>
+                    <option value="19" @(Model.ThongTinMenu.KieuHienThi == 19 ? "selected" : "")>19. [Web] Banner - Tab nhóm bài viết </option>
+                </select>
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-md-6">
+                <label>Chức năng</label>
+                <select id="ChucNang" name="ChucNang" class="chosen-select form-control">
+                    <option value="parent"> Không chọn </option>
+                    @if (Model != null)
+                    {
+                        foreach (var item in Model.DanhMucChucNang)
+                        {
+                            <option value="@item.ThamSo.Action,@item.ThamSo.TieuDe,@item.DuongDan">@item.TenChucNang</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div id="FormLienKet" class="col-md-6" hidden>
+                <label id="Label"></label>
+                <select id="LienKet" class="form-control"></select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Liên kết</label>
+            <input id="UrlLienKet" name="UrlLienKet" type="text" class="form-control" placeholder="[Area/ControllerName/Action] hoặc link url" value="@Model.ThongTinMenu.LienKet">
+        </div>
+
+        <fieldset class="form-group">
+            <label>Tùy chọn</label>
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input id="KichHoat" name="KichHoat" type="checkbox" class="form-check-input" @(Model.ThongTinMenu.KichHoat == 1 ? "checked" : "") />
+                    <small>Kích hoạt</small>
+                </label>
+            </div>
+        </fieldset>
+        <div class="form-group">
+            <label>Mô tả</label>
+            <textarea id="MoTa" name="MoTa" class="form-control" rows="3">@Model.ThongTinMenu.MoTa</textarea>
+        </div>
+    </div>
+</div>
+<script src="//cdn.ckeditor.com/4.11.1/standard/ckeditor.js"></script>
+<script src="~/Content/ckfinder/ckfinder.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#NhomThem").val($("#Nhom").val());
+        $("#LoaiThem").val(($("#Loai").val() != "") ? $("#Loai").val() : $('#LoaiThem').val());
+
+        $('[data-toggle="popover"]').popover({
+            html: true,
+            content: function () {
+                $(this).attr('id')
+                return $('#popover-content').html();
+            }
+        });
+        //AddValue();
+        LoadDanhSachMenuCha();
+    });
+    $('#Browser').on('click', function () {
+        var ckfider = new CKFinder();
+        ckfider.selectActionFunction = function (fileUrl) {
+            $('#BieuTuong').val(fileUrl);
+            //$('#Hinh').attr('src', fileUrl);
+            //$('#Hinh').css('display', 'block');
+            //alert(fileUrl);
+            //let chuoi = fileUrl.split("/");
+            //$('#Browser').text(chuoi[chuoi.length - 1]);
+        };
+        ckfider.popup();
+    });
+    $("#Ten").on("change", function () {
+        var maGoc = $("#Ma").val();
+        if (!maGoc || maGoc == "") {
+            var ma = $("#Ten").val();
+            ma = xoa_dau(ma.trim());
+            ma = xoa_khoang_trang_chuyen_thuong_sang_hoa(ma);
+            $("#Ma").val(ma);
+        }
+    });
+
+    function AddValue() {
+        let idMenuCha = '@Model.ThongTinMenu.IdMenuCha';
+        if (idMenuCha == "" || idMenuCha == undefined || idMenuCha == null) {
+
+        } else {
+            @*$("#Nhom").val('@Model.ThongTinMenu.Nhom');
+            $("#Loai").val('@Model.ThongTinMenu.Loai');*@
+            $("#IdMenuCha").val('@Model.ThongTinMenu.IdMenuCha');
+        }
+
+    }
+
+    $('#ChucNang').on('change', function () {
+        var val = $('#ChucNang').val();
+        //console.log('val', val);
+        var data = val.split(',');
+        //console.log('data', data);
+        if (data[0] == "" && data[2] != "") {
+            $('#UrlLienKet').val(data[2]);
+            return;
+        }
+        $('#LienKet').empty();
+        try {
+            $.ajax({
+                url: '@Url.Action("DocDanhSachLienKet","Menu",new { area = "Admin"})',
+                data: { DuongDan: data[0] },
+                type: 'POST',
+                success: function (result) {
+                    if (result.length > 0) {
+                        $('#FormLienKet').removeAttr('hidden');
+                        //$('#UrlLienKet').attr('disabled', 'disabled');
+                    } else {
+                        $('#FormLienKet').attr('hidden', 'hidden');
+                        //$('#UrlLienKet').removeAttr('disabled');
+                        $('#UrlLienKet').val('');
+                    }
+                    //var danhSach = result;
+                    console.log(result);
+                    $('#Label').text(data[1]);
+                    for (var i = 0; i < result.length; i++) {
+                        var html = '<option value="' + data[2] + '/' + result[i].Id + '"> ' + result[i].TieuDe + ' </option>';
+                        $('#LienKet').append(html);
+                        $('#LienKet').change();
+                    }
+                }
+            });
+        } catch (e) {
+
+        }
+    });
+
+    $('#LienKet').on('change', function () {
+        var a = $('#LienKet').val();
+        //console.log('lienket', a);
+        $('#UrlLienKet').val(a);
+    });
+</script>
